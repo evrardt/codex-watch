@@ -1,6 +1,6 @@
 # État du projet — 10 novembre 2026
 
-> Préversion 0.12.54 : le relais Windows réduit les langues système embarquées pour alléger son installateur ; l’APK Wear OS 0.12.53 et ses fonctionnalités sont inchangés. Les langues Phonon sont conservées. Les autres langues système peuvent utiliser l’anglais comme solution de repli.
+> Préversion 0.12.54 : le relais Windows réduit les langues système embarquées pour alléger son installateur ; l’APK Wear OS 0.12.53 et ses fonctionnalités sont inchangés. Les langues Phonon sont conservées. Les autres langues système peuvent utiliser l’anglais comme solution de repli. La mise à jour a été installée sur le PC utilisé pour les essais : après redémarrage, Codex, Chat et l’accès HTTPS répondent ; le relais indique que la configuration des notifications et la clé audio sont chargées. Une synthèse Phonon avec GPU a été vérifiée sur le relais empaqueté.
 
 > Préversion 0.12.53 : l’APK signé de diffusion a été installé et les principaux écrans vérifiés sur émulateur. Une variante de test portant la signature de développement a ensuite été installée sur la Watch 7 sans effacer les associations ; une demande dictée a été envoyée une fois et confirmée dans la conversation et par le relais. Le relais PC 0.12.53 est installé : Codex, Chat, Firebase et la clé audio ont été vérifiés après redémarrage. L’installation complète sur un téléphone et un PC vierges reste à vérifier.
 
