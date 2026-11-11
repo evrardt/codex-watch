@@ -4,7 +4,7 @@
 
 > Préversion 0.12.51 : l’APK allégé a été installé sur un émulateur Wear OS. Son démarrage, plusieurs écrans, une association à un relais HTTPS de démonstration, l’ouverture d’une conversation, une alerte directe et le décodage Opus ont été vérifiés. Le traitement local d’un message FCM synthétique a été testé ; la livraison FCM réelle, le Live complet et le Bluetooth/4G sur une montre restent à vérifier avec cet APK.
 
-> Essai complémentaire sur Galaxy Watch 7 LTE : une variante de test 0.12.51 contenant le même code allégé a été installée par-dessus la version de développement sans effacer les associations. Les deux relais se sont reconnectés ; une réponse à une question Codex et une notification directe du PC ont été reçues. Les essais FCM réel, Live et 4G restent à compléter.
+> Essai complémentaire sur Galaxy Watch 7 LTE : une variante de test 0.12.51 contenant le même code allégé a été installée par-dessus la version de développement sans effacer les associations. Les deux relais se sont reconnectés ; une réponse à une question Codex, une notification directe du PC et une notification FCM réelle envoyée par le relais PC après son redémarrage ont été reçues. Les essais Live et 4G restent à compléter pour cette version.
 
 ## Changements vérifiés
 

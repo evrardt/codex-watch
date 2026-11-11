@@ -35,4 +35,10 @@ Les approbations du moteur Codex sont disponibles dans **Demandes** sur la montr
 
 Les données privées et jetons sont conservés dans le dossier utilisateur de l’application Windows ou dans `WATCH_DATA_DIR`. La première version en mode développeur utilisait `.local`. Aucun historique, clé, jeton Firebase ou fichier propre à une machine n’est fourni dans les sources publiques. La configuration FCM d’un opérateur est facultative ; aucun service de notifications mutualisé n’est inclus dans cette distribution.
 
+### Notifications Firebase facultatives
+
+Les notifications directes ne demandent pas de projet Google. Elles reposent sur une connexion maintenue avec le relais et peuvent être retardées par la veille de la montre. Pour utiliser FCM, il faut un projet Firebase personnel, son application Android correspondant au paquet de la montre et des identifiants d’envoi configurés côté relais. Le fichier [firebase.example.json](firebase.example.json) montre les paramètres publics attendus. Cette configuration reste avancée et n’est pas encore proposée par un assistant dans l’interface.
+
+Un compte de service dédié disposant uniquement du droit `cloudmessaging.messages.create` évite de dépendre d’une connexion Google personnelle. Le relais renouvelle automatiquement les jetons d’accès de courte durée à partir de ses identifiants ; la clé privée du compte de service, elle, n’est pas renouvelée automatiquement. Si elle expire, est révoquée ou doit être remplacée, un administrateur doit la renouveler et actualiser la configuration. Ne partage jamais cette clé, ne l’ajoute pas au dépôt et limite l’accès à son fichier au compte exécutant le relais et aux administrateurs de la machine. Les politiques de ton organisation Google peuvent interdire la création de clés ; seul son administrateur peut décider d’une éventuelle exception limitée.
+
 Voir [Contribuer](../CONTRIBUTING.md), [Sécurité](../SECURITY.md), [Changements](../CHANGELOG.md) et [Préparer une release](PUBLICATION.md).
