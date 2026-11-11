@@ -26,7 +26,7 @@ Le modèle conserve des acquiescements superflus et peut commencer à répondre 
 
 ## Montre et installation
 
-La Watch 7 LTE associée a reçu **0.11.0, code Android 22** avec comparaison de l’empreinte de l’APK transféré et installation sans effacement des données. Le relais installé utilise aussi les sources finales 0.11.0 ; la clé et l’association existantes sont conservées.
+La montre Wear OS associée a reçu **0.11.0, code Android 22** avec comparaison de l’empreinte de l’APK transféré et installation sans effacement des données. Le relais installé utilise aussi les sources finales 0.11.0 ; la clé et l’association existantes sont conservées.
 
 Les écrans réels de préparation ont été contrôlés par ADB et captures : ChatGPT sélectionné par défaut depuis l’entrée Live, projet « Sans projet », bouton Démarrer manuel ; ouverture avec un chat existant conservant Codex et le titre sélectionné. Aucun appel ni microphone n’a été démarré par cette vérification d’interface. L’écoute humaine du haut-parleur, l’écho et le passage Wi-Fi/LTE pendant un appel ne sont pas validés par ces captures.
 

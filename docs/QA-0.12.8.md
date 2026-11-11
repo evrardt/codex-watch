@@ -2,7 +2,7 @@
 
 Un essai réel de la version précédente a encore produit des saccades. Les mesures de diagnostic sur la montre montraient des maxima de décodage de 173 à 244 ms et une attente dans la file qui a atteint plusieurs secondes. Les compteurs de manque de données peuvent inclure des périodes silencieuses et ne suffisent pas, seuls, à identifier chaque coupure.
 
-Sur le même signal synthétique et la même Watch 7, un test a comparé successivement le décodeur natif, le décodeur Android et le décodeur natif. Les temps moyens par paquet de 20 ms étaient respectivement de 1,8 ms, 19,1 ms et 2,3 ms ; aucun paquet des deux passages natifs ne dépassait 20 ms. Les trois passages ont produit la durée attendue. Ce test n’établit pas à lui seul la qualité d’un appel réel.
+Sur le même signal synthétique et la même montre Wear OS, un test a comparé successivement le décodeur natif, le décodeur Android et le décodeur natif. Les temps moyens par paquet de 20 ms étaient respectivement de 1,8 ms, 19,1 ms et 2,3 ms ; aucun paquet des deux passages natifs ne dépassait 20 ms. Les trois passages ont produit la durée attendue. Ce test n’établit pas à lui seul la qualité d’un appel réel.
 
 La montre privilégie désormais libopus via Kopus, dont les licences sont incluses dans l’application, et revient au décodeur Android si le chargement natif échoue. Les messages du relais, la voix sélectionnée et le trajet du micro ne changent pas. Le décodeur est réinitialisé à chaque changement de flux ou de révision audio.
 

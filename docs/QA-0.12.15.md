@@ -1,6 +1,6 @@
 # Fluidité — vérifications
 
-Sur la Watch 7 LTE, un relevé initial sur un chat déjà utilisé, avec quatre allers-retours de défilement, indique 206 images, 17,96 % d’images considérées comme saccadées, une médiane de 19 ms et un 95e percentile de 48 ms. Cette courte mesure dépend des interactions et de l’état de la montre : elle ne prouve pas à elle seule l’origine de toutes les lenteurs.
+Sur la montre Wear OS, un relevé initial sur un chat déjà utilisé, avec quatre allers-retours de défilement, indique 206 images, 17,96 % d’images considérées comme saccadées, une médiane de 19 ms et un 95e percentile de 48 ms. Cette courte mesure dépend des interactions et de l’état de la montre : elle ne prouve pas à elle seule l’origine de toutes les lenteurs.
 
 Le relais fournit désormais un validateur HTTP pour les chats inchangés : après authentification, une nouvelle lecture identique ne retransmet pas le contenu. La montre conserve le même objet et évite une mise à jour Compose et un nouveau décodage JSON dans ce cas, avec repli compatible sur les relais précédents. Le formatage Markdown évite de recopier tout le texte à chaque paragraphe ou lien. La surveillance des projets ne relit pas immédiatement un chat déjà lu pendant le même cycle ; le suivi conserve sa fréquence. La fenêtre PC n’actualise son interface que lorsqu’elle est visible et se rafraîchit dès sa réouverture. Le réglage de lecture automatique est accepté par le relais PC.
 

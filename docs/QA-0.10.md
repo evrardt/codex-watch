@@ -16,7 +16,7 @@ Le déclenchement de secours après stabilisation n’envoie plus chaque interve
 - **24 tests JVM réussis**, APK debug compilé, lint sans erreur (9 avertissements). Le détecteur distingue une nouvelle prise de parole d’une voix utilisateur déjà en cours et ignore silence/bruit bref.
 - Exécutable Windows empaqueté : plantage volontaire du processus d’affichage, retour de l’interface, même processus moteur et santé Codex conservés. Un arrêt volontaire du moteur a aussi confirmé sa reprise automatique. Association unique et chiffrement testés dans un profil isolé.
 - Essai réel HTTPS de 80 secondes avec voix synthétiques et chevauchement : explication orale, interruption pendant la réponse, nouvelle consigne demandant « bleu », question posée par le bot pendant la voix utilisateur, puis délégation explicite au même chat Codex et résultat « 1053 » effectivement prononcé. Une seule tâche native a été transmise durant cette conversation à plusieurs échanges.
-- Relais et Watch 7 LTE mis à jour en 0.10.0 (code Android 21), configuration conservée.
+- Relais et montre Wear OS mis à jour en 0.10.0 (code Android 21), configuration conservée.
 
 ## Fenêtre blanche
 

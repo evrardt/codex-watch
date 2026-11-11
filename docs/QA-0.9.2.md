@@ -18,7 +18,7 @@ Le contrôle audio conserve aussi les premiers mots d’un résultat vérifié l
 
 - 93 tests Node réussis, dont conservation d’une question après le caractère 900, historique typé, suivi de la bonne réponse, cache actif, absence de création de chat, maintien pendant l’attente et filtrage audio avant vérification et conservation des mots reçus avant l’accusé d’injection.
 - Exécutable Windows empaqueté : connexion native, reprise après arrêt forcé, association unique, chiffrement et sélection des projets vérifiés dans un profil isolé.
-- Watch 7 LTE physique : contexte ChatGPT existant et titre exact affichés avant Démarrer ; le microphone reste fermé pendant cette préparation.
+- montre Wear OS physique : contexte ChatGPT existant et titre exact affichés avant Démarrer ; le microphone reste fermé pendant cette préparation.
 - Essai vocal réel avec audio synthétique via HTTPS dans le chat concerné : reprise correcte de sa dernière question sans rappeler le sujet, session prête en environ deux secondes, aucun nouveau message ou chat créé pour cette consultation.
 - Envoi natif de test : accusé du PC en 1,512 seconde ; le moteur ChatGPT a ensuite pris 40,6 secondes entre le début et la fin de son tour. Le premier sondage de 45 secondes n’avait pas encore observé la réponse ; une lecture native ultérieure l’a confirmée. Ce test ne garantit donc pas un délai total de 41 secondes sur la montre.
 - Chaîne vocale vers un chat ChatGPT de test existant : demande transmise, réponse correcte reçue après environ 79 secondes, appel encore ouvert au-delà d’une minute. Cet essai a aussi révélé la réponse vocale prématurée, à l’origine du filtrage ajouté ensuite.

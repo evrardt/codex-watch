@@ -1,6 +1,6 @@
 # Vérification 0.12.37 — 10 novembre 2026
 
-- Watch 7 : mise à jour de développement installée sans effacement des réglages ; profil serveur conservé et accueil affiché. Les réglages de voix et le curseur de vitesse ont été inspectés sur la montre. Le libellé de la clé OpenAI désigne désormais le relais sélectionné.
+- montre Wear OS : mise à jour de développement installée sans effacement des réglages ; profil serveur conservé et accueil affiché. Les réglages de voix et le curseur de vitesse ont été inspectés sur la montre. Le libellé de la clé OpenAI désigne désormais le relais sélectionné.
 - Relais PC : installation mise à jour, redémarrée après vérification de l’absence de session Live et de demandes en attente ; Codex et ChatGPT apparaissent connectés. Les fichiers du relais installé correspondent aux sources vérifiées.
 - Une question asynchrone réelle du bureau n’a pas été détectée sur la montre. Le bureau renvoyait une conversation active sans indicateur d’attente. Les demandes bloquantes et la réponse aux formulaires natifs restent à vérifier et à développer.
 - Phonon Linux : installation CUDA testée sous WSL sur GPU NVIDIA avec un modèle vérifié fourni localement ; génération CUDA et repli CPU testés. Le téléchargement du modèle et son empreinte ont été vérifiés séparément depuis le VPS. Un serveur NVIDIA vierge reste nécessaire pour valider le parcours complet. Le VPS de test, sans GPU, a généré une réponse audio en CPU après mise à jour.

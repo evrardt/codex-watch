@@ -6,4 +6,4 @@ Le relais conserve désormais le canal PC lors d’une limitation ChatGPT, renvo
 
 96 tests Node réussis, dont la chaîne d’erreur initiale, le maintien du transport et la disponibilité Live malgré une liste indisponible. L’exécutable Windows a également passé son essai isolé de démarrage, association unique et chiffrement. Aucun nouvel appel vocal facturé requis pour ce correctif. Montre 0.9.1 compatible, données conservées.
 
-Après installation : le relais renvoie ready=true, Codex et ChatGPT connectés. Contrôle physique sur Watch 7 dans le chat Codex existant : Démarrer activé, absence du message de reconnexion et microphone fermé. La limitation ChatGPT observée initialement avait également cessé lors du contrôle final.
+Après installation : le relais renvoie ready=true, Codex et ChatGPT connectés. Contrôle physique sur montre Wear OS dans le chat Codex existant : Démarrer activé, absence du message de reconnexion et microphone fermé. La limitation ChatGPT observée initialement avait également cessé lors du contrôle final.

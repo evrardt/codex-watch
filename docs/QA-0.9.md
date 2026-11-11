@@ -4,7 +4,7 @@ La version 0.9.0 regroupe le Live et les fonctions de gestion dans une interface
 
 | Demande | Résultat et vérification |
 | --- | --- |
-| Préparer le Live avant l’appel | Démarrage manuel, ChatGPT par défaut, contexte et projet accessibles avant Démarrer. Vérifié sur Galaxy Watch 7 et émulateur Wear OS. |
+| Préparer le Live avant l’appel | Démarrage manuel, ChatGPT par défaut, contexte et projet accessibles avant Démarrer. Vérifié sur montre Wear OS et émulateur Wear OS. |
 | Nouveau chat depuis l’accueil | Création différée à la première instruction utile ; une seule création, puis réutilisation de l’identifiant. Tests du relais avec délégations et accusés incertains. |
 | Conserver un chat ouvert | Identifiant exact transmis à Live ; pas de copie, pas de second propriétaire de chat. Tests de routage et d’idempotence. |
 | Son plus fort | Sortie média, gain de parole avec limiteur doux, sans modifier le volume global. Tests PCM ; l’appréciation du volume sur la dernière version reste à confirmer par une écoute humaine. |

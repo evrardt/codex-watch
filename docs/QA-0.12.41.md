@@ -1,6 +1,6 @@
 # Vérifications de la version 0.12.41
 
-- Depuis une question réellement affichée dans Codex sur le PC, l’utilisateur a choisi « Premier choix » dans **Demandes** sur la Watch 7 ; sa réponse a été reçue dans la conversation d’origine. Le système ne prend en charge que certains formulaires visibles, refuse les cas ambigus et laisse les approbations sensibles sur le PC.
+- Depuis une question réellement affichée dans Codex sur le PC, l’utilisateur a choisi « Premier choix » dans **Demandes** sur la montre Wear OS ; sa réponse a été reçue dans la conversation d’origine. Le système ne prend en charge que certains formulaires visibles, refuse les cas ambigus et laisse les approbations sensibles sur le PC.
 - Après un redémarrage du relais, la montre affichait « relais PC indisponible » alors que le relais répondait. Une conversation enregistrée sur la montre n’était pas retrouvée sur ce PC, mais il n’est pas établi qu’elle soit la seule cause du message observé. Cette erreur de lecture est désormais traduite en conversation introuvable, avec un message invitant à revenir à la liste ou à choisir le bon serveur. La donnée enregistrée n’est pas supprimée.
-- L’authentification Firebase renouvelée a permis de recevoir une notification de test sur la Watch 7. Les alertes mises en attente peuvent être livrées avec retard.
+- L’authentification Firebase renouvelée a permis de recevoir une notification de test sur la montre Wear OS. Les alertes mises en attente peuvent être livrées avec retard.
 - Les essais de formulaires Windows isolés, de titres dupliqués et de pagination incomplète sont décrits dans [QA-0.12.39](QA-0.12.39.md) et [QA-0.12.40](QA-0.12.40.md). Les approbations sensibles et tous les formats de formulaire ne sont pas couverts par le test réel.

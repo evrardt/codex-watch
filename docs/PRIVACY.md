@@ -1,6 +1,6 @@
 # Confidentialité — Codex Watch
 
-Codex Watch est un logiciel indépendant, sans affiliation avec OpenAI ou Samsung. Le propriétaire du relais choisit les projets et services connectés. Aucun service central Codex Watch ne collecte les données de l’application.
+Codex Watch est un logiciel indépendant, sans affiliation avec OpenAI. Le propriétaire du relais choisit les projets et services connectés. Aucun service central Codex Watch ne collecte les données de l’application.
 
 La montre transmet les demandes et reçoit les réponses par HTTPS ou par Bluetooth chiffré auprès du relais choisi. Le relais conserve localement les reçus d’envoi, des extraits de conversations, les événements et, si activées, les inscriptions aux notifications. Les conversations natives restent dans Codex ou ChatGPT selon le contexte. Le Chat utilisant l’API sur un VPS possède un historique distinct, stocké dans les données de ce relais. Les demandes sont traitées par les services correspondants et leurs propres conditions s’appliquent.
 

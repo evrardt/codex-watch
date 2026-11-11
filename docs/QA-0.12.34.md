@@ -2,7 +2,7 @@
 
 ## Sur appareils
 
-- Watch 7 réelle : installation de la version de développement 0.12.34 sans effacement des données, accueil et profil serveur visibles ; une version antérieure a aussi été contrôlée dans les conversations, Live avant appel, réglages, demandes vides, modèles, plugins, voix et connexions.
+- montre Wear OS réelle : installation de la version de développement 0.12.34 sans effacement des données, accueil et profil serveur visibles ; une version antérieure a aussi été contrôlée dans les conversations, Live avant appel, réglages, demandes vides, modèles, plugins, voix et connexions.
 - Émulateur Wear OS rond de petite taille : installation de l’APK release signé puis mise à jour signée ; écran initial, accueil, liste et conversation ; question à choix et approbation synthétiques depuis un relais isolé. La réponse « Automatique » et le refus ont atteint ce relais. Le même test a révélé un mot coupé et une description tronquée ; la taille des cartes a été corrigée et l’affichage vérifié de nouveau.
 - Les tests synthétiques ne prouvent pas que les formulaires natifs d’une session Codex PC peuvent être validés à distance. Cette fonctionnalité dépend des interfaces du bureau et reste à traiter sur le PC.
 
