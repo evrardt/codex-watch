@@ -6,7 +6,7 @@
 
 > Essai complémentaire sur Galaxy Watch 7 LTE : une variante de test 0.12.51 contenant le même code allégé a été installée par-dessus la version de développement sans effacer les associations. Les deux relais se sont reconnectés ; une réponse à une question Codex, une notification directe du PC et une notification FCM réelle envoyée par le relais PC après son redémarrage ont été reçues. L’utilisateur a confirmé l’accès aux conversations du relais PC en 4G seule après réassociation. La liaison Bluetooth PC a été rétablie et les deux appareils indiquent qu’elle est connectée. Le Live complet et les notifications en 4G restent à vérifier pour cette version.
 
-> Préversion 0.12.52 : une variante de test signée avec la clé de développement, contenant le même code allégé que la release, a été installée sur la Watch 7 sans effacer les associations. Après installation, l’accueil affiche le PC et le serveur, et le réseau du PC indique « Automatique · Bluetooth ». Le parcours 4G et le Live n’ont pas été retestés sur cette version.
+> Préversion 0.12.52 : une variante de test signée avec la clé de développement, contenant le même code allégé que la release, a été installée sur la Watch 7 sans effacer les associations. Après installation, l’accueil affiche le PC et le serveur ; une conversation PC s’est ouverte en Bluetooth forcé, puis le mode automatique a été rétabli. Le parcours 4G et le Live n’ont pas été retestés sur cette version.
 
 ## Changements vérifiés
 
