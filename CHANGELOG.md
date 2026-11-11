@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.53 — Envoi et notifications
+
+- La montre signale immédiatement l’envoi d’un brouillon dicté et empêche les appuis répétés pendant sa transmission.
+- Le relais regroupe les envois identiques simultanés et conserve la prudence après une interruption dont le résultat est inconnu.
+- Dans le relais Windows, l’import guidé de fichiers Firebase chiffre les identifiants du compte de service ; un guide explique leur création et leur renouvellement.
+
 ## 0.12.52 — État de Phonon
 
 - Les réglages vocaux indiquent que l’état du relais ne peut pas être vérifié au lieu de demander une installation lorsque la connexion manque. Si le modèle ou la voix ne sont pas disponibles, ils invitent à vérifier les réglages du relais sélectionné.

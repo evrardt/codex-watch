@@ -4,6 +4,8 @@ Retrouve tes conversations Codex et Chat sur une montre Wear OS grâce à un rel
 
 Projet indépendant, sans affiliation avec OpenAI ou Samsung. Licence MIT.
 
+Les notifications en veille et en 4G peuvent être configurées avec Firebase : consulte le [guide des notifications](docs/NOTIFICATIONS.md).
+
 ![Écran Live de Codex Watch](docs/guide/montre-live.png)
 
 > **Guide avec images sur ton PC :** ouvre [GUIDE-INSTALLATION.html](GUIDE-INSTALLATION.html). Les images s’affichent aussi directement sur GitHub.
@@ -17,12 +19,12 @@ Choisis ton parcours : **[relais PC Windows](#2-installer-et-configurer-le-relai
 
 ### 1. Télécharger les applications
 
-Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge l’APK 0.12.52 et, si tu utilises Windows, le relais compatible 0.12.50 :
+Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge l’APK 0.12.53 et, si tu utilises Windows, le relais 0.12.53 :
 
 | Sur quel appareil ? | Fichier | Utilité |
 | --- | --- | --- |
-| PC Windows | [Codex-Watch-Relay-0.12.50-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.50/Codex-Watch-Relay-0.12.50-Setup.exe) | Installer le relais qui relie la montre au PC. |
-| Téléphone Android | [Codex-Watch-0.12.52.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.52/Codex-Watch-0.12.52.apk) | Installer Codex Watch sur la montre. |
+| PC Windows | [Codex-Watch-Relay-0.12.53-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.53/Codex-Watch-Relay-0.12.53-Setup.exe) | Installer le relais qui relie la montre au PC. |
+| Téléphone Android | [Codex-Watch-0.12.53.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.53/Codex-Watch-0.12.53.apk) | Installer Codex Watch sur la montre. |
 
 Installe également :
 

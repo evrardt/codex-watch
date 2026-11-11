@@ -36,6 +36,17 @@ test('a public Firebase app configuration alone cannot enable a sender', () => {
   assert.equal(new Push({projectId:'test'}, {GOOGLE_APPLICATION_CREDENTIALS:'old-unrelated-credential'}).enabled, false);
 });
 
+test('managed service credentials work in memory and do not read an older credential file', async () => {
+  const {privateKey}=generateKeyPairSync('rsa',{modulusLength:2048});
+  const credentials=JSON.stringify({client_email:'watch@example.invalid',private_key:privateKey.export({type:'pkcs8',format:'pem'})});
+  const grants=[];
+  const push=new Push({enabled:true,projectId:'sample-project'},{GOOGLE_APPLICATION_CREDENTIALS:'missing-file'},async (_url,options)=>{
+    grants.push(options.body);return {ok:true,json:async()=>({access_token:'test-token',expires_in:3600})};
+  },credentials);
+  assert.equal(push.enabled,true);assert.equal(await push.accessToken(),'test-token');
+  assert.equal(grants[0].get('grant_type'),'urn:ietf:params:oauth:grant-type:jwt-bearer');
+});
+
 test('existing Google OAuth credentials refresh without creating a service-account key', async t => {
   const dir = await mkdtemp(path.join(tmpdir(), 'codexwatch-push-'));
   t.after(async () => { assert.ok(path.resolve(dir).startsWith(path.resolve(tmpdir()) + path.sep)); await rm(dir, {recursive:true,force:true}); });

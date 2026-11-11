@@ -302,6 +302,23 @@ test('duplicate network delivery starts exactly one Codex turn', async t => {
   assert.equal(start.params.sandbox, 'workspace-write'); assert.equal(start.params.approvalPolicy, 'on-request');
   await assert.rejects(service.route('POST', url('/v1/threads'), { ...body, text: 'different' }, idempotency), /déjà utilisé/);
 });
+test('simultaneous retries wait for the original operation without sending twice', async t => {
+  const {service}=await setup(t);let complete,started;
+  const began=new Promise(resolve=>{started=resolve;});let calls=0;
+  const action=async()=>{calls++;started();return await new Promise(resolve=>{complete=resolve;});};
+  const first=service.operation(idempotency,'same-message',action);
+  await began;
+  const second=service.operation(idempotency,'same-message',action);
+  await assert.rejects(service.operation(idempotency,'different-message',action),/déjà utilisé/);
+  assert.equal(calls,1);complete({id:'same-thread'});
+  assert.deepEqual(await first,{id:'same-thread'});assert.deepEqual(await second,{id:'same-thread'});assert.equal(calls,1);
+  assert.equal(service.operationsInFlight.size,0);
+});
+test('an operation still pending after a restart is never sent again',async t=>{
+  const {service,store}=await setup(t);store.data.operations[idempotency]={state:'pending',fingerprint:'same-message',at:Date.now()};
+  let calls=0;await assert.rejects(service.operation(idempotency,'same-message',async()=>{calls++;}),e=>e.code==='SUBMISSION_UNCERTAIN');
+  assert.equal(calls,0);
+});
 test('desktop writer lock is reported without making a copy or starting another turn', async t => {
   const { service, rpc } = await setup(t);
   const original = rpc.call.bind(rpc);

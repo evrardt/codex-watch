@@ -13,6 +13,7 @@ files.push('docs/INSTALLER-VPS.md','docs/INSTALLER-VPS.html');
 files.push('scripts/guide-vps-screenshot.cjs');
 files.push('docs/ETUDE-ASSISTANCE-CONVERSATION.md');
 files.push('docs/RAPPORT-ETAT.md');
+files.push('docs/NOTIFICATIONS.md');
 files.push('docs/ROADMAP.md','docs/QA-0.12.34.md','docs/QA-0.12.35.md');
 files.push('docs/QA-0.12.37.md');
 files.push('docs/QA-0.12.38.md');

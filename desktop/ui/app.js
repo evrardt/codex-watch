@@ -8,6 +8,9 @@ function projectList(){const root=$('projects');root.replaceChildren();for(const
 function renderPhononVoices(audio,installed){const select=$('phonon-voice');if(document.activeElement===select&&!busy)return;select.replaceChildren();if(!audio?.phononVoices?.length){select.add(new Option('Relais indisponible',''));select.disabled=true;return;}const labels={fr:'Français',en:'Anglais',de:'Allemand',es:'Espagnol',pt:'Portugais'};for(const code of ['fr','en','de','es','pt']){const group=document.createElement('optgroup');group.label=labels[code];for(const voice of audio.phononVoices.filter(v=>v.language===code)){const option=new Option(voice.name+(voice.locale==='en-gb'?' · UK':voice.locale==='en-us'?' · US':voice.locale==='es-mx'?' · MX':''),voice.id);group.append(option);}select.append(group);}select.value=audio.phononVoice;select.disabled=busy||!installed;}
 function render(s){
  state=s;const a=s.audio,mode=a?.mode||'';
+ const f=s.firebase||{};
+ $('firebase-status').textContent=!f.configured?'Alertes directes uniquement · Firebase facultatif.':!s.running?'Firebase configuré · démarre le relais pour vérifier.':f.loaded?`Firebase chargé · projet ${f.projectId}. Vérifie la réception sur la montre.`:`Firebase configuré · redémarre le relais ou vérifie les identifiants du projet ${f.projectId}.`;
+ $('firebase-import').disabled=busy||s.external;
  $('audio-auto-read').checked=a?.autoReadDictation!==false;$('audio-auto-read').disabled=busy||!a;
  $('bluetooth-summary').textContent=s.bluetoothStatus||'Désactivé';$('internet-summary').textContent=s.internetStatus||'Non configuré';$('bluetooth-state').textContent=s.bluetoothStatus||'Désactivé';$('bluetooth-toggle').textContent=s.bluetoothEnabled?'Désactiver':'Activer';$('bluetooth-toggle').disabled=busy||(!s.running&&!s.bluetoothEnabled);
  $('pair-status').textContent=s.watchPaired?'Montre associée':'Aucune association confirmée';$('pair-detail').textContent=s.watchPaired?'Association confirmée sur ce relais. La montre peut être hors ligne.':'Génère un code pour associer une montre.';$('paircode').textContent=s.watchPaired?'Associer une autre montre':'Générer le code';
@@ -86,4 +89,7 @@ for(const provider of ['watch','openai','phonon']){
 
 bind('bluetooth-toggle',async()=>render(await call('bluetooth',!state.bluetoothEnabled)));
 bind('bluetooth-windows',async()=>call('open','bluetooth-settings'));
+bind('firebase-import',async()=>{render(await call('firebaseImport'));});
+bind('firebase-guide',()=>call('open','firebaseGuide'));
+bind('firebase-console',()=>call('open','firebaseConsole'));
 

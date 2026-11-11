@@ -4,11 +4,11 @@ import { alertText } from './alert-content.mjs';
 
 // FCM HTTP v1; credentials stay on the bridge. Only a bounded title and result excerpt are sent.
 export class Push {
-  constructor(config, env = process.env, fetcher = fetch) { this.config = config; this.env = env; this.fetcher = fetcher; }
-  get enabled() { return !!(this.config?.enabled === true && this.config.projectId && this.env.GOOGLE_APPLICATION_CREDENTIALS); }
+  constructor(config, env = process.env, fetcher = fetch, managedCredentials = null) { this.config = config; this.env = env; this.fetcher = fetcher; this.managedCredentials = managedCredentials; }
+  get enabled() { return !!(this.config?.enabled === true && this.config.projectId && (this.managedCredentials || this.env.GOOGLE_APPLICATION_CREDENTIALS)); }
   async accessToken() {
     if (this.cached && Date.now() < this.expiry) return this.cached;
-    const key = JSON.parse(await readFile(this.env.GOOGLE_APPLICATION_CREDENTIALS, 'utf8'));
+    const key = JSON.parse(this.managedCredentials || await readFile(this.env.GOOGLE_APPLICATION_CREDENTIALS, 'utf8'));
     let form;
     if (key.type === 'authorized_user') {
       form = new URLSearchParams({grant_type:'refresh_token',client_id:key.client_id,client_secret:key.client_secret,refresh_token:key.refresh_token});

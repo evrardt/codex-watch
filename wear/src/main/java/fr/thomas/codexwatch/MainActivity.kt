@@ -33,6 +33,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
@@ -79,6 +81,7 @@ open class MainActivity : ComponentActivity() {
         val audioPrefs = remember { AudioSettingsStore(context) }
         val editorFocus = remember { FocusRequester() }
         val keyboard = LocalSoftwareKeyboardController.current
+        val haptic = LocalHapticFeedback.current
         val editorFocusManager = LocalFocusManager.current
         var editorRequest by remember { mutableIntStateOf(0) }
         var editOnOpen by remember { mutableStateOf(false) }
@@ -322,16 +325,18 @@ open class MainActivity : ComponentActivity() {
         }
         BackHandler(enabled = screen != "home" && screen != "welcome" && !loading) { back() }
         fun sendDraft() {
-            keyboard?.hide(); loading = true; error = ""
+            if(loading || draft.isBlank() || health.optBoolean("demo")) return
+            val submittedText=draft
+            val submittedId=requestId
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            keyboard?.hide(); editorFocusManager.clearFocus(); loading = true; error = ""
             scope.launch {
                 try {
-                    val submittedText=draft
-                    val submittedId=requestId
                     val previousIds=detail.optJSONArray("messages")?.objects().orEmpty().map{it.optString("id")}.filter{it.isNotBlank()}
                     val shouldRead=draftDictated && (try { api.request("/v1/audio/settings",timeoutMs=2500).optBoolean("autoReadDictation",autoReadDictation) } catch (_: Exception) { autoReadDictation })
                     if(draftDictated)autoReadDictation=shouldRead
                     if(shouldRead&&lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))DictationAlerts.gate.arm(slot,kind,threadId,submittedId)
-                    val result = api.send(kind, threadId, projectId, draft, requestId,InferenceStore(context).read(connection,threadId),JSONArray(pluginSelection).objects().map{it.getString("id")})
+                    val result = api.send(kind, threadId, projectId, submittedText, submittedId,InferenceStore(context).read(connection,threadId),JSONArray(pluginSelection).objects().map{it.getString("id")})
                     draft = ""; draftDictated=false
                     if (result.optBoolean("pending")) {
                         DictationAlerts.gate.cancel()
@@ -343,7 +348,7 @@ open class MainActivity : ComponentActivity() {
                 } catch (e: Exception) {
                     DictationAlerts.gate.cancel()
                     val definite = e is BridgeException && e.status in 400..499 && e.code != "SUBMISSION_UNCERTAIN"
-                    error = (e.message ?: "Envoi non confirmé") + if (definite) "" else " · Vérifier la conversation avant de renvoyer."
+                    error = submissionError(e.message,definite)
                 } finally { loading = false }
             }
         }
@@ -570,9 +575,12 @@ open class MainActivity : ComponentActivity() {
                 if (screen == "thread" && lastAssistantIndex >= 0 && indices.contains(transcriptStartIndex + lastAssistantIndex))
                     readState.mark(readingKey, lastAssistantMarker)
             }, bottomAction = if (screen in listOf("compose", "confirm")) ({
-                Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly){
-                    Column(Modifier.clickable{editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},modifier=Modifier.size(48.dp).background(Lilac.copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Extension,"Ajouter des plugins",tint=Lilac)};Text("Plugins",fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
-                    Column(Modifier.clickable(enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo")){sendDraft()},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={sendDraft()},enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo"),modifier=Modifier.size(48.dp).background(Mint.copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Send,"Envoyer",tint=Mint)};Text("Envoyer",fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
+                Column(horizontalAlignment=Alignment.CenterHorizontally) {
+                    if(error.isNotBlank()&&!loading) Text(error,color=Color(0xFFFFBA9D),fontSize=10.sp,lineHeight=12.sp,maxLines=3)
+                    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly){
+                        Column(Modifier.clickable(enabled=!loading){editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},enabled=!loading,modifier=Modifier.size(48.dp).background(Lilac.copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Extension,"Ajouter des plugins",tint=Lilac)};Text("Plugins",fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
+                        Column(Modifier.clickable(enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo")){sendDraft()},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={sendDraft()},enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo"),modifier=Modifier.size(48.dp).background(Mint.copy(alpha=.2f),CircleShape)){if(loading)CircularProgressIndicator(Modifier.size(22.dp),color=Mint,strokeWidth=2.dp) else Icon(Icons.Rounded.Send,"Envoyer",tint=Mint)};Text(if(loading)"Envoi…" else "Envoyer",fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
+                    }
                 }
             }) else null) {
             item { Eyebrow(if (preview) "$clock · APERÇU" else if (screen == "home") "$clock  ·  ${if (slot == "pc") "PC" else "SERVEUR"}" else clock, Muted) }
@@ -906,7 +914,7 @@ open class MainActivity : ComponentActivity() {
                 "compose", "confirm" -> {
                     item { PageTitle(if (kind == "chat") "À ton écoute" else if (threadId.isEmpty()) "Nouvelle demande" else "Répondre", when (kind) { "chat" -> "Assistant API"; "chatgpt" -> "${if(health.optString("chatgptMode")=="api") "Chat" else "ChatGPT"} · ${projectName.ifBlank { "Conversation" }}"; else -> "Codex · ${projectName.ifBlank { "Conversation" }}" }, if (kind != "codex") Lilac else Mint) }
                     item(key = "draft-editor") {
-                        OutlinedTextField(draft, { draft = it; requestId = UUID.randomUUID().toString() }, modifier = Modifier.fillMaxWidth().focusRequester(editorFocus), label = { Text("Ta demande", fontSize = 11.sp) }, minLines = 3, maxLines = 4)
+                        OutlinedTextField(draft, { draft = it; requestId = UUID.randomUUID().toString() }, modifier = Modifier.fillMaxWidth().focusRequester(editorFocus), enabled=!loading, label = { Text("Ta demande", fontSize = 11.sp) }, minLines = 3, maxLines = 4)
                         // A lazy item can request focus only once its field has been composed.
                         LaunchedEffect(editorRequest, editOnOpen) {
                             if (screen == "compose" && editOnOpen) {
@@ -917,7 +925,7 @@ open class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    item { WatchCard(if(draft.isBlank())"Dicter" else "Ajouter une dictée","Le texte reste modifiable",Icons.Rounded.Mic,Mint){editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();dictate()} }
+                    item { WatchCard(if(draft.isBlank())"Dicter" else "Ajouter une dictée","Le texte reste modifiable",Icons.Rounded.Mic,Mint,enabled=!loading){editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();dictate()} }
                     item { SmallNote((if (threadId.isEmpty()) "Une nouvelle conversation sera créée." else "La réponse ira dans cette conversation.")+JSONArray(pluginSelection).objects().joinToString(" · ",prefix=if(pluginSelection!="[]")"\nPlugins : "else ""){it.optString("name")}) }
                 }
                 "creating" -> {

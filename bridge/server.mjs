@@ -16,6 +16,11 @@ import {PairingWindow} from './pairing.mjs';
 import {VpsAdmin} from './vps-admin.mjs';
 import {WatchAuth} from './watch-auth.mjs';
 import {Bonjour} from 'bonjour-service';
+import {receiveManagedFcm} from './managed-fcm.mjs';
+
+// The Windows parent supplies encrypted-vault credentials over its private IPC
+// channel; secrets must not be inherited by Codex or its subprocesses.
+const managedFcmCredentials = process.env.WATCH_FCM_MANAGED ? receiveManagedFcm() : null;
 
 export function createHttpServer(service, token, pairing=null, admin=null, watchAuth=null) {
   const sockets=new Map();
@@ -71,7 +76,7 @@ async function main() {
     runtime = JSON.parse((await readFile(path.join(path.resolve(process.env.WATCH_DATA_DIR||path.join(base,'../.local')), 'runtime.json'), 'utf8')).replace(/^\uFEFF/, ''));
     if (runtime.codexExecutable) process.env.CODEX_EXECUTABLE ||= runtime.codexExecutable;
     if (runtime.codexHome) process.env.CODEX_HOME ||= runtime.codexHome;
-    if (runtime.fcmCredentials) process.env.GOOGLE_APPLICATION_CREDENTIALS = runtime.fcmCredentials;
+    if (runtime.fcmCredentials && !process.env.WATCH_FCM_MANAGED) process.env.GOOGLE_APPLICATION_CREDENTIALS = runtime.fcmCredentials;
     if (runtime.assistantEnv&&!process.env.WATCH_GUI_KEY_MANAGED) process.loadEnvFile(runtime.assistantEnv);
   } catch (e) { if (e.code !== 'ENOENT') throw e; }
   const demo = process.argv.includes('--demo');
@@ -116,7 +121,8 @@ async function main() {
     };
   } else if (desktopMode) { await rpc.start().catch(() => {}); }
   else { await rpc.start(); }
-  const service = new Service({ rpc, store, config, push:demo ? null : new Push(config.firebase), demo }); await service.initialize();
+  const credentials=managedFcmCredentials ? await managedFcmCredentials : null;
+  const service = new Service({ rpc, store, config, push:demo ? null : new Push(config.firebase,process.env,fetch,credentials), demo }); await service.initialize();
   const watchAuth=new WatchAuth(path.join(local,'watch-auth.json'),token);await watchAuth.load();
   const admin=config.vpsAdmin===true&&!desktopMode&&config.publicUrl?new VpsAdmin({service,data:local,origin:config.publicUrl,watchAuth}):null;
   const server = createHttpServer(service, token, new PairingWindow(path.join(local,'pairing-window.json')),admin,watchAuth);

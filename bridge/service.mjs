@@ -52,6 +52,7 @@ export class Service {
   approvals = new Map(); desktopPending = new Map(); loaded = new Set(); busy = new Set(); activeTurns = new Map(); observed = new Map(); monitorReady = false;
   desktopQuestion=null; desktopQuestionSuppressed=''; desktopQuestionSuppressionUncertain=false; desktopQuestionRefresh=null; desktopQuestionBusy=false; desktopQuestionCheckedAt=0;
   desktopAnswerResults = new Map();
+  operationsInFlight = new Map();
   pendingLookups = new Map(); pendingLookupAt = new Map();
   constructor({ rpc, store, config, push, fetcher = fetch, demo = false }) {
     Object.assign(this, { rpc, store, config, push, fetcher, demo });
@@ -254,13 +255,20 @@ export class Service {
     if (existing) {
       if (existing.fingerprint !== fingerprint) throw new HttpError(409, 'Identifiant déjà utilisé pour une autre demande');
       if (existing.state === 'done') return existing.result;
+      // A retry from the same running relay can share its original result. After a
+      // restart or an unknown failure, never submit the operation a second time.
+      if (existing.state === 'pending' && this.operationsInFlight.has(key)) return this.operationsInFlight.get(key);
       if (existing.state !== 'rejected') throw new HttpError(409, 'Demande déjà reçue. Vérifier la conversation avant de renvoyer.', 'SUBMISSION_UNCERTAIN');
     }
     const op = { ...metadata, state: 'pending', fingerprint, at: Date.now() };
     this.store.data.operations[key] = op;
-    await this.store.save();
-    try { op.result = await action(); op.state = 'done'; await this.store.save(); return op.result; }
-    catch (e) { op.state = e instanceof HttpError && e.status >= 400 && e.status < 500 ? 'rejected' : 'unknown'; await this.store.save(); throw e; }
+    const running=(async()=>{
+      await this.store.save();
+      try { op.result = await action(); op.state = 'done'; await this.store.save(); return op.result; }
+      catch (e) { op.state = e instanceof HttpError && e.status >= 400 && e.status < 500 ? 'rejected' : 'unknown'; await this.store.save(); throw e; }
+    })();
+    this.operationsInFlight.set(key,running);
+    try{return await running;}finally{if(this.operationsInFlight.get(key)===running)this.operationsInFlight.delete(key);}
   }
   async pendingOperation(key) {
     requireValue(typeof key==='string'&&/^[a-zA-Z0-9-]{16,80}$/.test(key),'Identifiant de demande invalide');
