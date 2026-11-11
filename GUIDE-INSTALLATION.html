@@ -22,18 +22,23 @@ th { background: #f0f8f2; }
 @media (max-width: 600px) { body { padding: 0; } main { padding: 24px 18px; border: 0; border-radius: 0; } }
 </style></head><body><main>
 <h1 id="codex-watch">Codex Watch</h1>
-<p>Retrouve tes conversations Codex et Chat sur une montre Wear OS grâce à un relais sur ton PC ou sur un VPS. En Wi-Fi ou en 4G, la montre rejoint le relais choisi ; le relais PC permet aussi le Bluetooth à proximité. L’application permet aussi de parler en Live, de suivre tes tâches et de recevoir des notifications.</p>
+<p>Retrouve Codex et Chat au poignet. Codex Watch relie ta montre Wear OS à un relais installé sur ton PC Windows ou sur ton propre serveur Linux.</p>
+<ul>
+<li><strong>Conversations et tâches :</strong> consulte tes échanges, envoie une demande et réponds aux questions Codex compatibles depuis la montre.</li>
+<li><strong>Voix :</strong> dicte un message, écoute les réponses ou lance une conversation Live. Le Live utilise l’API OpenAI et nécessite une clé et des crédits API.</li>
+<li><strong>Connexions :</strong> utilise le Wi-Fi ou la 4G ; avec le relais PC, le Bluetooth est aussi disponible à proximité. Si les deux relais sont configurés, tu peux passer de l’un à l’autre sur la montre.</li>
+<li><strong>Notifications :</strong> reçois les alertes de tes conversations. Firebase peut être configuré pour améliorer leur réception en veille ou en 4G.</li>
+</ul>
 <p>Projet indépendant, sans affiliation avec OpenAI ou Samsung. Licence MIT.</p>
-<p>Les notifications en veille et en 4G peuvent être configurées avec Firebase : consulte le <a href="docs/NOTIFICATIONS.html">guide des notifications</a>.</p>
+<p>Les possibilités et l’historique disponibles dépendent du relais choisi. Consulte le <a href="docs/NOTIFICATIONS.html">guide des notifications</a> pour configurer Firebase.</p>
 <p><img src="docs/guide/montre-live.png" alt="Écran Live de Codex Watch" /></p>
 <blockquote>
 <p><strong>Guide avec images sur ton PC :</strong> ouvre <a href="GUIDE-INSTALLATION.html">GUIDE-INSTALLATION.html</a>. Les images s’affichent aussi directement sur GitHub.</p>
 </blockquote>
+<p>Une idée, un problème ou une suggestion ? <strong><a href="https://github.com/evrardt/codex-watch/issues/new">Partage ton retour sur GitHub</a></strong> : tous les retours sont les bienvenus.</p>
 <h2 id="installation">Installation</h2>
 <p>Choisis ton parcours : <strong><a href="#2-installer-et-configurer-le-relais-sur-le-pc">relais PC Windows</a></strong> ou <strong><a href="docs/INSTALLER-VPS.html">relais VPS Linux</a></strong>. Un seul suffit (mais les deux peuvent fonctionner en parallèle). Installe l’APK sur ta montre Wear OS 3 ou plus récente avec un téléphone Android ; le même APK fonctionne avec les deux relais. Le parcours VPS ne nécessite pas le relais PC.</p>
-<blockquote>
-<p><strong>Préversion :</strong> Codex Watch est en cours de validation. L’application n’est pas encore disponible sur le Play Store ; consulte les limites et les essais restant à réaliser dans le <a href="docs/RAPPORT-ETAT.md">rapport d’état</a>.</p>
-</blockquote>
+<p>L’application n’est pas disponible sur le Play Store : télécharge l’APK ci-dessous. La Galaxy Watch 7 LTE est la première montre sur laquelle elle a été testée ; les autres modèles et certains parcours restent à vérifier. Consulte le <a href="docs/RAPPORT-ETAT.md">rapport d’état</a> pour les détails.</p>
 <h3 id="1-télécharger-les-applications">1. Télécharger les applications</h3>
 <p>Ouvre la <a href="https://github.com/evrardt/codex-watch/releases">page des releases</a>, puis télécharge l’APK 0.12.53 et, si tu utilises Windows, le relais 0.12.54 :</p>
 <table>
@@ -57,11 +62,11 @@ th { background: #f0f8f2; }
 </tr>
 </tbody>
 </table>
-<p>Installe également :</p>
+<p>Pour installer l’APK, utilise <a href="https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2">Wear Installer 2 sur Google Play</a> sur le <strong>téléphone Android</strong>. Aucune installation de Wear Installer 2 n’est nécessaire sur la montre.</p>
+<p>Si tu choisis le relais PC, installe également :</p>
 <ul>
 <li><a href="https://openai.com/codex/">Codex pour PC</a> et connecte-toi à ton compte.</li>
 <li><a href="https://tailscale.com/download/windows">Tailscale pour Windows</a> pour rendre le relais accessible hors de ton Wi-Fi.</li>
-<li><a href="https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2">Wear Installer 2 sur Google Play</a>, <strong>sur le téléphone Android</strong>. Aucune installation de Wear Installer 2 n’est nécessaire sur la montre.</li>
 </ul>
 <p>L’installateur Windows de cette version n’est pas signé par un certificat d’éditeur. Télécharge toujours les fichiers depuis la release officielle du dépôt et vérifie que tu lui fais confiance.</p>
 <p>Pour alléger le relais Windows, les fichiers de langue de son interface système couvrent le français, l’anglais, l’allemand, l’espagnol et le portugais ; pour les autres langues, certains messages système peuvent apparaître en anglais. L’interface de Codex Watch elle-même est actuellement en français. Les langues de synthèse vocale Phonon restent inchangées.</p>
@@ -206,6 +211,9 @@ th { background: #f0f8f2; }
 </tr>
 </tbody>
 </table>
+<h2 id="donner-son-avis-et-contribuer">Donner son avis et contribuer</h2>
+<p>Ton expérience nous aide à améliorer Codex Watch. N’hésite pas à <a href="https://github.com/evrardt/codex-watch/issues/new">ouvrir une issue</a> pour signaler un problème, proposer une idée ou partager ton retour. Pour un problème, indique si possible le modèle de ta montre, le relais utilisé (PC ou VPS), le type de connexion et les étapes pour le reproduire. Ne publie pas de clé API, de code d’association, de jeton ou de contenu privé.</p>
+<p>Pour signaler une faille de sécurité, utilise le canal indiqué dans <a href="SECURITY.md">SECURITY.md</a> plutôt qu’une issue publique. Les contributions au code et à la documentation sont aussi les bienvenues : consulte <a href="CONTRIBUTING.md">Contribuer</a>.</p>
 <h2 id="en-savoir-plus">En savoir plus</h2>
 <p>La Galaxy Watch 7 LTE est la première montre testée ; le projet reste en cours de validation pour une diffusion générale. L’utilisation d’un serveur autonome, la construction depuis les sources et les détails techniques se trouvent dans le <a href="docs/INSTALLATION-AVANCEE.md">guide avancé</a>. Voir aussi <a href="CONTRIBUTING.md">Contribuer</a>, <a href="docs/PRIVACY.md">Confidentialité</a>, <a href="SECURITY.md">Sécurité</a> et <a href="CHANGELOG.md">Changements</a>.</p>
 <p>La vitesse de lecture est réglable avec un curseur de 0,75× à 1,50×, séparément pour la voix de la montre, OpenAI et Phonon, depuis <strong>Voix et budget</strong>, sur la montre ou le relais. Sur la montre, touche <strong>Enregistrer</strong> après avoir déplacé le curseur. Elle ne modifie pas le Live. Les liens sont lus par leur intitulé, sans dicter leur destination.</p>

@@ -1,21 +1,28 @@
 # Codex Watch
 
-Retrouve tes conversations Codex et Chat sur une montre Wear OS grâce à un relais sur ton PC ou sur un VPS. En Wi-Fi ou en 4G, la montre rejoint le relais choisi ; le relais PC permet aussi le Bluetooth à proximité. L’application permet aussi de parler en Live, de suivre tes tâches et de recevoir des notifications.
+Retrouve Codex et Chat au poignet. Codex Watch relie ta montre Wear OS à un relais installé sur ton PC Windows ou sur ton propre serveur Linux.
+
+- **Conversations et tâches :** consulte tes échanges, envoie une demande et réponds aux questions Codex compatibles depuis la montre.
+- **Voix :** dicte un message, écoute les réponses ou lance une conversation Live. Le Live utilise l’API OpenAI et nécessite une clé et des crédits API.
+- **Connexions :** utilise le Wi-Fi ou la 4G ; avec le relais PC, le Bluetooth est aussi disponible à proximité. Si les deux relais sont configurés, tu peux passer de l’un à l’autre sur la montre.
+- **Notifications :** reçois les alertes de tes conversations. Firebase peut être configuré pour améliorer leur réception en veille ou en 4G.
 
 Projet indépendant, sans affiliation avec OpenAI ou Samsung. Licence MIT.
 
-Les notifications en veille et en 4G peuvent être configurées avec Firebase : consulte le [guide des notifications](docs/NOTIFICATIONS.md).
+Les possibilités et l’historique disponibles dépendent du relais choisi. Consulte le [guide des notifications](docs/NOTIFICATIONS.md) pour configurer Firebase.
 
 ![Écran Live de Codex Watch](docs/guide/montre-live.png)
 
 > **Guide avec images sur ton PC :** ouvre [GUIDE-INSTALLATION.html](GUIDE-INSTALLATION.html). Les images s’affichent aussi directement sur GitHub.
+
+Une idée, un problème ou une suggestion ? **[Partage ton retour sur GitHub](https://github.com/evrardt/codex-watch/issues/new)** : tous les retours sont les bienvenus.
 
 ## Installation
 
 Choisis ton parcours : **[relais PC Windows](#2-installer-et-configurer-le-relais-sur-le-pc)** ou **[relais VPS Linux](docs/INSTALLER-VPS.md)**. Un seul suffit (mais les deux peuvent fonctionner en parallèle). Installe l’APK sur ta montre Wear OS 3 ou plus récente avec un téléphone Android ; le même APK fonctionne avec les deux relais. Le parcours VPS ne nécessite pas le relais PC.
 
 
-> **Préversion :** Codex Watch est en cours de validation. L’application n’est pas encore disponible sur le Play Store ; consulte les limites et les essais restant à réaliser dans le [rapport d’état](docs/RAPPORT-ETAT.md).
+L’application n’est pas disponible sur le Play Store : télécharge l’APK ci-dessous. La Galaxy Watch 7 LTE est la première montre sur laquelle elle a été testée ; les autres modèles et certains parcours restent à vérifier. Consulte le [rapport d’état](docs/RAPPORT-ETAT.md) pour les détails.
 
 ### 1. Télécharger les applications
 
@@ -26,11 +33,12 @@ Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), p
 | PC Windows | [Codex-Watch-Relay-0.12.54-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.55/Codex-Watch-Relay-0.12.54-Setup.exe) | Installer le relais qui relie la montre au PC. |
 | Téléphone Android | [Codex-Watch-0.12.53.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.55/Codex-Watch-0.12.53.apk) | Installer Codex Watch sur la montre. |
 
-Installe également :
+Pour installer l’APK, utilise [Wear Installer 2 sur Google Play](https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2) sur le **téléphone Android**. Aucune installation de Wear Installer 2 n’est nécessaire sur la montre.
+
+Si tu choisis le relais PC, installe également :
 
 - [Codex pour PC](https://openai.com/codex/) et connecte-toi à ton compte.
 - [Tailscale pour Windows](https://tailscale.com/download/windows) pour rendre le relais accessible hors de ton Wi-Fi.
-- [Wear Installer 2 sur Google Play](https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2), **sur le téléphone Android**. Aucune installation de Wear Installer 2 n’est nécessaire sur la montre.
 
 L’installateur Windows de cette version n’est pas signé par un certificat d’éditeur. Télécharge toujours les fichiers depuis la release officielle du dépôt et vérifie que tu lui fais confiance.
 
@@ -178,6 +186,12 @@ Avant l’appel, **Plugins Codex** permet de demander l’utilisation de plugins
 | Phonon ne s’installe pas | Vérifie les conditions acceptées, le jeton de lecture et la connexion Internet sur le PC. Le modèle multilingue est réservé aux usages non commerciaux. |
 | Le Live ne démarre pas | Vérifie la clé, les crédits API et le budget dans **Voix et budget**, ainsi que l’autorisation du microphone. |
 | Les alertes n’arrivent pas | Vérifie l’autorisation des notifications et la disponibilité du relais. FCM nécessite sa propre configuration. |
+
+## Donner son avis et contribuer
+
+Ton expérience nous aide à améliorer Codex Watch. N’hésite pas à [ouvrir une issue](https://github.com/evrardt/codex-watch/issues/new) pour signaler un problème, proposer une idée ou partager ton retour. Pour un problème, indique si possible le modèle de ta montre, le relais utilisé (PC ou VPS), le type de connexion et les étapes pour le reproduire. Ne publie pas de clé API, de code d’association, de jeton ou de contenu privé.
+
+Pour signaler une faille de sécurité, utilise le canal indiqué dans [SECURITY.md](SECURITY.md) plutôt qu’une issue publique. Les contributions au code et à la documentation sont aussi les bienvenues : consulte [Contribuer](CONTRIBUTING.md).
 
 ## En savoir plus
 

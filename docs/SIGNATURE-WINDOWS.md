@@ -1,6 +1,6 @@
 # Préparer la signature Windows
 
-Les préversions actuelles du relais Windows ne sont pas signées par un éditeur reconnu. La signature de l’APK Wear OS est indépendante et ne signe pas l’installateur Windows.
+Les versions actuelles du relais Windows ne sont pas signées par un éditeur reconnu. La signature de l’APK Wear OS est indépendante et ne signe pas l’installateur Windows.
 
 [SignPath Foundation](https://signpath.org/) propose une signature gratuite à certains projets open source, après examen ; son acceptation et le certificat ne sont pas automatiques. Ses [conditions](https://signpath.org/terms.html) incluent notamment l’authentification multifacteur, une politique de signature, une construction vérifiable et une approbation de chaque publication. Un certificat commercial reconnu peut aussi être utilisé.
 
