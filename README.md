@@ -17,6 +17,8 @@ Les possibilités et l’historique disponibles dépendent du relais choisi. Con
 
 > **Guide avec images sur ton PC :** ouvre [GUIDE-INSTALLATION.html](GUIDE-INSTALLATION.html). Les images s’affichent aussi directement sur GitHub.
 
+Un agent IA peut t’aider à suivre l’installation et à résoudre les difficultés : donne-lui le lien du dépôt et demande-lui de lire le [guide pour les agents](AGENTS.md). Garde tes mots de passe, clés et codes privés : saisis-les directement dans l’application ou sur les sites concernés, sans les envoyer dans la conversation.
+
 Une idée, un problème ou une suggestion ? **[Partage ton retour sur GitHub](https://github.com/evrardt/codex-watch/issues/new/choose)** : tous les retours sont les bienvenus.
 
 ## Installation
