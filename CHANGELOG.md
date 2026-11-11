@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.54 — Relais Windows allégé
+
+- L’installateur Windows conserve les fichiers système anglais, français, allemands, espagnols et portugais afin de réduire le téléchargement et l’espace occupé. Les autres langues système peuvent utiliser l’anglais comme solution de repli.
+- L’APK Wear OS reste en version 0.12.53, identique à la version précédente et disponible dans cette release.
+
 ## 0.12.53 — Envoi et notifications
 
 - La montre signale immédiatement l’envoi d’un brouillon dicté et empêche les appuis répétés pendant sa transmission.

@@ -7,15 +7,17 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const version = process.argv[2];
-if (!/^\d+\.\d+\.\d+$/.test(version || '')) throw new Error('Usage: node scripts/prepare-release.mjs <version>');
+if (!/^\d+\.\d+\.\d+$/.test(version || '')) throw new Error('Usage: node scripts/prepare-release.mjs <desktop-version> [watch-version]');
+const watchVersion = process.argv[3] || version;
+if (!/^\d+\.\d+\.\d+$/.test(watchVersion)) throw new Error('Invalid watch APK version.');
 const desktop = JSON.parse(await readFile(path.join(root, 'desktop/package.json'), 'utf8'));
 const apk = JSON.parse(await readFile(path.join(root, 'wear/build/outputs/apk/release/output-metadata.json'), 'utf8'));
-if (desktop.version !== version || apk.variantName !== 'release' || apk.elements.length !== 1 || apk.elements[0].versionName !== version) {
+if (desktop.version !== version || apk.variantName !== 'release' || apk.elements.length !== 1 || apk.elements[0].versionName !== watchVersion) {
   throw new Error('The desktop or release APK version does not match. Build both before packaging.');
 }
 const bundle = path.join(root, '.tools/releases', `bundle-${version}`);
 const artifacts = [
-  [path.join(root, 'wear/build/outputs/apk/release', apk.elements[0].outputFile), `Codex-Watch-${version}.apk`],
+  [path.join(root, 'wear/build/outputs/apk/release', apk.elements[0].outputFile), `Codex-Watch-${watchVersion}.apk`],
   [path.join(root, `.tools/releases/windows/Codex-Watch-Relay-${version}-Setup.exe`), `Codex-Watch-Relay-${version}-Setup.exe`],
 ];
 // A release-labelled but unsigned APK cannot be installed or safely published.

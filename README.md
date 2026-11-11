@@ -19,12 +19,12 @@ Choisis ton parcours : **[relais PC Windows](#2-installer-et-configurer-le-relai
 
 ### 1. Télécharger les applications
 
-Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge l’APK 0.12.53 et, si tu utilises Windows, le relais 0.12.53 :
+Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge l’APK 0.12.53 et, si tu utilises Windows, le relais 0.12.54 :
 
 | Sur quel appareil ? | Fichier | Utilité |
 | --- | --- | --- |
-| PC Windows | [Codex-Watch-Relay-0.12.53-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.53/Codex-Watch-Relay-0.12.53-Setup.exe) | Installer le relais qui relie la montre au PC. |
-| Téléphone Android | [Codex-Watch-0.12.53.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.53/Codex-Watch-0.12.53.apk) | Installer Codex Watch sur la montre. |
+| PC Windows | [Codex-Watch-Relay-0.12.54-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.54/Codex-Watch-Relay-0.12.54-Setup.exe) | Installer le relais qui relie la montre au PC. |
+| Téléphone Android | [Codex-Watch-0.12.53.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.54/Codex-Watch-0.12.53.apk) | Installer Codex Watch sur la montre. |
 
 Installe également :
 
@@ -33,6 +33,8 @@ Installe également :
 - [Wear Installer 2 sur Google Play](https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2), **sur le téléphone Android**. Aucune installation de Wear Installer 2 n’est nécessaire sur la montre.
 
 L’installateur Windows de cette version n’est pas signé par un certificat d’éditeur. Télécharge toujours les fichiers depuis la release officielle du dépôt et vérifie que tu lui fais confiance.
+
+Pour alléger le relais Windows, les fichiers de langue de son interface système couvrent le français, l’anglais, l’allemand, l’espagnol et le portugais ; pour les autres langues, certains messages système peuvent apparaître en anglais. L’interface de Codex Watch elle-même est actuellement en français. Les langues de synthèse vocale Phonon restent inchangées.
 
 ### 2. Installer et configurer le relais sur le PC
 

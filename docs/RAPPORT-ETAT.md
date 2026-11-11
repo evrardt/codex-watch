@@ -1,5 +1,7 @@
 # État du projet — 10 novembre 2026
 
+> Préversion 0.12.54 : le relais Windows réduit les langues système embarquées pour alléger son installateur ; l’APK Wear OS 0.12.53 et ses fonctionnalités sont inchangés. Les langues Phonon sont conservées. Les autres langues système peuvent utiliser l’anglais comme solution de repli.
+
 > Préversion 0.12.53 : l’APK signé de diffusion a été installé et les principaux écrans vérifiés sur émulateur. Une variante de test portant la signature de développement a ensuite été installée sur la Watch 7 sans effacer les associations ; une demande dictée a été envoyée une fois et confirmée dans la conversation et par le relais. Le relais PC 0.12.53 est installé : Codex, Chat, Firebase et la clé audio ont été vérifiés après redémarrage. L’installation complète sur un téléphone et un PC vierges reste à vérifier.
 
 > Essais du 11 novembre sur Watch 7, version de test 0.12.52 : le Live et son interruption ont fonctionné en 4G seule ; une notification de test du PC a émis un signal en 4G lorsque la montre était en mode Son. Une conversation est restée accessible en mode automatique après coupure du Bluetooth, avec la 4G active. Ces essais ne prouvent pas la reprise d’un Live en cours lors d’un changement de réseau. Les essais des nouvelles modifications et des installations vierges restent distincts de ces résultats.

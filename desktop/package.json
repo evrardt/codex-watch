@@ -1,7 +1,7 @@
 {
   "name": "codex-watch-relay",
   "productName": "Codex Watch Relay",
-  "version": "0.12.53",
+  "version": "0.12.54",
   "description": "Relais de bureau pour Codex Watch sur Wear OS",
   "author": "Codex Watch contributors",
   "license": "MIT",
@@ -19,6 +19,16 @@
   "build": {
     "appId": "org.codexwatch.relay",
     "asar": true,
+    "electronLanguages": [
+      "en-US",
+      "en-GB",
+      "fr",
+      "de",
+      "es",
+      "es-419",
+      "pt-BR",
+      "pt-PT"
+    ],
     "afterPack": "./after-pack.cjs",
     "directories": {
       "output": "../.tools/releases/windows"
