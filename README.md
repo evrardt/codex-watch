@@ -1,5 +1,7 @@
 # Codex Watch
 
+[Français](#codex-watch) · [English](#english)
+
 Retrouve Codex et Chat au poignet. Codex Watch relie ta montre Wear OS à un relais installé sur ton PC Windows ou sur ton propre serveur Linux.
 
 - **Conversations et tâches :** consulte tes échanges, envoie une demande et réponds aux questions Codex compatibles depuis la montre.
@@ -15,7 +17,7 @@ Les possibilités et l’historique disponibles dépendent du relais choisi. Con
 
 > **Guide avec images sur ton PC :** ouvre [GUIDE-INSTALLATION.html](GUIDE-INSTALLATION.html). Les images s’affichent aussi directement sur GitHub.
 
-Une idée, un problème ou une suggestion ? **[Partage ton retour sur GitHub](https://github.com/evrardt/codex-watch/issues/new)** : tous les retours sont les bienvenus.
+Une idée, un problème ou une suggestion ? **[Partage ton retour sur GitHub](https://github.com/evrardt/codex-watch/issues/new/choose)** : tous les retours sont les bienvenus.
 
 ## Installation
 
@@ -189,7 +191,7 @@ Avant l’appel, **Plugins Codex** permet de demander l’utilisation de plugins
 
 ## Donner son avis et contribuer
 
-Ton expérience nous aide à améliorer Codex Watch. N’hésite pas à [ouvrir une issue](https://github.com/evrardt/codex-watch/issues/new) pour signaler un problème, proposer une idée ou partager ton retour. Pour un problème, indique si possible le modèle de ta montre, le relais utilisé (PC ou VPS), le type de connexion et les étapes pour le reproduire. Ne publie pas de clé API, de code d’association, de jeton ou de contenu privé.
+Ton expérience nous aide à améliorer Codex Watch. N’hésite pas à [ouvrir une issue](https://github.com/evrardt/codex-watch/issues/new/choose) pour signaler un problème ou proposer une idée, ou à rejoindre les [discussions](https://github.com/evrardt/codex-watch/discussions) pour échanger avec la communauté. Pour un problème, indique si possible le modèle de ta montre, le relais utilisé (PC ou VPS), le type de connexion et les étapes pour le reproduire. Ne publie pas de clé API, de code d’association, de jeton ou de contenu privé.
 
 Pour signaler une faille de sécurité, utilise le canal indiqué dans [SECURITY.md](SECURITY.md) plutôt qu’une issue publique. Les contributions au code et à la documentation sont aussi les bienvenues : consulte [Contribuer](CONTRIBUTING.md).
 
@@ -198,4 +200,15 @@ Pour signaler une faille de sécurité, utilise le canal indiqué dans [SECURITY
 La Galaxy Watch 7 LTE est la première montre testée ; le projet reste en cours de validation pour une diffusion générale. L’utilisation d’un serveur autonome, la construction depuis les sources et les détails techniques se trouvent dans le [guide avancé](docs/INSTALLATION-AVANCEE.md). Voir aussi [Contribuer](CONTRIBUTING.md), [Confidentialité](docs/PRIVACY.md), [Sécurité](SECURITY.md) et [Changements](CHANGELOG.md).
 
 La vitesse de lecture est réglable avec un curseur de 0,75× à 1,50×, séparément pour la voix de la montre, OpenAI et Phonon, depuis **Voix et budget**, sur la montre ou le relais. Sur la montre, touche **Enregistrer** après avoir déplacé le curseur. Elle ne modifie pas le Live. Les liens sont lus par leur intitulé, sans dicter leur destination.
+
+## English
+
+Codex Watch brings Codex conversations and tasks to Wear OS through a self-hosted relay on a Windows PC or Linux server. Browse conversations, send messages, answer supported Codex questions, receive notifications and use voice or Live. The watch connects over Wi-Fi or cellular; the Windows relay also supports nearby Bluetooth.
+
+- [Download the watch APK and Windows installer](https://github.com/evrardt/codex-watch/releases/latest). The watch app is installed from an Android phone using [Wear Installer 2](https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2).
+- Set up either the [Windows relay](#2-installer-et-configurer-le-relais-sur-le-pc) or the [Linux server relay](docs/INSTALLER-VPS.md). The server relay does not require the Windows app.
+- [Share feedback, report a problem or suggest an idea](https://github.com/evrardt/codex-watch/issues/new/choose). Please keep API keys, pairing codes and private conversations out of public issues.
+- Ask questions and exchange ideas in [GitHub Discussions](https://github.com/evrardt/codex-watch/discussions).
+
+The app and detailed installation guides are currently in French. Live uses the OpenAI API and requires an API key and available API credits; features and conversation history differ between relay types. Codex Watch is an independent MIT-licensed project, not affiliated with OpenAI or Samsung.
 

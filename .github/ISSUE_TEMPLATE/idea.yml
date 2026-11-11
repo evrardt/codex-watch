@@ -1,0 +1,16 @@
+name: Partager une idée / Suggest an idea
+description: Propose une amélioration ou partage ton expérience.
+title: "[Idée] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de nous aider à améliorer Codex Watch ! Ne publie pas de clé API, de jeton, de code d’association ou de conversation privée.
+        Thank you for helping improve Codex Watch! Please keep credentials and private conversations out of public issues.
+  - type: textarea
+    id: idea
+    attributes:
+      label: Ton idée ou ton retour / Your idea or feedback
+      description: Que souhaites-tu améliorer et dans quelle situation ? / What would you like to improve and why?
+    validations:
+      required: true

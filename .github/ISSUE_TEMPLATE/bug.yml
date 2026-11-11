@@ -1,0 +1,30 @@
+name: Signaler un problème / Report a bug
+description: Aide-nous à comprendre un problème rencontré avec Codex Watch.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci pour ton retour ! Ne publie pas de clé API, de jeton, de code d’association ou de conversation privée.
+        Thank you for your report! Do not post API keys, tokens, pairing codes or private conversations.
+        Pour une faille de sécurité, consulte [SECURITY.md](https://github.com/evrardt/codex-watch/security/policy).
+  - type: textarea
+    id: description
+    attributes:
+      label: Que se passe-t-il ? / What happened?
+      description: Décris le problème et ce que tu attendais. / Describe the problem and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes pour reproduire / Steps to reproduce
+  - type: input
+    id: watch
+    attributes:
+      label: Montre et version de l’application / Watch and app version
+  - type: input
+    id: relay
+    attributes:
+      label: Relais et connexion / Relay and connection
+      placeholder: PC ou serveur ; Bluetooth, Wi-Fi ou 4G
