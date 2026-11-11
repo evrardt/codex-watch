@@ -4,7 +4,7 @@ const {execFile}=require('node:child_process');const {promisify}=require('node:u
 // production dependency tree explicitly into its runtime directory.
 module.exports=async context=>{
  const source=path.resolve(__dirname,'../bridge/node_modules');
- const resources=context.electronPlatformName==='darwin'?path.join(context.appOutDir,context.packager.appInfo.productFilename+'.app','Contents','Resources'):path.join(context.appOutDir,'resources');
+ const resources=path.join(context.appOutDir,'resources');
  const target=path.join(resources,'bridge/node_modules');
  await fs.cp(source,target,{recursive:true,filter:file=>!file.split(path.sep).includes('.bin')});
  if(process.platform==='win32'){

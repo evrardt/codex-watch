@@ -36,7 +36,7 @@ Contrôle du 8 novembre au matin : la montre a été relue par ADB et son APK es
 3. La diffusion FCM mutualisée n’est pas fournie à tous les utilisateurs. Un opérateur configure son propre projet ; le mode direct est disponible et consomme davantage de batterie.
 4. Les contrôles de grande police, du geste de retour, de l’accessibilité complète, de la plus petite taille ronde 192dp, de plusieurs modèles de montres et d’une utilisation prolongée Wi-Fi/LTE doivent être complétés sur le canal de test du store. Les essais présents ne valent pas une validation Google Play.
 5. La lecture humaine du volume final, les sessions Live longues et la consommation en veille restent à mesurer sur plusieurs appareils. Les appels sont bornés et le micro est arrêté à la sortie.
-6. L’installateur Windows n’a pas de certificat de signature d’éditeur. Les builds macOS/Linux graphiques ne sont pas livrés ni validés ; les sources du relais autonome sont disponibles.
+6. L’installateur Windows n’a pas de certificat de signature d’éditeur. Le relais autonome est disponible sous forme de sources pour Linux.
 7. La publication demande un compte GitHub connecté, une identité et un compte Play Console, un contact de confidentialité public, une URL stable et les validations du store. Les documents préparés ne remplacent pas ces étapes.
 
 Référence utilisée pour la préparation : [exigences Wear OS](https://developer.android.com/docs/quality-guidelines/wear-app-quality). Le dossier [STORE.md](STORE.md) précise les éléments à fournir au compte éditeur.

@@ -10,7 +10,6 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win nsis --x64 --publish never",
-    "dist:mac": "electron-builder --mac zip --arm64 --x64 --publish never",
     "pack": "electron-builder --dir --publish never"
   },
   "devDependencies": {
@@ -60,11 +59,6 @@
       "signExecutable": false,
       "icon": "ui/icon.ico",
       "artifactName": "Codex-Watch-Relay-${version}-Setup.${ext}"
-    },
-    "mac": {
-      "category": "public.app-category.developer-tools",
-      "identity": null,
-      "artifactName": "Codex-Watch-Relay-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,

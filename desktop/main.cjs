@@ -69,7 +69,6 @@ async function discover(){
   async function newest(root,leaf){try{const entries=await fs.readdir(root);const found=[];for(const e of entries){const p=path.join(root,e,leaf);try{found.push({p,time:(await fs.stat(p)).mtimeMs});}catch{}}return found.sort((a,b)=>b.time-a.time)[0]?.p;}catch{return null;}}
   appToolsServer||=await newest(path.join(home,'plugins/cache/openai-bundled/codex-app-tools'),'server.mjs');
   codexExecutable||=process.platform==='win32'?await newest(path.join(process.env.LOCALAPPDATA||'','OpenAI/Codex/bin'),'codex.exe'):null;
-  if(!codexExecutable&&process.platform==='darwin'){try{const r=await execute('/usr/bin/which',['codex'],{timeout:3000});codexExecutable=r.stdout.trim()||null;}catch{}}
   if(!originThreadId){
     // Only the first metadata line is inspected; no conversation content is imported.
     async function visit(root,depth=0){if(depth>4)return null;let entries;try{entries=await fs.readdir(root,{withFileTypes:true});}catch{return null;}entries.sort((a,b)=>b.name.localeCompare(a.name));for(const e of entries){const p=path.join(root,e.name);if(e.isDirectory()){const found=await visit(p,depth+1);if(found)return found;}else if(e.name.endsWith('.jsonl')){const file=await fs.open(p,'r');try{const buffer=Buffer.alloc(32768);const {bytesRead}=await file.read(buffer,0,buffer.length,0);const first=JSON.parse(buffer.subarray(0,bytesRead).toString().split('\n')[0]);if(first.type==='session_meta'&&first.payload?.id)return first.payload.id;}catch{}finally{await file.close();}}}return null;}
