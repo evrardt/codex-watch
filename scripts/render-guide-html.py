@@ -20,8 +20,9 @@ def render_with_anchors(source):
         token.attrSet('id', slug if count == 0 else f'{slug}-{count}')
     return markdown.renderer.render(tokens, markdown.options, {})
 
-body = render_with_anchors((ROOT / "README.md").read_text(encoding="utf-8")).replace('href="docs/INSTALLER-VPS.md"', 'href="docs/INSTALLER-VPS.html"')
-vps_body = render_with_anchors((ROOT / "docs" / "INSTALLER-VPS.md").read_text(encoding="utf-8")).replace('href="../README.md#', 'href="../GUIDE-INSTALLATION.html#')
+body = render_with_anchors((ROOT / "README.md").read_text(encoding="utf-8")).replace('href="docs/INSTALLER-VPS.md"', 'href="docs/INSTALLER-VPS.html"').replace('href="docs/NOTIFICATIONS.md"', 'href="docs/NOTIFICATIONS.html"')
+vps_body = render_with_anchors((ROOT / "docs" / "INSTALLER-VPS.md").read_text(encoding="utf-8")).replace('href="../README.md#', 'href="../GUIDE-INSTALLATION.html#').replace('href="NOTIFICATIONS.md"', 'href="NOTIFICATIONS.html"')
+notifications_body = render_with_anchors((ROOT / "docs" / "NOTIFICATIONS.md").read_text(encoding="utf-8"))
 styles = """
 :root { color-scheme: light; font-family: 'Segoe UI', system-ui, sans-serif; color: #182820; background: #f3f8f5; }
 * { box-sizing: border-box; }
@@ -54,10 +55,17 @@ parser.add_argument("--check", action="store_true", help="Fail if the committed 
 args = parser.parse_args()
 guide = ROOT / "GUIDE-INSTALLATION.html"
 vps_guide = ROOT / "docs" / "INSTALLER-VPS.html"
+notifications_guide = ROOT / "docs" / "NOTIFICATIONS.html"
 vps_html = f"""<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Codex Watch — installer le VPS</title><style>{styles}</style></head><body><main>
 {vps_body}
+</main></body></html>
+"""
+notifications_html = f"""<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codex Watch — notifications</title><style>{styles}</style></head><body><main>
+{notifications_body}
 </main></body></html>
 """
 if args.check:
@@ -65,7 +73,10 @@ if args.check:
         raise SystemExit("GUIDE-INSTALLATION.html is out of date; run python scripts/render-guide-html.py")
     if not vps_guide.exists() or vps_guide.read_text(encoding="utf-8") != vps_html:
         raise SystemExit("docs/INSTALLER-VPS.html is out of date; run python scripts/render-guide-html.py")
+    if not notifications_guide.exists() or notifications_guide.read_text(encoding="utf-8") != notifications_html:
+        raise SystemExit("docs/NOTIFICATIONS.html is out of date; run python scripts/render-guide-html.py")
     print("Offline guide matches README.md")
 else:
     guide.write_text(html, encoding="utf-8")
     vps_guide.write_text(vps_html, encoding="utf-8")
+    notifications_guide.write_text(notifications_html, encoding="utf-8")

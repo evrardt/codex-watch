@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.55 — Notifications du serveur
+
+- L’administration du relais VPS permet d’importer les fichiers Firebase pour recevoir les notifications lorsque la montre est en veille ou utilise la 4G. Le guide explique la configuration et les conditions de conservation de la clé sur le serveur.
+- L’APK Wear OS 0.12.53 et l’installateur Windows 0.12.54 sont inchangés et restent disponibles dans cette release.
+
 ## 0.12.54 — Relais Windows allégé
 
 - L’installateur Windows conserve les fichiers système anglais, français, allemands, espagnols et portugais afin de réduire le téléchargement et l’espace occupé. Les autres langues système peuvent utiliser l’anglais comme solution de repli.

@@ -1,0 +1,71 @@
+name: Sign Windows installer
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version du relais présente dans desktop/package.json
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+jobs:
+  sign:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Vérifier la configuration
+        shell: pwsh
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+          SIGNPATH_ORGANIZATION_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          SIGNPATH_PROJECT_SLUG: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          SIGNPATH_POLICY_SLUG: ${{ vars.SIGNPATH_POLICY_SLUG }}
+        run: |
+          if (!$env:SIGNPATH_API_TOKEN -or !$env:SIGNPATH_ORGANIZATION_ID -or !$env:SIGNPATH_PROJECT_SLUG -or !$env:SIGNPATH_POLICY_SLUG) { throw 'Configurer SignPath avant de lancer la signature.' }
+          $version = (Get-Content desktop/package.json -Raw | ConvertFrom-Json).version
+          if ($env:EXPECTED_VERSION -notmatch '^\d+\.\d+\.\d+$' -or $version -ne $env:EXPECTED_VERSION) { throw 'La version demandée ne correspond pas aux sources.' }
+      - run: npm ci
+        working-directory: bridge
+      - run: npm ci
+        working-directory: desktop
+      - run: node --test test/*.test.cjs
+        working-directory: desktop
+      - run: npm run dist
+        working-directory: desktop
+      - name: Déposer le fichier non signé
+        id: unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-windows-installer
+          path: .tools/releases/windows/*Setup.exe
+          if-no-files-found: error
+      - name: Demander la signature
+        uses: SignPath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: signed
+      - name: Vérifier la signature obtenue
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem signed -Recurse -File -Filter '*Setup.exe')
+          if ($files.Count -ne 1) { throw 'Installateur signé introuvable ou ambigu.' }
+          $signature = Get-AuthenticodeSignature -LiteralPath $files[0].FullName
+          if ($signature.Status -ne 'Valid') { throw 'La signature Windows ne peut pas être validée.' }
+          Get-FileHash -Algorithm SHA256 -LiteralPath $files[0].FullName | Format-List
+      - name: Conserver l’installateur signé
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-windows-installer
+          path: signed/**/*Setup.exe
+          if-no-files-found: error

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codex Watch — notifications</title><style>
+:root { color-scheme: light; font-family: 'Segoe UI', system-ui, sans-serif; color: #182820; background: #f3f8f5; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 36px 20px; }
+main { max-width: 940px; margin: auto; padding: clamp(24px, 5vw, 56px); background: white; border: 1px solid #dfebe3; border-radius: 24px; box-shadow: 0 12px 40px #1434220d; line-height: 1.65; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); color: #113d29; margin-top: 0; }
+h2 { margin-top: 2.2em; padding-bottom: .3em; border-bottom: 1px solid #d7e8dc; }
+h3 { margin-top: 2em; color: #1d5338; }
+a { color: #176b49; }
+img { max-width: 100%; height: auto; border-radius: 10px; }
+img[src*='montre-'] { width: 230px; max-width: 100%; background: #000; }
+img[src*='pc-'] { width: 760px; border: 1px solid #d3e1d7; }
+pre { overflow: auto; padding: 16px; background: #13241b; color: #eef8f1; border-radius: 12px; }
+code { font-family: Consolas, monospace; overflow-wrap: anywhere; }
+pre code { overflow-wrap: normal; }
+blockquote { margin: 1.3em 0; padding: 4px 18px; border-left: 4px solid #86c5a2; background: #eff8f2; }
+table { display: block; overflow-x: auto; border-collapse: collapse; }
+th, td { border: 1px solid #d6e5da; padding: 8px 12px; text-align: left; vertical-align: top; }
+th { background: #f0f8f2; }
+@media (max-width: 600px) { body { padding: 0; } main { padding: 24px 18px; border: 0; border-radius: 0; } }
+</style></head><body><main>
+<h1 id="notifications-avec-firebase">Notifications avec Firebase</h1>
+<p>Les alertes directes de Codex Watch fonctionnent sans compte Google tant que la liaison directe reste disponible. Pour améliorer la réception lorsque la montre est en veille ou utilise la 4G, tu peux configurer Firebase Cloud Messaging (FCM). Ce réglage est facultatif et demande une préparation unique du projet Google.</p>
+<h2 id="créer-les-deux-fichiers">Créer les deux fichiers</h2>
+<ol>
+<li>Dans la <a href="https://console.firebase.google.com/">console Firebase</a>, crée un projet ou ouvre ton projet existant. Ajoute une application Android avec le nom de package <strong><code>fr.thomas.codexwatch</code></strong>. Télécharge son fichier <strong><code>google-services.json</code></strong>. Consulte au besoin les <a href="https://firebase.google.com/docs/android/setup">instructions officielles</a>.</li>
+<li>Dans le même projet, ouvre la <a href="https://console.cloud.google.com/apis/library/fcm.googleapis.com">bibliothèque des API Google Cloud</a> et active <strong>Firebase Cloud Messaging API</strong> si elle ne l’est pas déjà. Vérifie le projet sélectionné en haut de la page.</li>
+<li>Dans <a href="https://console.cloud.google.com/iam-admin/serviceaccounts">IAM et administration → Comptes de service</a>, crée un compte dédié à l’envoi des notifications. Accorde-lui les droits d’envoi FCM pour ce seul projet. Un rôle personnalisé contenant <code>cloudmessaging.messages.create</code> limite les droits à l’envoi ; le rôle prédéfini <strong>Firebase Cloud Messaging API Admin</strong> est plus simple mais donne aussi d’autres droits de gestion FCM.</li>
+<li>Ouvre ce compte de service, onglet <strong>Clés → Ajouter une clé → Créer une clé → JSON</strong>, et télécharge la clé. C’est un secret : ne la publie jamais et ne la partage pas. Certaines organisations interdisent la création de clés ; dans ce cas, demande à leur administrateur ou utilise les alertes directes.</li>
+</ol>
+<h2 id="importer-sur-le-pc">Importer sur le PC</h2>
+<ol>
+<li>Dans <strong>Codex Watch Relay → Notifications</strong>, clique sur <strong>Importer les fichiers</strong>.</li>
+<li>Choisis d’abord <code>google-services.json</code>, puis le fichier JSON de la clé du compte de service. Les deux doivent provenir du même projet. Le relais vérifie leur contenu et chiffre la clé avec le coffre Windows du compte courant.</li>
+<li>Redémarre le relais. Vérifie que Firebase est indiqué comme chargé, puis sur la montre active les notifications et utilise <strong>Tester une alerte</strong>. Le mode silencieux ou « Ne pas déranger » peut empêcher le son et la vibration.</li>
+</ol>
+<p>Les jetons temporaires Google nécessaires à l’envoi sont renouvelés automatiquement par le relais : il n’est pas nécessaire de se reconnecter chaque jour. Le fichier de clé téléchargé reste une copie sensible ; conserve-le en sécurité ou supprime cette copie après avoir vérifié l’import. Pour révoquer une clé compromise, supprime-la dans la console Google, crées-en une nouvelle et réimporte-la.</p>
+<h2 id="importer-sur-le-vps">Importer sur le VPS</h2>
+<ol>
+<li>Ouvre l’administration HTTPS de ton serveur dans le navigateur et connecte-toi avec ton mot de passe administrateur.</li>
+<li>Dans <strong>Notifications Firebase</strong>, choisis <code>google-services.json</code>, puis la clé JSON du compte de service du même projet. Clique sur <strong>Importer</strong>.</li>
+<li>L’état indique que la configuration est chargée. Sur la montre, sélectionne <strong>Mon serveur</strong>, active les notifications, puis touche <strong>Tester une alerte</strong>.</li>
+</ol>
+<p><img src="guide/vps-notifications.png" alt="Configuration des notifications dans l’administration du serveur, avec des données fictives" /></p>
+<p>La clé est transférée à ton propre serveur via son adresse HTTPS et conservée dans son dossier privé, accessible au compte du relais. Les jetons d’accès temporaires sont renouvelés automatiquement. Si tu utilises également un relais PC, utilise <strong>le même projet Firebase</strong> sur les deux. Pour éviter une configuration incompatible avec une montre déjà associée, l’interface refuse de remplacer un projet Firebase existant par un autre.</p>
+<p>La mention « Firebase chargé » confirme que le relais a chargé ses paramètres, mais pas qu’une alerte est parvenue à la montre : effectue toujours le test. Pour les détails sur l’authentification, consulte la <a href="https://firebase.google.com/docs/cloud-messaging/send/v1-api">documentation FCM officielle</a>.</p>
+
+</main></body></html>

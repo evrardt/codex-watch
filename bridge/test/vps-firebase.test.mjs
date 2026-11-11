@@ -1,0 +1,27 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {mkdtemp,writeFile,readFile,stat,rm} from 'node:fs/promises';import {createHash,generateKeyPairSync} from 'node:crypto';import {tmpdir} from 'node:os';import path from 'node:path';import {once,EventEmitter} from 'node:events';
+import {VpsAdmin} from '../vps-admin.mjs';import {createHttpServer} from '../server.mjs';
+import {Push} from '../push.mjs';
+const {privateKey}=generateKeyPairSync('rsa',{modulusLength:2048});
+const android={project_info:{project_id:'sample-project',project_number:'1234567890'},client:[{client_info:{mobilesdk_app_id:'1:1234567890:android:aabbccdd',android_client_info:{package_name:'fr.thomas.codexwatch'}},api_key:[{current_key:'public-firebase-api-key'}]}]};
+const credentials={type:'service_account',project_id:'sample-project',client_email:'watch@sample-project.iam.gserviceaccount.com',private_key:privateKey.export({type:'pkcs8',format:'pem'})};
+test('VPS Firebase import is authenticated, private and preserves existing settings',async t=>{
+ const data=await mkdtemp(path.join(tmpdir(),'vps-firebase-'));t.after(()=>rm(data,{recursive:true,force:true}));const adminKey='admin-fixture-password';
+ await writeFile(path.join(data,'admin-token.sha256'),createHash('sha256').update(adminKey).digest('hex'));
+ await writeFile(path.join(data,'runtime.json'),JSON.stringify({codexExecutable:'/fixture/codex'}));await writeFile(path.join(data,'config.json'),JSON.stringify({apiChat:true,projects:[]}));
+ const service=new EventEmitter();service.rpc=new EventEmitter();service.alerts=new EventEmitter();service.config={apiChat:true};service.projects=[];service.route=async()=>({codex:true,chatgpt:true});service.audio={status:()=>({monthlyLimitCents:500,usedUsd:0})};service.store={data:{},save:async()=>{}};
+ const server=createHttpServer(service,'watch-token',null,new VpsAdmin({service,data,origin:'https://server.example'}));server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>new Promise(resolve=>server.close(resolve)));
+ const base='http://127.0.0.1:'+server.address().port,body=JSON.stringify({android:JSON.stringify(android),service:JSON.stringify(credentials)}),headers={'Content-Type':'application/json',Origin:'https://server.example',Authorization:'Bearer '+adminKey};
+ let r=await fetch(base+'/admin/api/firebase',{method:'POST',headers:{...headers,Authorization:'Bearer watch-token'},body});assert.equal(r.status,401);
+ r=await fetch(base+'/admin/api/firebase',{method:'POST',headers:{...headers,Origin:'https://evil.example'},body});assert.equal(r.status,403);
+ r=await fetch(base+'/admin/api/firebase',{method:'POST',headers,body:JSON.stringify({android:'bad',service:'{}'})});assert.equal(r.status,400);
+ r=await fetch(base+'/admin/api/firebase',{method:'POST',headers,body});assert.equal(r.status,200);assert.doesNotMatch(await r.text(),/PRIVATE KEY/);
+ const cfg=JSON.parse(await readFile(path.join(data,'config.json'),'utf8')),runtime=JSON.parse(await readFile(path.join(data,'runtime.json'),'utf8'));
+ assert.equal(cfg.apiChat,true);assert.equal(cfg.firebase.projectId,'sample-project');assert.equal(runtime.codexExecutable,'/fixture/codex');assert.equal(path.dirname(runtime.fcmCredentials),data);assert.match(path.basename(runtime.fcmCredentials),/^firebase-service-account-[a-f0-9-]{36}\.json$/);assert.equal(service.push.enabled,true);
+ assert.doesNotMatch(JSON.stringify(cfg),/PRIVATE KEY/);assert.doesNotMatch(JSON.stringify(runtime),/PRIVATE KEY/);
+ assert.equal(JSON.parse(await readFile(runtime.fcmCredentials,'utf8')).project_id,'sample-project');if(process.platform!=='win32')assert.equal((await stat(runtime.fcmCredentials)).mode&0o077,0);
+ const restarted=new Push(cfg.firebase,{GOOGLE_APPLICATION_CREDENTIALS:runtime.fcmCredentials},async(url,request)=>{assert.equal(url,'https://oauth2.googleapis.com/token');assert.equal(request.body.get('grant_type'),'urn:ietf:params:oauth:grant-type:jwt-bearer');return {ok:true,json:async()=>({access_token:'short-lived-fixture',expires_in:3600})};});assert.equal(await restarted.accessToken(),'short-lived-fixture');
+ r=await fetch(base+'/admin/api/status',{headers:{Authorization:'Bearer '+adminKey}});const status=await r.text();assert.equal(r.status,200);assert.doesNotMatch(status,/PRIVATE KEY|watch@sample/);assert.equal(JSON.parse(status).firebase.loaded,true);
+ const other={...android,project_info:{...android.project_info,project_id:'another-project'}};const otherKey={...credentials,project_id:'another-project',client_email:'watch@another-project.iam.gserviceaccount.com'};
+ r=await fetch(base+'/admin/api/firebase',{method:'POST',headers,body:JSON.stringify({android:JSON.stringify(other),service:JSON.stringify(otherKey)})});assert.equal(r.status,400);assert.equal(JSON.parse(await readFile(path.join(data,'config.json'))).firebase.projectId,'sample-project');
+});

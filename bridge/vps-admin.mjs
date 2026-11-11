@@ -6,12 +6,14 @@ import path from 'node:path';
 import {makePairing,saveApiKey,privateUrl} from './vps-setup.mjs';
 import {installPhononLinux,installPhononCudaLinux} from './phonon-linux-install.mjs';
 import {chatUsageStatus} from './chat-usage.mjs';
+import {saveFirebaseFiles} from './firebase-config.mjs';
+import {Push} from './push.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const digest=s=>createHash('sha256').update(s).digest();
 export class VpsAdmin {
  constructor({service,data,origin,watchAuth=null,spawnImpl=spawn,now=()=>Date.now()}){
-  Object.assign(this,{service,data,origin:privateUrl(origin),watchAuth,spawnImpl,now});this.failures=[];this.login=null;this.phononInstall=null;
+  Object.assign(this,{service,data,origin:privateUrl(origin),watchAuth,spawnImpl,now});this.failures=[];this.login=null;this.phononInstall=null;this.firebaseImporting=false;
  }
  async authorized(req){
   let expected;try{expected=(await readFile(path.join(this.data,'admin-token.sha256'),'utf8')).trim();}catch{return false;}
@@ -77,12 +79,13 @@ export class VpsAdmin {
    const reader=this.service.audio.phonon;let compute={device:'cpu'},gpuReady=false;
    if(reader?.computeSettings)compute=await reader.computeSettings();
    try{await stat(path.join(this.data,'phonon','ptts-cuda'));await stat(path.join(this.data,'phonon','model-multilingual','model.safetensors'));gpuReady=true;}catch{}
-   send(200,{needsPassword:/^[a-f0-9]{64}$/.test(credential.trim()),codex:health.codex,chat:health.chatgpt,keySuffix,watchPaired:await this.hasPairedWatch(),model:this.service.config.apiChatModel||'gpt-6.1-terra',chatUsage:chatUsageStatus(this.service.store),projects:this.service.projects.map(p=>p.name),phonon:{ready:audio.phononReady===true,install:this.phononInstall,gpuReady,compute,status:reader?.lastStatus||{}},audio:{enabled:!!audio.vpsKeyEnabled,monthlyLimitCents:audio.monthlyLimitCents,usedUsd:audio.usedUsd},login:this.login?{...this.login}:null});return true;
+   send(200,{needsPassword:/^[a-f0-9]{64}$/.test(credential.trim()),codex:health.codex,chat:health.chatgpt,keySuffix,watchPaired:await this.hasPairedWatch(),firebase:{configured:!!this.service.config.firebase?.enabled,projectId:this.service.config.firebase?.projectId||'',loaded:!!this.service.push?.enabled},model:this.service.config.apiChatModel||'gpt-6.1-terra',chatUsage:chatUsageStatus(this.service.store),projects:this.service.projects.map(p=>p.name),phonon:{ready:audio.phononReady===true,install:this.phononInstall,gpuReady,compute,status:reader?.lastStatus||{}},audio:{enabled:!!audio.vpsKeyEnabled,monthlyLimitCents:audio.monthlyLimitCents,usedUsd:audio.usedUsd},login:this.login?{...this.login}:null});return true;
   }
   if(req.method==='GET'&&url.pathname==='/admin/api/pair-status'){send(200,{status:await this.pairingStatus(url.searchParams.get('id')||'')});return true;}
   if(req.method==='GET'&&url.pathname==='/admin/api/watches'){send(200,{data:this.watchAuth?.list()||[],legacyPresent:await this.hasPairedWatch(true)});return true;}
   if(req.method!=='POST'){send(404,{error:'Action inconnue.'});return true;}
-  let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>4096){send(413,{error:'Demande trop volumineuse.'});return true;}}
+  const maxBody=url.pathname==='/admin/api/firebase'?150000:4096;
+  let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>maxBody){send(413,{error:'Demande trop volumineuse.'});return true;}}
   let input;try{input=JSON.parse(body||'{}');}catch{send(400,{error:'Demande invalide.'});return true;}
   try{
    if(url.pathname==='/admin/api/pair'){send(200,await makePairing(this.data,this.origin));return true;}
@@ -99,6 +102,13 @@ export class VpsAdmin {
     await writeFile(tmp,'scrypt:'+salt.toString('hex')+':'+hash.toString('hex'),{mode:0o600,flag:'wx'});await rename(tmp,dest);send(200,{ok:true});return true;
    }
    if(url.pathname==='/admin/api/key'){await saveApiKey(this.data,input.key);send(200,{ok:true});return true;}
+   if(url.pathname==='/admin/api/firebase'){
+    if(this.firebaseImporting)throw Error('Import Firebase déjà en cours.');this.firebaseImporting=true;
+    try{
+     const result=await saveFirebaseFiles({data:this.data,configFile:process.env.WATCH_CONFIG||path.join(this.data,'config.json'),android:input.android,service:input.service});
+     this.service.config.firebase=result.firebase;this.service.push=new Push(result.firebase,{...process.env,GOOGLE_APPLICATION_CREDENTIALS:result.credentialPath});send(200,{ok:true});return true;
+    }finally{this.firebaseImporting=false;}
+   }
    if(url.pathname==='/admin/api/chat-model'){
     if(!['gpt-6-luna','gpt-6.1-terra','gpt-6.1-sol'].includes(input.model)||!this.service.apiChat)throw Error('Modèle indisponible.');
     const file=process.env.WATCH_CONFIG||path.join(this.data,'config.json'),config=JSON.parse(await readFile(file,'utf8')),tmp=file+'.'+randomUUID()+'.tmp';

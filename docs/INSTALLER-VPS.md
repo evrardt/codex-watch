@@ -59,6 +59,10 @@ Dans **Montres autorisées**, les nouvelles associations confirmées apparaissen
 
 Le dossier `~/.local/share/codex-watch-vps/projects` est le projet Codex initial du VPS. Le Chat utilise son propre historique sur le serveur et ne récupère pas les conversations, projets ou plugins du site ChatGPT. Le Live utilise la clé du serveur seulement si tu l’actives dans **Live et voix** ; son budget est distinct de celui du Chat.
 
+### Recevoir les notifications en veille
+
+Les alertes directes fonctionnent sans service supplémentaire. Pour améliorer leur réception en veille ou en 4G, ouvre **Notifications Firebase** dans l’administration et importe les deux fichiers de ton projet. Le [guide illustré des notifications](NOTIFICATIONS.md) explique comment les obtenir et tester l’alerte. La clé du compte de service est alors conservée sur ce serveur : choisis une clé que tu acceptes d’y enregistrer.
+
 ### Ajouter la voix Phonon
 
 Dans l’interface web du VPS, ouvre **Voix Phonon locale**. Accepte d’abord les conditions du [modèle multilingue sur Hugging Face](https://huggingface.co/gradium/phonon-40m-multilingual), crée un jeton de lecture depuis ton compte, puis saisis-le et touche **Installer**. Le jeton sert au téléchargement et n’est pas conservé. Une fois l’installation terminée, choisis Phonon dans les réglages de voix sur la montre. Le modèle est sous licence **CC BY-NC 4.0**, réservée aux usages non commerciaux.

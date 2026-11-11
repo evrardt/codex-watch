@@ -23,8 +23,8 @@ Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), p
 
 | Sur quel appareil ? | Fichier | Utilité |
 | --- | --- | --- |
-| PC Windows | [Codex-Watch-Relay-0.12.54-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.54/Codex-Watch-Relay-0.12.54-Setup.exe) | Installer le relais qui relie la montre au PC. |
-| Téléphone Android | [Codex-Watch-0.12.53.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.54/Codex-Watch-0.12.53.apk) | Installer Codex Watch sur la montre. |
+| PC Windows | [Codex-Watch-Relay-0.12.54-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.55/Codex-Watch-Relay-0.12.54-Setup.exe) | Installer le relais qui relie la montre au PC. |
+| Téléphone Android | [Codex-Watch-0.12.53.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.55/Codex-Watch-0.12.53.apk) | Installer Codex Watch sur la montre. |
 
 Installe également :
 
