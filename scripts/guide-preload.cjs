@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld('relay',{call:async(name,value)=>{
  else if(name==='filterProjects')result=value;
  else if(name==='pair')result={code:'123456',id:'example-pairing',url:state.config.publicUrl,expiresAt:Date.now()+120000};
  else if(name==='pairStatus')result={status:'waiting'};
- else if(name==='watchList')result={data:[{id:'00000000-0000-0000-0000-000000000001',label:'Galaxy Watch',createdAt:Date.UTC(2026,0,1)}]};
+ else if(name==='watchList')result={data:[{id:'00000000-0000-0000-0000-000000000001',label:'Montre Wear OS',createdAt:Date.UTC(2026,0,1)}]};
  else if(name==='watchRevoke')result={ok:true};
  else if(name==='audioMode'){state.audio.mode=value;result=state;}
  else if(name==='audioAutoRead'){state.audio.autoReadDictation=value;result=state;}
