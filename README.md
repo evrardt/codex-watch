@@ -10,7 +10,7 @@ Projet indépendant, sans affiliation avec OpenAI ou Samsung. Licence MIT.
 
 ## Installation
 
-Choisis ton parcours : **[relais PC Windows](#2-installer-et-configurer-le-relais-sur-le-pc)** ou **[relais VPS Linux](docs/INSTALLER-VPS.md)**. Un seul suffit. Installe l’APK sur ta montre Wear OS 3 ou plus récente avec un téléphone Android ; le même APK fonctionne avec les deux relais. Le parcours VPS ne nécessite pas le relais PC.
+Choisis ton parcours : **[relais PC Windows](#2-installer-et-configurer-le-relais-sur-le-pc)** ou **[relais VPS Linux](docs/INSTALLER-VPS.md)**. Un seul suffit (mais les deux peuvent fonctionner en parallèle). Installe l’APK sur ta montre Wear OS 3 ou plus récente avec un téléphone Android ; le même APK fonctionne avec les deux relais. Le parcours VPS ne nécessite pas le relais PC.
 
 Une version Mac expérimentale est préparée dans le projet, mais n’est pas encore validée sur macOS ni disponible en téléchargement. Le Bluetooth direct et Phonon ne sont pas encore disponibles dans cette version.
 
