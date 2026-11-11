@@ -14,7 +14,7 @@ function parseFirebaseFiles(androidText, serviceText) {
       typeof senderId!=='string'||! /^\d{3,32}$/.test(senderId) ||
       typeof appId!=='string'||!new RegExp(`^1:${senderId}:android:[a-fA-F0-9]+$`).test(appId) ||
       typeof apiKey!=='string'||apiKey.length<10||apiKey.length>256 || !client)
-    throw Error('Le fichier Android ne correspond pas à l’application fr.thomas.codexwatch.');
+    throw Error('Le fichier Android ne correspond pas à l’application Codex Watch.');
   if (service?.type!=='service_account'||service.project_id!==projectId ||
       typeof service.client_email!=='string'||!new RegExp('^[a-z0-9-]+@'+projectId+'\\.iam\\.gserviceaccount\\.com$').test(service.client_email) ||
       typeof service.private_key!=='string'||service.private_key.length>16384)
