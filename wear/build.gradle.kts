@@ -10,8 +10,8 @@ android {
         applicationId = "fr.thomas.codexwatch"
         minSdk = 30
         targetSdk = 35
-        versionCode = 75
-        versionName = "0.12.51"
+        versionCode = 76
+        versionName = "0.12.52"
     }
     buildFeatures { compose = true }
     buildTypes.getByName("release") {

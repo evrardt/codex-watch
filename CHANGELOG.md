@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.52 — État de Phonon
+
+- Les réglages vocaux indiquent que l’état du relais ne peut pas être vérifié au lieu de demander une installation lorsque la connexion manque. Si le modèle ou la voix ne sont pas disponibles, ils invitent à vérifier les réglages du relais sélectionné.
+- Le relais Windows 0.12.50 reste compatible.
+
 ## 0.12.51 — APK allégé
 
 - L’APK de release utilise la réduction du code et des ressources pour diminuer son téléchargement. Le relais Windows 0.12.50 reste compatible.

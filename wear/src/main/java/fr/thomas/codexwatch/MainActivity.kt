@@ -663,7 +663,11 @@ open class MainActivity : ComponentActivity() {
                         else -> {
                             val selected=audioBudget.optJSONArray("phononVoices")?.objects()?.firstOrNull { it.optString("id")==audioBudget.optString("phononVoice") }
                             item { PageTitle("Réglages Phonon", "Voix locale", Lilac) }
-                            item { SmallNote(if(audioBudget.optBoolean("phononReady")) "Modèle prêt sur le relais." else "Installe Phonon sur le relais sélectionné.",Lilac) }
+                            item { SmallNote(when {
+                                !audioLoaded -> "État de Phonon indisponible. Vérifie la connexion au relais."
+                                audioBudget.optBoolean("phononReady") -> "Modèle prêt sur le relais."
+                                else -> "Modèle ou voix indisponible sur le relais. Vérifie ses réglages."
+                            },Lilac) }
                             item { WatchCard("Voix · ${selected?.optString("name") ?: "Noémie"}","Langue et voix",Icons.Rounded.RecordVoiceOver,Lilac,enabled=audioLoaded){navigate("phononLanguages")} }
                         }
                     }
