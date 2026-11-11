@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.51 — APK allégé
+
+- L’APK de release utilise la réduction du code et des ressources pour diminuer son téléchargement. Le relais Windows 0.12.50 reste compatible.
+- La construction de l’APK de release est vérifiée dans la CI. Le démarrage, l’association HTTPS de démonstration, l’ouverture d’une conversation, une notification directe et le décodeur audio ont été essayés sur émulateur ; les essais sur montre et les connexions cellulaires restent nécessaires.
+
 ## 0.12.50 — Première préversion publique
 
 - Les demandes Codex prises en charge apparaissent dans leur conversation, avec choix lisibles et réponse libre. Sur Windows, certains formulaires du chat ouvert peuvent être traités depuis la montre ; les cas non reconnus restent à traiter sur le PC.

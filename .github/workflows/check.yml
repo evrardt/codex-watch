@@ -37,7 +37,7 @@ jobs:
         with:
           packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
       - run: chmod +x gradlew
-      - run: ./gradlew :wear:assembleDebug :wear:testDebugUnitTest :wear:lintDebug --no-daemon
+      - run: ./gradlew :wear:assembleDebug :wear:assembleRelease :wear:testDebugUnitTest :wear:lintDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: watch-debug

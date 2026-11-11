@@ -18,12 +18,12 @@ Une version Mac expérimentale est préparée dans le projet, mais n’est pas e
 
 ### 1. Télécharger les applications
 
-Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge les fichiers de la préversion 0.12.50 :
+Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge l’APK 0.12.51 et, si tu utilises Windows, le relais compatible 0.12.50 :
 
 | Sur quel appareil ? | Fichier | Utilité |
 | --- | --- | --- |
 | PC Windows | [Codex-Watch-Relay-0.12.50-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.50/Codex-Watch-Relay-0.12.50-Setup.exe) | Installer le relais qui relie la montre au PC. |
-| Téléphone Android | [Codex-Watch-0.12.50.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.50/Codex-Watch-0.12.50.apk) | Installer Codex Watch sur la montre. |
+| Téléphone Android | [Codex-Watch-0.12.51.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.51/Codex-Watch-0.12.51.apk) | Installer Codex Watch sur la montre. |
 
 Installe également :
 

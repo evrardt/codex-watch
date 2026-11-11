@@ -10,10 +10,15 @@ android {
         applicationId = "fr.thomas.codexwatch"
         minSdk = 30
         targetSdk = 35
-        versionCode = 74
-        versionName = "0.12.50"
+        versionCode = 75
+        versionName = "0.12.51"
     }
     buildFeatures { compose = true }
+    buildTypes.getByName("release") {
+        isMinifyEnabled = true
+        isShrinkResources = true
+        proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+    }
     if (rootProject.file(".tools/debug.keystore").exists()) signingConfigs.getByName("debug") {
         storeFile = rootProject.file(".tools/debug.keystore")
         storePassword = "android"
