@@ -30,7 +30,7 @@ th { background: #f0f8f2; }
 <li><strong>Connexions :</strong> utilise le Wi-Fi ou la 4G ; avec le relais PC, le Bluetooth est aussi disponible à proximité. Si les deux relais sont configurés, tu peux passer de l’un à l’autre sur la montre.</li>
 <li><strong>Notifications :</strong> reçois les alertes de tes conversations. Firebase peut être configuré pour améliorer leur réception en veille ou en 4G.</li>
 </ul>
-<p>Projet indépendant, sans affiliation avec OpenAI ou Samsung. Licence MIT.</p>
+<p>Projet indépendant, sans affiliation avec OpenAI. Licence MIT.</p>
 <p>Les possibilités et l’historique disponibles dépendent du relais choisi. Consulte le <a href="docs/NOTIFICATIONS.html">guide des notifications</a> pour configurer Firebase.</p>
 <p><img src="docs/guide/montre-live.png" alt="Écran Live de Codex Watch" /></p>
 <blockquote>
@@ -39,7 +39,7 @@ th { background: #f0f8f2; }
 <p>Une idée, un problème ou une suggestion ? <strong><a href="https://github.com/evrardt/codex-watch/issues/new/choose">Partage ton retour sur GitHub</a></strong> : tous les retours sont les bienvenus.</p>
 <h2 id="installation">Installation</h2>
 <p>Choisis ton parcours : <strong><a href="#2-installer-et-configurer-le-relais-sur-le-pc">relais PC Windows</a></strong> ou <strong><a href="docs/INSTALLER-VPS.html">relais VPS Linux</a></strong>. Un seul suffit (mais les deux peuvent fonctionner en parallèle). Installe l’APK sur ta montre Wear OS 3 ou plus récente avec un téléphone Android ; le même APK fonctionne avec les deux relais. Le parcours VPS ne nécessite pas le relais PC.</p>
-<p>L’application n’est pas disponible sur le Play Store : télécharge l’APK ci-dessous. La Galaxy Watch 7 LTE est la première montre sur laquelle elle a été testée ; les autres modèles et certains parcours restent à vérifier. Consulte le <a href="docs/RAPPORT-ETAT.md">rapport d’état</a> pour les détails.</p>
+<p>L’application n’est pas disponible sur le Play Store : télécharge l’APK ci-dessous. La compatibilité avec les différents modèles de montres et certains parcours restent à vérifier. Consulte le <a href="docs/RAPPORT-ETAT.md">rapport d’état</a> pour les détails.</p>
 <h3 id="1-télécharger-les-applications">1. Télécharger les applications</h3>
 <p>Ouvre la <a href="https://github.com/evrardt/codex-watch/releases">page des releases</a>, puis télécharge l’APK 0.12.53 et, si tu utilises Windows, le relais 0.12.54 :</p>
 <table>
@@ -84,7 +84,7 @@ th { background: #f0f8f2; }
 <p><img src="docs/guide/installation-apk.svg" alt="Schéma : le téléphone Android installe l’APK sur la montre avec Wear Installer 2, sur le même Wi-Fi" /></p>
 <ol>
 <li>Télécharge le fichier <code>Codex-Watch-&lt;version&gt;.apk</code> de la release dans le dossier <strong>Téléchargements</strong> du téléphone et installe <a href="https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2">Wear Installer 2</a> sur celui-ci.</li>
-<li>Connecte le téléphone et la montre au <strong>même Wi-Fi</strong>. Sur la montre, active les <strong>options pour les développeurs</strong> : sur une Galaxy Watch, ouvre <strong>Paramètres → À propos de la montre → Informations sur le logiciel</strong>, puis touche plusieurs fois <strong>Version du logiciel</strong>. Sur les autres montres, cherche le <strong>numéro de build</strong> dans les informations système et touche-le plusieurs fois. Les intitulés peuvent varier.</li>
+<li>Connecte le téléphone et la montre au <strong>même Wi-Fi</strong>. Sur la montre, ouvre <strong>Paramètres → À propos de la montre</strong>, puis cherche les informations sur le logiciel. Touche plusieurs fois le <strong>numéro de build</strong> ou la <strong>version du logiciel</strong> pour activer les options pour les développeurs. Les intitulés et le chemin exact peuvent varier selon la montre.</li>
 <li>Dans <strong>Options pour les développeurs</strong>, active <strong>Débogage ADB</strong> puis <strong>Débogage sans fil</strong>. Ouvre l’écran <strong>Débogage sans fil</strong> et note l’adresse IP qui s’affiche.</li>
 <li>Ouvre Wear Installer 2 sur le téléphone, saisis l’adresse IP de la montre sur son écran d’accueil et touche <strong>Done</strong>. Si le téléphone est déjà associé pour le débogage, passe à l’étape 6.</li>
 <li>Dans le menu de Wear Installer 2, choisis <strong>Pair with watch</strong>, puis <strong>Enable</strong>. Sur la montre, touche <strong>Associer un nouvel appareil</strong> : un code à six chiffres et un port d’association s’affichent. Dans la demande de Wear Installer 2, saisis <strong>le code, un espace, puis le port d’association</strong>, et valide avec <strong>Done</strong>. Attends le message de réussite.</li>
@@ -216,7 +216,7 @@ th { background: #f0f8f2; }
 <p>Ton expérience nous aide à améliorer Codex Watch. N’hésite pas à <a href="https://github.com/evrardt/codex-watch/issues/new/choose">ouvrir une issue</a> pour signaler un problème ou proposer une idée, ou à rejoindre les <a href="https://github.com/evrardt/codex-watch/discussions">discussions</a> pour échanger avec la communauté. Pour un problème, indique si possible le modèle de ta montre, le relais utilisé (PC ou VPS), le type de connexion et les étapes pour le reproduire. Ne publie pas de clé API, de code d’association, de jeton ou de contenu privé.</p>
 <p>Pour signaler une faille de sécurité, utilise le canal indiqué dans <a href="SECURITY.md">SECURITY.md</a> plutôt qu’une issue publique. Les contributions au code et à la documentation sont aussi les bienvenues : consulte <a href="CONTRIBUTING.md">Contribuer</a>.</p>
 <h2 id="en-savoir-plus">En savoir plus</h2>
-<p>La Galaxy Watch 7 LTE est la première montre testée ; le projet reste en cours de validation pour une diffusion générale. L’utilisation d’un serveur autonome, la construction depuis les sources et les détails techniques se trouvent dans le <a href="docs/INSTALLATION-AVANCEE.md">guide avancé</a>. Voir aussi <a href="CONTRIBUTING.md">Contribuer</a>, <a href="docs/PRIVACY.md">Confidentialité</a>, <a href="SECURITY.md">Sécurité</a> et <a href="CHANGELOG.md">Changements</a>.</p>
+<p>L’utilisation d’un serveur autonome, la construction depuis les sources et les détails techniques se trouvent dans le <a href="docs/INSTALLATION-AVANCEE.md">guide avancé</a>. Voir aussi <a href="CONTRIBUTING.md">Contribuer</a>, <a href="docs/PRIVACY.md">Confidentialité</a>, <a href="SECURITY.md">Sécurité</a> et <a href="CHANGELOG.md">Changements</a>.</p>
 <p>La vitesse de lecture est réglable avec un curseur de 0,75× à 1,50×, séparément pour la voix de la montre, OpenAI et Phonon, depuis <strong>Voix et budget</strong>, sur la montre ou le relais. Sur la montre, touche <strong>Enregistrer</strong> après avoir déplacé le curseur. Elle ne modifie pas le Live. Les liens sont lus par leur intitulé, sans dicter leur destination.</p>
 <h2 id="english">English</h2>
 <p>Codex Watch brings Codex conversations and tasks to Wear OS through a self-hosted relay on a Windows PC or Linux server. Browse conversations, send messages, answer supported Codex questions, receive notifications and use voice or Live. The watch connects over Wi-Fi or cellular; the Windows relay also supports nearby Bluetooth.</p>
@@ -226,6 +226,6 @@ th { background: #f0f8f2; }
 <li><a href="https://github.com/evrardt/codex-watch/issues/new/choose">Share feedback, report a problem or suggest an idea</a>. Please keep API keys, pairing codes and private conversations out of public issues.</li>
 <li>Ask questions and exchange ideas in <a href="https://github.com/evrardt/codex-watch/discussions">GitHub Discussions</a>.</li>
 </ul>
-<p>The app and detailed installation guides are currently in French. Live uses the OpenAI API and requires an API key and available API credits; features and conversation history differ between relay types. Codex Watch is an independent MIT-licensed project, not affiliated with OpenAI or Samsung.</p>
+<p>The app and detailed installation guides are currently in French. Live uses the OpenAI API and requires an API key and available API credits; features and conversation history differ between relay types. Codex Watch is an independent MIT-licensed project, not affiliated with OpenAI.</p>
 
 </main></body></html>

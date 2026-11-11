@@ -9,7 +9,7 @@ Retrouve Codex et Chat au poignet. Codex Watch relie ta montre Wear OS à un rel
 - **Connexions :** utilise le Wi-Fi ou la 4G ; avec le relais PC, le Bluetooth est aussi disponible à proximité. Si les deux relais sont configurés, tu peux passer de l’un à l’autre sur la montre.
 - **Notifications :** reçois les alertes de tes conversations. Firebase peut être configuré pour améliorer leur réception en veille ou en 4G.
 
-Projet indépendant, sans affiliation avec OpenAI ou Samsung. Licence MIT.
+Projet indépendant, sans affiliation avec OpenAI. Licence MIT.
 
 Les possibilités et l’historique disponibles dépendent du relais choisi. Consulte le [guide des notifications](docs/NOTIFICATIONS.md) pour configurer Firebase.
 
@@ -24,7 +24,7 @@ Une idée, un problème ou une suggestion ? **[Partage ton retour sur GitHub](ht
 Choisis ton parcours : **[relais PC Windows](#2-installer-et-configurer-le-relais-sur-le-pc)** ou **[relais VPS Linux](docs/INSTALLER-VPS.md)**. Un seul suffit (mais les deux peuvent fonctionner en parallèle). Installe l’APK sur ta montre Wear OS 3 ou plus récente avec un téléphone Android ; le même APK fonctionne avec les deux relais. Le parcours VPS ne nécessite pas le relais PC.
 
 
-L’application n’est pas disponible sur le Play Store : télécharge l’APK ci-dessous. La Galaxy Watch 7 LTE est la première montre sur laquelle elle a été testée ; les autres modèles et certains parcours restent à vérifier. Consulte le [rapport d’état](docs/RAPPORT-ETAT.md) pour les détails.
+L’application n’est pas disponible sur le Play Store : télécharge l’APK ci-dessous. La compatibilité avec les différents modèles de montres et certains parcours restent à vérifier. Consulte le [rapport d’état](docs/RAPPORT-ETAT.md) pour les détails.
 
 ### 1. Télécharger les applications
 
@@ -62,7 +62,7 @@ Les captures utilisent des données fictives : utilise toujours les adresses et 
 ![Schéma : le téléphone Android installe l’APK sur la montre avec Wear Installer 2, sur le même Wi-Fi](docs/guide/installation-apk.svg)
 
 1. Télécharge le fichier `Codex-Watch-<version>.apk` de la release dans le dossier **Téléchargements** du téléphone et installe [Wear Installer 2](https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2) sur celui-ci.
-2. Connecte le téléphone et la montre au **même Wi-Fi**. Sur la montre, active les **options pour les développeurs** : sur une Galaxy Watch, ouvre **Paramètres → À propos de la montre → Informations sur le logiciel**, puis touche plusieurs fois **Version du logiciel**. Sur les autres montres, cherche le **numéro de build** dans les informations système et touche-le plusieurs fois. Les intitulés peuvent varier.
+2. Connecte le téléphone et la montre au **même Wi-Fi**. Sur la montre, ouvre **Paramètres → À propos de la montre**, puis cherche les informations sur le logiciel. Touche plusieurs fois le **numéro de build** ou la **version du logiciel** pour activer les options pour les développeurs. Les intitulés et le chemin exact peuvent varier selon la montre.
 3. Dans **Options pour les développeurs**, active **Débogage ADB** puis **Débogage sans fil**. Ouvre l’écran **Débogage sans fil** et note l’adresse IP qui s’affiche.
 4. Ouvre Wear Installer 2 sur le téléphone, saisis l’adresse IP de la montre sur son écran d’accueil et touche **Done**. Si le téléphone est déjà associé pour le débogage, passe à l’étape 6.
 5. Dans le menu de Wear Installer 2, choisis **Pair with watch**, puis **Enable**. Sur la montre, touche **Associer un nouvel appareil** : un code à six chiffres et un port d’association s’affichent. Dans la demande de Wear Installer 2, saisis **le code, un espace, puis le port d’association**, et valide avec **Done**. Attends le message de réussite.
@@ -197,7 +197,7 @@ Pour signaler une faille de sécurité, utilise le canal indiqué dans [SECURITY
 
 ## En savoir plus
 
-La Galaxy Watch 7 LTE est la première montre testée ; le projet reste en cours de validation pour une diffusion générale. L’utilisation d’un serveur autonome, la construction depuis les sources et les détails techniques se trouvent dans le [guide avancé](docs/INSTALLATION-AVANCEE.md). Voir aussi [Contribuer](CONTRIBUTING.md), [Confidentialité](docs/PRIVACY.md), [Sécurité](SECURITY.md) et [Changements](CHANGELOG.md).
+L’utilisation d’un serveur autonome, la construction depuis les sources et les détails techniques se trouvent dans le [guide avancé](docs/INSTALLATION-AVANCEE.md). Voir aussi [Contribuer](CONTRIBUTING.md), [Confidentialité](docs/PRIVACY.md), [Sécurité](SECURITY.md) et [Changements](CHANGELOG.md).
 
 La vitesse de lecture est réglable avec un curseur de 0,75× à 1,50×, séparément pour la voix de la montre, OpenAI et Phonon, depuis **Voix et budget**, sur la montre ou le relais. Sur la montre, touche **Enregistrer** après avoir déplacé le curseur. Elle ne modifie pas le Live. Les liens sont lus par leur intitulé, sans dicter leur destination.
 
@@ -210,5 +210,5 @@ Codex Watch brings Codex conversations and tasks to Wear OS through a self-hoste
 - [Share feedback, report a problem or suggest an idea](https://github.com/evrardt/codex-watch/issues/new/choose). Please keep API keys, pairing codes and private conversations out of public issues.
 - Ask questions and exchange ideas in [GitHub Discussions](https://github.com/evrardt/codex-watch/discussions).
 
-The app and detailed installation guides are currently in French. Live uses the OpenAI API and requires an API key and available API credits; features and conversation history differ between relay types. Codex Watch is an independent MIT-licensed project, not affiliated with OpenAI or Samsung.
+The app and detailed installation guides are currently in French. Live uses the OpenAI API and requires an API key and available API credits; features and conversation history differ between relay types. Codex Watch is an independent MIT-licensed project, not affiliated with OpenAI.
 
