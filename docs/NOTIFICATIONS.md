@@ -17,6 +17,6 @@ Les alertes directes de Codex Watch fonctionnent sans compte Google tant que la 
 
 Les jetons temporaires Google nécessaires à l’envoi sont renouvelés automatiquement par le relais : il n’est pas nécessaire de se reconnecter chaque jour. Le fichier de clé téléchargé reste une copie sensible ; conserve-le en sécurité ou supprime cette copie après avoir vérifié l’import. Pour révoquer une clé compromise, supprime-la dans la console Google, crées-en une nouvelle et réimporte-la.
 
-Si tu utilises également un relais VPS, configure-le séparément avec **le même projet Firebase** ; l’import ci-dessus concerne uniquement le relais Windows. Changer le projet Firebase sur une montre déjà configurée n’est pas encore un parcours automatique garanti. Pour le VPS, suis le [guide avancé](INSTALLATION-AVANCEE.md).
+Si tu utilises également un relais VPS, configure-le séparément avec **le même projet Firebase** ; l’import ci-dessus concerne uniquement le relais Windows. La configuration FCM du VPS reste manuelle et n’est pas encore couverte par un assistant ou une procédure pas à pas. Changer le projet Firebase sur une montre déjà configurée n’est pas encore un parcours automatique garanti.
 
 La mention « Firebase chargé » confirme que le relais a chargé ses paramètres, mais pas qu’une alerte est parvenue à la montre : effectue toujours le test. Pour les détails sur l’authentification, consulte la [documentation FCM officielle](https://firebase.google.com/docs/cloud-messaging/send/v1-api).
