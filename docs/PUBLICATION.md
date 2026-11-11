@@ -10,3 +10,5 @@ Le dépôt public est [evrardt/codex-watch](https://github.com/evrardt/codex-wat
 6. Mettre à jour les liens de téléchargement du README et les instructions d’installation, régénérer le guide HTML, puis vérifier les liens depuis le dépôt public.
 
 L’installateur Windows actuel n’est pas signé par un certificat d’éditeur ; le signaler tant que c’est le cas. Un fichier AAB peut servir à une distribution par store, mais ne remplace pas l’APK à installer directement.
+
+Pour un correctif limité à la montre, il est aussi possible de publier un nouvel APK signé et son empreinte sans republier le relais inchangé. Les notes de version et le README doivent alors préciser la version compatible du relais et pointer vers son installateur existant. Le script `prepare-release.mjs` est réservé aux releases qui alignent les deux numéros de version : pour une release montre seule, vérifier la signature de l’APK et générer son fichier SHA-256 séparément.
