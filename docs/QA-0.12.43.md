@@ -1,0 +1,6 @@
+# Vérifications de la version 0.12.43
+
+- Le relais PC avait perdu son service Bluetooth après un redémarrage, alors que la montre utilisait le mode Bluetooth forcé. Le relais réessaie désormais automatiquement lorsqu’un premier démarrage Bluetooth échoue, ainsi qu’après une interruption ; désactiver le Bluetooth arrête les nouvelles tentatives.
+- Sur le PC, une indisponibilité du programme Bluetooth a été simulée pendant le démarrage du relais installé. Après sa remise en place, le processus Bluetooth a été relancé automatiquement ; Codex et Chat restaient connectés. Après cet essai, une réponse envoyée depuis la montre en mode Bluetooth a été reçue dans la conversation.
+- L’utilisateur a confirmé qu’une réponse libre envoyée depuis la montre avait été validée automatiquement sur le PC avec la version précédente. Les essais Windows isolés couvrent aussi la sélection automatique d’« Autre », une option inattendue, les brouillons et les questions modifiées. Voir [QA-0.12.42](QA-0.12.42.md).
+- L’APK release est signé ; l’installateur Windows ne l’est pas. Leurs empreintes sont préparées localement, sans publication. Les tests sur machines vierges et la vérification visuelle exhaustive restent à faire.

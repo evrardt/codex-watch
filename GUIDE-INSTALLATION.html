@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codex Watch — guide d’installation</title><style>
+:root { color-scheme: light; font-family: 'Segoe UI', system-ui, sans-serif; color: #182820; background: #f3f8f5; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 36px 20px; }
+main { max-width: 940px; margin: auto; padding: clamp(24px, 5vw, 56px); background: white; border: 1px solid #dfebe3; border-radius: 24px; box-shadow: 0 12px 40px #1434220d; line-height: 1.65; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); color: #113d29; margin-top: 0; }
+h2 { margin-top: 2.2em; padding-bottom: .3em; border-bottom: 1px solid #d7e8dc; }
+h3 { margin-top: 2em; color: #1d5338; }
+a { color: #176b49; }
+img { max-width: 100%; height: auto; border-radius: 10px; }
+img[src*='montre-'] { width: 230px; max-width: 100%; background: #000; }
+img[src*='pc-'] { width: 760px; border: 1px solid #d3e1d7; }
+pre { overflow: auto; padding: 16px; background: #13241b; color: #eef8f1; border-radius: 12px; }
+code { font-family: Consolas, monospace; overflow-wrap: anywhere; }
+pre code { overflow-wrap: normal; }
+blockquote { margin: 1.3em 0; padding: 4px 18px; border-left: 4px solid #86c5a2; background: #eff8f2; }
+table { display: block; overflow-x: auto; border-collapse: collapse; }
+th, td { border: 1px solid #d6e5da; padding: 8px 12px; text-align: left; vertical-align: top; }
+th { background: #f0f8f2; }
+@media (max-width: 600px) { body { padding: 0; } main { padding: 24px 18px; border: 0; border-radius: 0; } }
+</style></head><body><main>
+<h1 id="codex-watch">Codex Watch</h1>
+<p>Retrouve tes conversations Codex et Chat sur une montre Wear OS grâce à un relais sur ton PC ou sur un VPS. En Wi-Fi ou en 4G, la montre rejoint le relais choisi ; le relais PC permet aussi le Bluetooth à proximité. L’application permet aussi de parler en Live, de suivre tes tâches et de recevoir des notifications.</p>
+<p>Projet indépendant, sans affiliation avec OpenAI ou Samsung. Licence MIT.</p>
+<p><img src="docs/guide/montre-live.png" alt="Écran Live de Codex Watch" /></p>
+<blockquote>
+<p><strong>Guide avec images sur ton PC :</strong> ouvre <a href="GUIDE-INSTALLATION.html">GUIDE-INSTALLATION.html</a>. Les images s’affichent aussi directement sur GitHub.</p>
+</blockquote>
+<h2 id="installation">Installation</h2>
+<p>Choisis ton parcours : <strong><a href="#2-installer-et-configurer-le-relais-sur-le-pc">relais PC Windows</a></strong> ou <strong><a href="docs/INSTALLER-VPS.html">relais VPS Linux</a></strong>. Un seul suffit. Installe l’APK sur ta montre Wear OS 3 ou plus récente avec un téléphone Android ; le même APK fonctionne avec les deux relais. Le parcours VPS ne nécessite pas le relais PC.</p>
+<p>Une version Mac expérimentale est préparée dans le projet, mais n’est pas encore validée sur macOS ni disponible en téléchargement. Le Bluetooth direct et Phonon ne sont pas encore disponibles dans cette version.</p>
+<blockquote>
+<p><strong>Préversion :</strong> Codex Watch est en cours de validation. L’application n’est pas encore disponible sur le Play Store ; consulte les limites et les essais restant à réaliser dans le <a href="docs/RAPPORT-ETAT.md">rapport d’état</a>.</p>
+</blockquote>
+<h3 id="1-télécharger-les-applications">1. Télécharger les applications</h3>
+<p>Ouvre la <a href="https://github.com/evrardt/codex-watch/releases">page des releases</a>, puis télécharge les fichiers de la préversion 0.12.50 :</p>
+<table>
+<thead>
+<tr>
+<th>Sur quel appareil ?</th>
+<th>Fichier</th>
+<th>Utilité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PC Windows</td>
+<td><a href="https://github.com/evrardt/codex-watch/releases/download/v0.12.50/Codex-Watch-Relay-0.12.50-Setup.exe">Codex-Watch-Relay-0.12.50-Setup.exe</a></td>
+<td>Installer le relais qui relie la montre au PC.</td>
+</tr>
+<tr>
+<td>Téléphone Android</td>
+<td><a href="https://github.com/evrardt/codex-watch/releases/download/v0.12.50/Codex-Watch-0.12.50.apk">Codex-Watch-0.12.50.apk</a></td>
+<td>Installer Codex Watch sur la montre.</td>
+</tr>
+</tbody>
+</table>
+<p>Installe également :</p>
+<ul>
+<li><a href="https://openai.com/codex/">Codex pour PC</a> et connecte-toi à ton compte.</li>
+<li><a href="https://tailscale.com/download/windows">Tailscale pour Windows</a> pour rendre le relais accessible hors de ton Wi-Fi.</li>
+<li><a href="https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2">Wear Installer 2 sur Google Play</a>, <strong>sur le téléphone Android</strong>. Aucune installation de Wear Installer 2 n’est nécessaire sur la montre.</li>
+</ul>
+<p>L’installateur Windows de cette version n’est pas signé par un certificat d’éditeur. Télécharge toujours les fichiers depuis la release officielle du dépôt et vérifie que tu lui fais confiance.</p>
+<h3 id="2-installer-et-configurer-le-relais-sur-le-pc">2. Installer et configurer le relais sur le PC</h3>
+<ol>
+<li>Ouvre Codex sur le PC, connecte-toi et ouvre au moins une conversation dans un projet.</li>
+<li>Exécute l’installateur <strong>Codex Watch Relay</strong> téléchargé, puis ouvre l’application.</li>
+<li>Dans <strong>Connexion</strong>, choisis <strong>Codex sur ce PC</strong>, clique sur <strong>Détecter Codex</strong>, puis coche les projets à rendre accessibles sur la montre. <strong>Tout sélectionner</strong> ne comprend que les dossiers présents.</li>
+<li>Clique sur <strong>Appliquer</strong>. Tu configureras l’adresse HTTPS à l’étape 4.</li>
+</ol>
+<p><img src="docs/guide/pc-connexion.png" alt="Écran Connexion du relais : détection de Codex et choix des projets, avec données fictives" /></p>
+<p>Les captures utilisent des données fictives : utilise toujours les adresses et codes affichés par ton propre relais.</p>
+<h3 id="3-installer-lapk-sur-la-montre-depuis-le-téléphone">3. Installer l’APK sur la montre depuis le téléphone</h3>
+<p><img src="docs/guide/installation-apk.svg" alt="Schéma : le téléphone Android installe l’APK sur la montre avec Wear Installer 2, sur le même Wi-Fi" /></p>
+<ol>
+<li>Télécharge le fichier <code>Codex-Watch-&lt;version&gt;.apk</code> de la release dans le dossier <strong>Téléchargements</strong> du téléphone et installe <a href="https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2">Wear Installer 2</a> sur celui-ci.</li>
+<li>Connecte le téléphone et la montre au <strong>même Wi-Fi</strong>. Sur la montre, active les <strong>options pour les développeurs</strong> : sur une Galaxy Watch, ouvre <strong>Paramètres → À propos de la montre → Informations sur le logiciel</strong>, puis touche plusieurs fois <strong>Version du logiciel</strong>. Sur les autres montres, cherche le <strong>numéro de build</strong> dans les informations système et touche-le plusieurs fois. Les intitulés peuvent varier.</li>
+<li>Dans <strong>Options pour les développeurs</strong>, active <strong>Débogage ADB</strong> puis <strong>Débogage sans fil</strong>. Ouvre l’écran <strong>Débogage sans fil</strong> et note l’adresse IP qui s’affiche.</li>
+<li>Ouvre Wear Installer 2 sur le téléphone, saisis l’adresse IP de la montre sur son écran d’accueil et touche <strong>Done</strong>. Si le téléphone est déjà associé pour le débogage, passe à l’étape 6.</li>
+<li>Dans le menu de Wear Installer 2, choisis <strong>Pair with watch</strong>, puis <strong>Enable</strong>. Sur la montre, touche <strong>Associer un nouvel appareil</strong> : un code à six chiffres et un port d’association s’affichent. Dans la demande de Wear Installer 2, saisis <strong>le code, un espace, puis le port d’association</strong>, et valide avec <strong>Done</strong>. Attends le message de réussite.</li>
+<li>Reviens à l’écran principal <strong>Débogage sans fil</strong> de la montre. Dans Wear Installer 2, saisis le <strong>port de connexion</strong> indiqué après l’adresse IP. Il est différent du port d’association de l’étape précédente.</li>
+<li>Dans Wear Installer 2, choisis <strong>Custom APK</strong>, sélectionne le fichier téléchargé, puis touche <strong>Install</strong>. Une fois l’installation terminée, ouvre <strong>Codex Watch</strong> sur la montre. Tu peux maintenant désactiver <strong>Débogage sans fil</strong> et <strong>Débogage ADB</strong>.</li>
+</ol>
+<p>Le code Android de cette étape sert uniquement à l’installation. Le code Codex Watch demandé à l’étape 5 est différent. Pour les images et détails de Wear Installer 2, consulte <a href="https://freepoc.org/wear-installer-2-help-page/">le guide de son développeur</a> (en anglais). Sans téléphone Android, l’<a href="https://developer.android.com/training/wearables/get-started/debug-wifi">installation depuis un PC avec les outils Android</a> est possible, mais demande des manipulations supplémentaires.</p>
+<h3 id="4-activer-laccès-à-distance">4. Activer l’accès à distance</h3>
+<ol>
+<li>Installe <a href="https://tailscale.com/download/windows">Tailscale sur le PC</a> et connecte-toi.</li>
+<li>Dans <strong>Connexion</strong> du relais, clique sur <strong>Activer HTTPS</strong>. Si Tailscale demande d’autoriser HTTPS ou Funnel, accepte ou demande à l’administrateur de ton réseau de le faire, puis réessaie si nécessaire.</li>
+<li>Vérifie que l’adresse HTTPS apparaît, clique sur <strong>Appliquer</strong>, puis vérifie dans <strong>Vue d’ensemble</strong> que le relais est actif et Codex connecté.</li>
+</ol>
+<p><strong>Tailscale Funnel rend l’adresse du relais accessible depuis Internet.</strong> Les fonctions privées exigent le jeton d’association : ne partage ni ce jeton ni le code temporaire. Pour utiliser la montre à distance, le PC et le relais doivent rester allumés et connectés.</p>
+<h3 id="5-associer-codex-watch-au-relais">5. Associer Codex Watch au relais</h3>
+<ol>
+<li>Sur le PC, ouvre <strong>Associer la montre</strong>, puis <strong>Générer le code</strong>. Un code à six chiffres, valable deux minutes et utilisable une fois, s’affiche avec l’adresse HTTPS.</li>
+<li>Sur la montre, ouvre <strong>Codex Watch → Paramètres → Connexions → Mon PC</strong>. Si un profil existe déjà, touche <strong>Modifier</strong>.</li>
+<li>Choisis le relais détecté sur le même Wi-Fi ou saisis son adresse HTTPS. Entre le code affiché par le PC, puis touche <strong>Associer</strong> ou valide sur le clavier.</li>
+<li>Le PC affiche <strong>Association réussie</strong> après confirmation. Si le code expire, génère-en un nouveau.</li>
+</ol>
+<p>La page <strong>Associer la montre</strong> indique ensuite <strong>Montre associée</strong> lorsqu’une association a été confirmée avec ce relais. Cette indication ne signifie pas que la montre est actuellement en ligne. Les nouvelles associations apparaissent aussi dans <strong>Montres autorisées</strong> et peuvent être retirées individuellement. Les anciennes associations utilisaient un jeton partagé ; les réassocier ne révoque pas automatiquement cet ancien jeton.</p>
+<p><img src="docs/guide/pc-association.png" alt="Écran du relais avec adresse et code d’association fictifs" /></p>
+<p><img src="docs/guide/montre-association.svg" alt="Schéma des champs adresse HTTPS et code puis du bouton Associer sur la montre" /></p>
+<p>Ce schéma regroupe les champs pour les rendre lisibles ; sur la montre, fais défiler pour les atteindre.</p>
+<h3 id="connexion-bluetooth-à-proximité">Connexion Bluetooth à proximité</h3>
+<p>Après l’association initiale décrite ci-dessus, tu peux relier directement la montre au PC sans Wi-Fi ni 4G sur la montre :</p>
+<p><img src="docs/guide/pc-bluetooth.png" alt="Réglages Bluetooth du relais Codex Watch" /></p>
+<ol>
+<li>Dans <strong>Codex Watch Relay → Bluetooth</strong> sur le PC, active le service. Dans les paramètres Windows, ouvre <strong>Bluetooth et appareils → Ajouter un appareil → Bluetooth</strong> pour rendre le PC détectable pendant l’association.</li>
+<li>Sur la montre, ouvre <strong>Codex Watch → Paramètres → Connexions → Réseau</strong>, autorise les appareils à proximité, puis touche <strong>Chercher</strong> et choisis ton PC.</li>
+<li>Accepte l’association Bluetooth sur les deux appareils si un code apparaît. La montre indique <strong>Connecté au relais</strong> après vérification ; le relais PC affiche <strong>Montre connectée en Bluetooth</strong> lorsque la liaison est établie. La montre et le PC doivent rester à portée Bluetooth.</li>
+<li>Dans ce même écran, choisis <strong>Automatique</strong> pour utiliser les deux liaisons, <strong>Bluetooth</strong> pour rester en proximité ou <strong>Internet</strong> pour utiliser le Wi-Fi ou la 4G. Ton association Bluetooth reste enregistrée lorsque tu choisis Internet.</li>
+</ol>
+<p>La montre affiche la disponibilité de chaque liaison et la dernière utilisée. Sur le PC, la page <strong>Bluetooth</strong> indique si une liaison Bluetooth est établie et si le relais HTTPS est accessible depuis le PC ; la disponibilité Internet de la montre est vérifiée sur la montre elle-même. En mode automatique, l’application tente l’autre liaison si une connexion échoue. Les demandes dont la réception est incertaine ne sont pas renvoyées automatiquement lorsqu’elles risqueraient de créer un doublon.</p>
+<p>Pendant un Live, une reconnexion rapide peut reprendre la même session. Le micro est brièvement en pause pendant la bascule ; une coupure trop longue peut mettre fin à l’appel.</p>
+<h3 id="utiliser-un-vps-sans-relais-pc">Utiliser un VPS sans relais PC</h3>
+<p><img src="docs/guide/vps-parcours.svg" alt="Schéma de connexion directe de la montre au relais VPS" /></p>
+<p>Le relais VPS s’installe sur Linux, puis se configure depuis un navigateur : connexion Codex, clé API pour le Chat et code d’association de la montre. Le PC et son application relais ne sont pas nécessaires. Consulte le <a href="docs/INSTALLER-VPS.html">guide VPS pas à pas</a>.</p>
+<p>Sur la montre, choisis <strong>Lier serveur</strong> lors du premier démarrage, ou <strong>Paramètres → Connexions → Mon serveur</strong> si elle est déjà associée. Une seule connexion suffit : la montre la sélectionne automatiquement. Si tu configures aussi un relais PC, un bouton en bas de l’accueil permet de passer de l’un à l’autre.</p>
+<p>Le Chat du VPS utilise l’API OpenAI et conserve son propre historique sur le serveur : les conversations, projets et plugins du site ChatGPT ne sont pas importés. Les appels consomment les crédits de l’organisation API liée à la clé, puis peuvent être facturés selon ta configuration OpenAI. Vérifie le solde et les limites sur <a href="https://platform.openai.com/">OpenAI Platform</a>. Le budget audio et le Live sont configurés séparément.</p>
+<p>Certains abonnements ChatGPT Business donnent droit à des crédits API à activer sur une organisation API ; ils sont mutualisés pour l’espace de travail, et une nouvelle clé ou un autre utilisateur ne crée pas de nouveau solde. Les conditions, montants et échéances figurent dans la <a href="https://developers.openai.com/api/docs/guides/chatgpt-api-credits">documentation OpenAI</a>. Les limites de Codex connecté et les crédits API sont distincts.</p>
+<p>L’accès aux services du serveur dépend des droits et de la configuration de son instance Codex ; l’association de la montre ne donne pas automatiquement des droits administrateur. Les actions sensibles exigent un dispositif de validation adapté.</p>
+<p>En Bluetooth, les versions compatibles du relais et de la montre utilisent Opus pour alléger fortement la voix du Live. La voix reste celle de l’agent, avec une légère compression de sa qualité. La montre privilégie un décodage local plus rapide et revient au décodeur Android si nécessaire. Son tampon de lecture est un peu plus grand en mode Bluetooth ou automatique, ce qui ajoute un léger délai pour mieux absorber les variations de débit. Si Opus n’est pas disponible, les appareils reviennent à la compression sans perte ou au format précédent. Reste à proximité du PC ; si le son reste irrégulier, utilise le mode Internet lorsque le Wi‑Fi ou la 4G est disponible. Le Live continue d’utiliser l’API OpenAI : la compression entre le PC et la montre ne supprime pas sa facturation.</p>
+<p>La liaison Bluetooth est authentifiée et chiffrée et utilise le jeton de ton association Codex Watch. Les notifications directes gardent une connexion en arrière-plan ; la veille de la montre peut les retarder. Le PC doit rester allumé et disposer d’Internet pour les services Codex, ChatGPT et Live en ligne. Les performances audio peuvent varier avec la portée et la qualité du signal.</p>
+<h3 id="6-utiliser-lapplication">6. Utiliser l’application</h3>
+<ul>
+<li><strong>Codex et ChatGPT :</strong> choisis une entrée sur l’accueil, puis un projet et une conversation.</li>
+<li><strong>Questions de Codex :</strong> les questions et accords pris en charge apparaissent dans la conversation concernée. Dans les listes, une demande en attente est signalée ; une notification ouvre également la conversation. Après l’envoi, la montre affiche « Envoi… » jusqu’à confirmation. En mode « Codex sur ce PC », certains formulaires de question du chat actuellement ouvert sur le PC peuvent être remplis depuis la montre. Si l’envoi ne peut pas être confirmé, ou si le formulaire a changé ou contient déjà un brouillon sur le PC, vérifie la conversation sur le PC avant de réessayer. Cette fonction Windows est expérimentale et ne reconnaît pas tous les formulaires ; les approbations sensibles restent à traiter sur le PC.</li>
+<li><strong>État des conversations :</strong> dans les listes, un indicateur animé signale une tâche en cours, une coche indique une tâche terminée et une icône de question signale une demande qui attend ta réponse. Les propositions et leurs descriptions s’affichent en entier ; choisis-en une ou saisis une réponse personnelle directement dans la conversation.</li>
+<li><strong>Envoi et historique :</strong> un retour tactile et « Envoi… » confirment l’appui ; attends ensuite la confirmation avant de quitter. Pour les conversations volumineuses du PC, l’historique est chargé par pages : utilise <strong>Précédents</strong> pour retrouver les échanges antérieurs.</li>
+<li><strong>Notifications :</strong> dans <strong>Paramètres → Notifications</strong> sur la montre, touche <strong>Activer</strong>, autorise les notifications et essaie <strong>Tester une alerte</strong> sur chaque relais. FCM est facultatif et demande une configuration séparée côté relais. Si plusieurs relais sont associés, ou si l’unique liaison exige le Bluetooth ou n’a pas encore confirmé FCM, une notification permanente maintient l’écoute directe ; elle peut consommer davantage de batterie et la veille profonde peut retarder les alertes.</li>
+<li><strong>Lire les réponses avec Phonon :</strong> dans le relais PC, ouvre <strong>Voix et budget</strong> et sélectionne <strong>Phonon</strong>. Accepte les <a href="https://huggingface.co/gradium/phonon-40m-multilingual">conditions du modèle multilingue</a>, puis crée si besoin un <a href="https://huggingface.co/settings/tokens">jeton Hugging Face de lecture</a>. Saisis-le dans le relais et clique sur <strong>Installer Phonon</strong>. Si tu es déjà connecté à Hugging Face sur le PC, le champ peut rester vide. Le jeton sert au téléchargement et n’est pas conservé par Codex Watch. Sur le PC ou la montre, sélectionne <strong>Phonon</strong> dans <strong>Voix et budget</strong> : le choix est enregistré immédiatement et partagé. Pour changer de voix, utilise le sélecteur <strong>Voix</strong> sur le PC ou <strong>Réglages Phonon → Voix → langue → voix</strong> sur la montre : le choix est partagé. Noémie est proposée par défaut. Les voix sont téléchargées une fois, puis utilisées en local. Le modèle prend en charge le français, l’anglais, l’allemand, l’espagnol et le portugais ; la langue principale est détectée au mieux sur les passages assez longs. Les phrases courtes ou mélangées peuvent conserver l’accent de la voix choisie. Le modèle est gratuit en local pour un usage non commercial ; si Phonon est indisponible, la voix de la montre prend le relais.</li>
+</ul>
+<p><img src="docs/guide/pc-phonon.png" alt="Installation de la voix locale Phonon dans les réglages du relais" /></p>
+<ul>
+<li><strong>Calcul Phonon :</strong> dans les réglages Phonon du relais PC, choisis <strong>CPU</strong>, <strong>Automatique</strong> ou <strong>GPU · WebGPU</strong>, puis enregistre. Le GPU peut fonctionner avec différents fabricants si WebGPU est disponible ; sinon le relais revient au CPU et l’indique. Active <strong>Garder le modèle en mémoire</strong> pour le réutiliser après la première lecture, au prix d’une occupation de mémoire prolongée. <strong>Précharger au démarrage du relais</strong> charge et conserve le modèle dès son lancement ; cette option utilise de la mémoire même avant une lecture. <strong>Tester le calcul</strong> affiche le matériel réellement utilisé. Un changement de langue peut nécessiter de recharger le modèle.</li>
+</ul>
+<p><img src="docs/guide/pc-phonon-calcul.png" alt="Choix du calcul CPU ou GPU et maintien du modèle en mémoire dans le relais" /></p>
+<ul>
+<li><strong>Phonon sur un serveur Linux avec GPU NVIDIA :</strong> installe d’abord Phonon dans l’administration du serveur. Pour utiliser CUDA, le serveur doit disposer de Linux x86-64, d’un GPU et d’un pilote NVIDIA compatibles, du <a href="https://developer.nvidia.com/cuda-downloads">toolkit CUDA</a> et de <a href="https://www.rust-lang.org/tools/install">Rust avec Cargo</a>. Dans <strong>Voix Phonon locale</strong>, saisis à nouveau le jeton Hugging Face et clique sur <strong>Installer CUDA</strong> : la compilation et le téléchargement du modèle peuvent prendre plusieurs minutes et utiliser plusieurs Go d’espace. Ensuite, choisis <strong>GPU NVIDIA · CUDA</strong> dans <strong>Calcul</strong>, puis <strong>Enregistrer</strong>. L’état indique le calcul utilisé pour la dernière lecture ; si CUDA échoue, le relais revient au CPU. Sur Linux, le modèle est rechargé à chaque lecture. Les GPU AMD et Intel ne sont pas encore pris en charge par cette installation CUDA.</li>
+</ul>
+<p><img src="docs/guide/vps-phonon-calcul.png" alt="Choix du calcul CUDA dans l’administration du serveur, avec des données fictives" /></p>
+<ul>
+<li><strong>Lecture de réponses longues :</strong> la montre prépare le passage suivant pendant la lecture. Avec OpenAI, ce passage peut être facturé même si tu arrêtes ensuite l’écoute.</li>
+<li><strong>Live :</strong> crée si besoin une <a href="https://platform.openai.com/api-keys">clé API OpenAI</a>, puis enregistre-la dans <strong>Voix et budget → Live et budget OpenAI</strong> sur le PC. Règle le plafond mensuel en dollars sur le PC ou dans <strong>Budget Live</strong> sur la montre. Le Live utilise toujours l’API OpenAI, même si Phonon est sélectionné pour les réponses ; elle est facturée séparément de l’abonnement ChatGPT ; le budget local ne remplace pas le suivi de facturation OpenAI.</li>
+</ul>
+<p><img src="docs/guide/pc-cle-api.png" alt="Réglages Voix et budget du relais avec des données fictives" /></p>
+<p>Après une demande de nouvelle conversation, la montre affiche ton message et indique que la création doit encore être confirmée. Elle ouvre le chat dès que le relais peut l’identifier. Une acceptation par le PC ne garantit pas que ChatGPT a créé le chat ou reçu le message : si la création tarde ou que ChatGPT limite la lecture, vérifie d’abord la liste des conversations avant de renvoyer. La liste peut elle aussi être temporairement indisponible en cas de limitation.</p>
+<p>Dans une conversation <strong>Codex</strong>, utilise <strong>Modèle</strong> ou <strong>Réflexion</strong> en bas du chat pour choisir parmi les options disponibles sur le relais. Sélectionne d’abord un modèle pour régler sa réflexion. Ce choix concerne ce chat et ses prochaines demandes, y compris celles transmises en Live. <strong>Réglage général</strong> reprend les paramètres de la montre ; <strong>Du PC</strong> ou <strong>Du serveur</strong> reprend les réglages de la conversation sur le moteur associé. Un changement ne modifie pas une réponse déjà en cours. Pour ChatGPT, le choix reste sur le PC : l’intégration ne permet pas encore de le changer depuis la montre.</p>
+<p>Le relais poursuit la recherche d’une création en attente pendant que la montre est en veille. Au retour sur l’écran de suivi, la montre ouvre le chat dès que son identité a été confirmée. Si ChatGPT impose une limite temporaire, la recherche reprend après le délai nécessaire.</p>
+<p>Pendant la création, le relais rapproche temporairement ses vérifications pour ouvrir le chat plus vite, sans accélérer la surveillance habituelle des autres conversations. Le temps de création et de réponse dépend aussi de ChatGPT.</p>
+<p>Pour retrouver un nouveau chat, le relais peut utiliser la liste récente du PC, puis vérifier son premier message et son projet. Si cette liste ne couvre pas suffisamment la période ou si plusieurs chats correspondent, il ne choisit pas au hasard.</p>
+<p>Si cette liste tarde à répondre, le relais essaie l’historique disponible et reprend ses vérifications ensuite, tout en respectant les éventuelles limites temporaires du service.</p>
+<p>Pour réduire les lectures répétées de ChatGPT, le relais espace la surveillance des conversations inactives. Une notification ChatGPT peut alors arriver avec un délai allant jusqu’à deux minutes ; les échanges récemment lancés depuis la montre sont vérifiés plus souvent.</p>
+<p>Les conversations restent actualisées automatiquement ; lorsque leur contenu ne change pas, le relais et la montre évitent de retransmettre les mêmes messages.</p>
+<p>Dans une conversation, <strong>Répondre</strong> ouvre le clavier et <strong>Dicter</strong> prépare un brouillon avec la reconnaissance vocale de la montre. Utilise <strong>Ajouter une dictée</strong> autant de fois que nécessaire, corrige le texte puis touche <strong>Envoyer</strong>. Après une demande dictée, la réponse est lue automatiquement lorsque la conversation est ouverte. Active ou désactive <strong>Lecture automatique</strong> dans <strong>Voix de lecture</strong>, sur la montre ou dans le relais PC : ce réglage est partagé. Pour ces réponses, la notification de fin reste visible sans son uniquement si l’application est ouverte et que la lecture commence effectivement. Sinon, elle reste sonore ; si la montre interrompt l’application pendant la vérification, un secours affiche l’alerte sonore, éventuellement avec un délai lié à la veille Android. La reconnaissance dépend du service installé sur la montre ; elle ne réutilise pas la dictée intégrée de Codex sur le PC.</p>
+<p>Sur la montre, touche <strong>Live</strong> depuis l’accueil, choisis le contexte et le projet puis <strong>Démarrer</strong>. Pour utiliser une conversation existante, ouvre-la d’abord et touche <strong>Live</strong>. L’entrée <strong>Codex Watch Live</strong> peut être associée à un bouton si la montre le permet.</p>
+<p>Avant l’appel, <strong>Plugins Codex</strong> permet de demander l’utilisation de plugins disponibles sur le relais pour les demandes envoyées à Codex ; les sélectionner choisit le contexte Codex. Dans la liste, <strong>Plugin · consignes</strong> désigne un plugin avec une procédure, et <strong>Application</strong> une source ou un outil. Pour une intervention de fond, le Live retient la réponse vocale jusqu’à la transmission à Codex, puis attend son résultat. Si la délégation vocale tarde, le relais peut transmettre une fois la demande transcrite ; une délégation tardive pour la même intervention est ignorée. En cas de réception incertaine, vérifie le chat avant de renvoyer. Il transmet ensuite le résultat au modèle vocal en lui demandant de préserver le raisonnement et le ton ; les liens restent consultables dans le chat. Pendant le travail, tu peux demander où il en est ou demander à être prévenu : la conversation continue et le relais attend le résultat. Codex doit confirmer que le plugin est accessible et a réellement été utilisé ; la sélection ne l’installe pas et le relais ne peut pas encore garantir une mention structurée « @ ». Le relais ne peut pas non plus lister ni sélectionner les applications et GPTs propres au compte ChatGPT. Cette fonction nécessite une version compatible du relais.</p>
+<p><img src="docs/guide/montre-live.png" alt="Choix du contexte et bouton Démarrer sur l’écran Live" /></p>
+<h3 id="besoin-daide-">Besoin d’aide ?</h3>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wear Installer 2 ne trouve pas la montre</td>
+<td>Vérifie le même Wi-Fi et le débogage sans fil. Consulte <a href="https://freepoc.org/wear-installer-2-help-page/">l’aide du développeur</a>, notamment si un VPN est actif.</td>
+</tr>
+<tr>
+<td>Le code d’installation ne fonctionne pas</td>
+<td>Saisis le code Android, suivi d’un espace et du port d’association ; utilise ensuite le port de connexion affiché sur l’écran principal de la montre.</td>
+</tr>
+<tr>
+<td>L’APK refuse la mise à jour</td>
+<td>Une version précédente signée avec une autre clé, par exemple une version de développement, ne peut pas être mise à jour directement. Sa désinstallation efface ses données : sauvegarde-les d’abord si nécessaire.</td>
+</tr>
+<tr>
+<td>Le code Codex Watch expire</td>
+<td>Génère un nouveau code sur le PC, vérifie l’adresse HTTPS et valide sur la montre. Il est différent du code Android.</td>
+</tr>
+<tr>
+<td>Le relais est indisponible</td>
+<td>Vérifie que le PC est allumé, que le relais indique <strong>Relais actif</strong> et que l’adresse HTTPS est joignable. Fermer sa fenêtre le laisse actif ; <strong>Quitter et arrêter le relais</strong> le coupe.</td>
+</tr>
+<tr>
+<td>Un projet manque</td>
+<td>Vérifie que son dossier existe sur le PC, puis relance <strong>Détecter Codex</strong>.</td>
+</tr>
+<tr>
+<td>Phonon ne s’installe pas</td>
+<td>Vérifie les conditions acceptées, le jeton de lecture et la connexion Internet sur le PC. Le modèle multilingue est réservé aux usages non commerciaux.</td>
+</tr>
+<tr>
+<td>Le Live ne démarre pas</td>
+<td>Vérifie la clé, les crédits API et le budget dans <strong>Voix et budget</strong>, ainsi que l’autorisation du microphone.</td>
+</tr>
+<tr>
+<td>Les alertes n’arrivent pas</td>
+<td>Vérifie l’autorisation des notifications et la disponibilité du relais. FCM nécessite sa propre configuration.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="en-savoir-plus">En savoir plus</h2>
+<p>La Galaxy Watch 7 LTE est la première montre testée ; le projet reste en cours de validation pour une diffusion générale. L’utilisation d’un serveur autonome, la construction depuis les sources et les détails techniques se trouvent dans le <a href="docs/INSTALLATION-AVANCEE.md">guide avancé</a>. Voir aussi <a href="CONTRIBUTING.md">Contribuer</a>, <a href="docs/PRIVACY.md">Confidentialité</a>, <a href="SECURITY.md">Sécurité</a> et <a href="CHANGELOG.md">Changements</a>.</p>
+<p>La vitesse de lecture est réglable avec un curseur de 0,75× à 1,50×, séparément pour la voix de la montre, OpenAI et Phonon, depuis <strong>Voix et budget</strong>, sur la montre ou le relais. Sur la montre, touche <strong>Enregistrer</strong> après avoir déplacé le curseur. Elle ne modifie pas le Live. Les liens sont lus par leur intitulé, sans dicter leur destination.</p>
+
+</main></body></html>

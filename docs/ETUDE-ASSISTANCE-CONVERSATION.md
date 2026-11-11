@@ -1,0 +1,9 @@
+# Aide pendant une conversation : étude de faisabilité
+
+Objectif : afficher sur la montre des éléments utiles pour répondre à une personne qui parle, en distinguant autant que possible sa voix de celle du porteur.
+
+Ce mode n’est pas encore implémenté. La détection de parole (VAD) ne reconnaît pas le locuteur. Le modèle OpenAI de transcription temps réel recommandé ne fournit pas actuellement d’étiquettes de locuteurs ; l’API de transcription de fichiers propose une séparation des locuteurs via un modèle déprécié dont l’arrêt est annoncé pour le 26 février 2027. [Transcription temps réel](https://developers.openai.com/api/docs/guides/realtime-transcription) · [Transcription de fichiers](https://developers.openai.com/api/docs/guides/speech-to-text).
+
+Une architecture à prototyper consiste à faire une calibration explicite de la voix du porteur sur la montre, puis à évaluer localement les segments audio et n’envoyer au relais que ceux attribués à un autre locuteur avec un degré de confiance suffisant. Une sortie « locuteur incertain » doit rester possible : ne jamais prétendre qu’une séparation est parfaite, notamment avec bruit, chevauchements, plusieurs interlocuteurs ou haut-parleur. Une autre option plus prévisible consiste à activer manuellement l’écoute pendant la prise de parole de l’interlocuteur.
+
+Le prototype doit mesurer les erreurs de classification, la latence, la batterie, le coût et la qualité en français et dans les langues ciblées, notamment sur Wear OS et en Bluetooth. L’interface doit montrer clairement quand le micro est actif, fournir pause et arrêt immédiats et rendre visible ce qui est transmis au modèle. Les suggestions devraient être courtes, non envoyées automatiquement et accompagnées de sources lorsque la recherche est utilisée. Tester avec des enregistrements autorisés avant tout essai réel.

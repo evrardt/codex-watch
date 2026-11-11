@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-feature android:name="android.hardware.type.watch" />
+    <application android:label="Codex Watch pairing" android:allowBackup="false" />
+    <instrumentation android:name=".BluetoothProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch Bluetooth check" />
+    <instrumentation android:name=".OpusProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch audio codec check" />
+    <instrumentation android:name=".ProductionOpusProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch streaming codec check" />
+    <instrumentation android:name=".PerformanceOpusProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch codec timing check" />
+    <instrumentation android:name=".PairInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch private pairing" />
+    <instrumentation android:name=".NotificationProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch notification check" />
+    <instrumentation android:name=".NavigationProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch navigation check" />
+    <instrumentation android:name=".RenderProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch message check" />
+    <instrumentation android:name=".AudioProbeInstrumentation" android:targetPackage="fr.thomas.codexwatch" android:label="Codex Watch audio check" />
+</manifest>

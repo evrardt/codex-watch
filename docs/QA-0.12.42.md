@@ -1,0 +1,6 @@
+# Vérifications de la version 0.12.42
+
+- Les questions et approbations prises en charge sont intégrées à leur conversation ; une notification ouvre celle-ci. Les listes signalent les tâches en cours, les réponses attendues et les tâches terminées. La page séparée des demandes a été retirée ; les anciennes notifications restent prises en charge.
+- Une réponse libre saisie depuis la montre a d’abord été écrite dans le formulaire PC sans être validée. Une cause possible a été reproduite sur une fenêtre Windows isolée : certains formulaires sélectionnent automatiquement « Autre » lors de la saisie. Après correction, l’utilisateur a confirmé qu’une réponse libre envoyée depuis la Watch 7 a été validée automatiquement sur le PC. La correction refuse une autre option sélectionnée par erreur.
+- Le relais vérifie plus fréquemment les questions PC ; la lecture de leur dernier état ne bloque plus la montre pendant une inspection Windows lente. Les inspections simultanées sont regroupées. Sur le PC testé, la lecture de l’état est passée de plusieurs secondes à quelques millisecondes ; le délai de détection réel dépend toujours de l’interface Codex et du PC.
+- Les validations effectuées sur la 0.12.41 et leurs limites figurent dans [QA-0.12.41](QA-0.12.41.md). La vérification visuelle exhaustive et les installations sur appareils vierges restent à effectuer.

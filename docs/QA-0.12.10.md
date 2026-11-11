@@ -1,0 +1,9 @@
+# Vérifications du Live avec plugins
+
+Un essai de la version 0.12.9 a montré deux problèmes distincts : la première affirmation a reçu une réponse directe du modèle vocal sans délégation ; une demande ultérieure est partie vers Codex, mais le Live a annoncé une indisponibilité avant le résultat. Le chat Codex a ensuite réellement appelé l’application associée. Cet appel ne prouve pas que le workflow complet du plugin a été suivi pour la première affirmation.
+
+La version 0.12.10 distingue les plugins avec consignes et les applications dans la liste locale lorsque les métadonnées sont disponibles. Elle transmet une mention textuelle et demande explicitement à Codex d’appliquer le plugin sélectionné ; cela ne garantit pas une mention structurée côté application PC. Le Live reçoit la consigne de déléguer les interventions de fond à Codex et d’attendre le résultat avant d’affirmer qu’un plugin est disponible ou utilisé.
+
+Pour limiter la perte de contenu, les réponses des plugins sont transmises en plusieurs fragments au modèle vocal avant qu’il les restitue. Chaque fragment est limité en octets pour rester sous la limite de 500 tokens par événement documentée par l’API Live. Les liens d’origine restent dans le chat ; le modèle vocal peut paraphraser la réponse. Les réponses dépassant 12 000 caractères sont abrégées avec une indication d’omission.
+
+Les tests automatisés vérifient notamment la distinction entre plugin et application, la mention textuelle, le routage vers le même chat, l’absence de réservation pour une sélection invalide, la préservation d’une réponse longue et le silence d’un résultat dépassé après interruption. Un essai vocal réel est nécessaire pour vérifier que le plugin choisi suit sa procédure et que la restitution convient. La sélection structurée des plugins et applications ChatGPT reste indisponible sur ce relais.

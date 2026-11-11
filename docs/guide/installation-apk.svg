@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" role="img" aria-labelledby="title desc">
+  <title id="title">Installer Codex Watch depuis un téléphone Android</title>
+  <desc id="desc">Télécharger l’APK sur le téléphone, puis le transférer à la montre en Wi-Fi avec Wear Installer 2.</desc>
+  <rect width="900" height="320" rx="24" fill="#10291f"/>
+  <text x="450" y="45" text-anchor="middle" fill="#eafff3" font-family="Segoe UI, sans-serif" font-size="23" font-weight="700">Du téléphone à la montre</text>
+  <rect x="86" y="72" width="138" height="190" rx="22" fill="#f0fff7"/>
+  <rect x="97" y="91" width="116" height="145" rx="9" fill="#d5f6e2"/>
+  <rect x="132" y="79" width="45" height="5" rx="3" fill="#315a44"/>
+  <path d="M154 112v35m-13-13 13 13 13-13m-27 24h28" fill="none" stroke="#176345" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="155" y="181" text-anchor="middle" fill="#17452f" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">APK</text>
+  <text x="155" y="204" text-anchor="middle" fill="#17452f" font-family="Segoe UI, sans-serif" font-size="12">Wear Installer 2</text>
+  <text x="155" y="290" text-anchor="middle" fill="#eafff3" font-family="Segoe UI, sans-serif" font-size="16">Téléphone Android</text>
+  <path d="M260 163h355" stroke="#9fe1ba" stroke-width="3" stroke-dasharray="8 8"/>
+  <path d="m599 152 16 11-16 11" fill="none" stroke="#9fe1ba" stroke-width="3"/>
+  <rect x="332" y="123" width="210" height="80" rx="18" fill="#243e32"/>
+  <text x="437" y="154" text-anchor="middle" fill="#baf7d1" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">Même Wi-Fi</text>
+  <text x="437" y="180" text-anchor="middle" fill="#eafff3" font-family="Segoe UI, sans-serif" font-size="13">Associer · Installer</text>
+  <rect x="687" y="62" width="94" height="210" rx="26" fill="#84b89a"/>
+  <circle cx="734" cy="166" r="86" fill="#e1fbea"/>
+  <circle cx="734" cy="166" r="75" fill="#11291e"/>
+  <circle cx="734" cy="158" r="32" fill="#a9f4c9"/>
+  <path d="M720 158l10 10 19-21" fill="none" stroke="#174a31" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="734" y="217" text-anchor="middle" fill="#eafff3" font-family="Segoe UI, sans-serif" font-size="14">Codex Watch</text>
+  <text x="734" y="302" text-anchor="middle" fill="#eafff3" font-family="Segoe UI, sans-serif" font-size="16">Montre Wear OS</text>
+</svg>

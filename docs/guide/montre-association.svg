@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 440" role="img" aria-labelledby="title description">
+  <title id="title">Association du relais sur la montre</title>
+  <desc id="description">Schéma des champs adresse HTTPS et code, puis du bouton Associer. Sur la montre, il faut faire défiler l'écran.</desc>
+  <rect width="440" height="440" fill="#000"/>
+  <circle cx="220" cy="220" r="216" fill="#08120d" stroke="#243c30" stroke-width="4"/>
+  <g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+    <text x="220" y="56" fill="#c6b6f2" font-size="16" font-weight="700" letter-spacing="3">ASSOCIATION</text>
+    <text x="220" y="96" fill="#f1f8f3" font-size="27" font-weight="700">Mon PC</text>
+    <text x="220" y="124" fill="#a8b9ae" font-size="14">Schéma · faire défiler l’écran</text>
+    <rect x="65" y="143" width="310" height="65" rx="18" fill="#13231a" stroke="#435d4e"/>
+    <text x="88" y="167" text-anchor="start" fill="#a8b9ae" font-size="14">Adresse HTTPS du relais</text>
+    <text x="88" y="190" text-anchor="start" fill="#f1f8f3" font-size="17">https://…</text>
+    <rect x="65" y="221" width="310" height="65" rx="18" fill="#13231a" stroke="#435d4e"/>
+    <text x="88" y="245" text-anchor="start" fill="#a8b9ae" font-size="14">Code du PC</text>
+    <text x="88" y="270" text-anchor="start" fill="#f1f8f3" font-size="20" letter-spacing="4">••••••</text>
+    <rect x="100" y="308" width="240" height="59" rx="29" fill="#c5b5f3"/>
+    <text x="220" y="346" fill="#10121a" font-size="21" font-weight="600">Associer</text>
+  </g>
+</svg>

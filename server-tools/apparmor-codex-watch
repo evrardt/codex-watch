@@ -1,0 +1,38 @@
+# Scoped adaptation of Ubuntu's bwrap-userns-restrict profile. Only the
+# root-owned Codex Watch bubblewrap executable is matched, not /usr/bin/bwrap.
+abi <abi/4.0>,
+include <tunables/global>
+
+profile codex_watch_bwrap /usr/local/libexec/codex-watch/bwrap flags=(attach_disconnected) {
+  allow capability,
+  allow file rwlkm /{**,},
+  allow network,
+  allow unix,
+  allow ptrace,
+  allow signal,
+  allow mqueue,
+  allow io_uring,
+  allow userns,
+  allow mount,
+  allow umount,
+  allow pivot_root,
+  allow dbus,
+  allow px /** -> codex_watch_bwrap//&codex_watch_unpriv_bwrap,
+}
+
+profile codex_watch_unpriv_bwrap flags=(attach_disconnected) {
+  allow file rwlkm /{**,},
+  allow network,
+  allow unix,
+  allow ptrace,
+  allow signal,
+  allow mqueue,
+  allow io_uring,
+  allow userns,
+  allow mount,
+  allow umount,
+  allow pivot_root,
+  allow dbus,
+  allow pix /** -> &codex_watch_unpriv_bwrap,
+  audit deny capability,
+}

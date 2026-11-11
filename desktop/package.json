@@ -1,0 +1,85 @@
+{
+  "name": "codex-watch-relay",
+  "productName": "Codex Watch Relay",
+  "version": "0.12.50",
+  "description": "Relais de bureau pour Codex Watch sur Wear OS",
+  "author": "Codex Watch contributors",
+  "license": "MIT",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis --x64 --publish never",
+    "dist:mac": "electron-builder --mac zip --arm64 --x64 --publish never",
+    "pack": "electron-builder --dir --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.2.3",
+    "electron-builder": "26.18.1"
+  },
+  "build": {
+    "appId": "org.codexwatch.relay",
+    "asar": true,
+    "afterPack": "./after-pack.cjs",
+    "directories": {
+      "output": "../.tools/releases/windows"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "pair-status.cjs",
+      "watchdog.cjs",
+      "phonon-setup.cjs",
+      "phonon-worker.cjs",
+      "phonon-worker-ui/**/*",
+      "ui/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../bridge",
+        "to": "bridge",
+        "filter": [
+          "*.mjs",
+          "desktop-question.ps1",
+          "vps-admin.html",
+          "vps-admin.js",
+          "phonon-voices.json",
+          "package.json",
+          "package-lock.json",
+          "config.example.json",
+          "node_modules/**/*",
+          "!node_modules/**/test/**"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "signExecutable": false,
+      "icon": "ui/icon.ico",
+      "artifactName": "Codex-Watch-Relay-${version}-Setup.${ext}"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "identity": null,
+      "artifactName": "Codex-Watch-Relay-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": false
+    }
+  },
+  "dependencies": {
+    "phonon-tts": "0.6.0"
+  },
+  "overrides": {
+    "minimatch@^10.2.5": "11.0.5",
+    "minimatch@^9.0.3": "11.0.5"
+  }
+}

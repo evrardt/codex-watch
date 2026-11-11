@@ -1,0 +1,12 @@
+using System;using System.IO;using System.Net;using System.Net.Sockets;using System.Threading.Tasks;using System.Collections.Generic;
+class CodexWatchBluetoothProtocolTest {
+ static void Put(byte[] b,int o,int n){b[o]=(byte)(n>>24);b[o+1]=(byte)(n>>16);b[o+2]=(byte)(n>>8);b[o+3]=(byte)n;}
+ static int Get(byte[] b,int o){return b[o]<<24|b[o+1]<<16|b[o+2]<<8|b[o+3];}
+ static void Frame(Stream s,int op,int id,byte[] data){byte[] h=new byte[9];h[0]=(byte)op;Put(h,1,id);Put(h,5,data.Length);s.Write(h,0,9);s.Write(data,0,data.Length);s.Flush();}
+ static byte[] Read(Stream s,int n){byte[] b=new byte[n];for(int i=0;i<n;){int k=s.Read(b,i,n-i);if(k<=0)throw new Exception("eof");i+=k;}return b;}
+ static Tuple<int,int,byte[]> Next(Stream s){byte[] h=Read(s,9);return Tuple.Create((int)h[0],Get(h,1),Read(s,Get(h,5)));}
+ static void Main(){var target=new TcpListener(IPAddress.Loopback,0);target.Start();int targetPort=((IPEndPoint)target.LocalEndpoint).Port;
+  var echo=Task.Run(()=>{for(int i=0;i<2;i++){var c=target.AcceptTcpClient();Task.Run(()=>{try{var st=c.GetStream();byte[] b=new byte[20000];int n;while((n=st.Read(b,0,b.Length))>0){st.Write(b,0,n);st.Flush();}}catch{}finally{c.Close();}});}});
+  var listener=new TcpListener(IPAddress.Loopback,0);listener.Start();var watch=new TcpClient();watch.Connect(IPAddress.Loopback,((IPEndPoint)listener.LocalEndpoint).Port);var native=listener.AcceptSocket();var task=Task.Run(()=>new CodexWatchBluetooth.Link(native.Handle,targetPort).Run());var wire=watch.GetStream();wire.ReadTimeout=5000;Frame(wire,1,1,new byte[0]);Frame(wire,1,2,new byte[0]);var ack1=Next(wire);var ack2=Next(wire);if(ack1.Item1!=4||ack2.Item1!=4||ack1.Item2==ack2.Item2)throw new Exception("open ack");Frame(wire,2,1,System.Text.Encoding.UTF8.GetBytes("first"));Frame(wire,2,2,System.Text.Encoding.UTF8.GetBytes("second"));var received=new Dictionary<int,string>();for(int i=0;i<2;i++){var f=Next(wire);if(f.Item1!=2)throw new Exception("data frame");received[f.Item2]=System.Text.Encoding.UTF8.GetString(f.Item3);}if(received[1]!="first"||received[2]!="second")throw new Exception("crossed streams");Frame(wire,3,1,new byte[0]);Frame(wire,3,2,new byte[0]);watch.Close();if(!task.Wait(5000))throw new Exception("link did not stop");native.Dispose();listener.Stop();target.Stop();Console.WriteLine("Two simultaneous framed streams opened, echoed independently and closed.");
+ }
+}

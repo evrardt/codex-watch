@@ -1,0 +1,3 @@
+const {contextBridge,ipcRenderer}=require('electron');
+const channels=new Set(['state','watchList','watchRevoke','discover','filterProjects','folder','save','apply','restart','start','stop','pair','pairStatus','key','changeKey','revealKey','tunnel','autostart','open','installPhonon','phononVoice','audioMode','audioAutoRead','openaiVoice','audioBudget','audioSpeed','phononCompute','phononComputeTest','bluetooth']);
+contextBridge.exposeInMainWorld('relay',{call:(name,value)=>{if(!channels.has(name))throw Error('Action inconnue');return ipcRenderer.invoke('relay:'+name,value);}});

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codex Watch — installer le VPS</title><style>
+:root { color-scheme: light; font-family: 'Segoe UI', system-ui, sans-serif; color: #182820; background: #f3f8f5; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 36px 20px; }
+main { max-width: 940px; margin: auto; padding: clamp(24px, 5vw, 56px); background: white; border: 1px solid #dfebe3; border-radius: 24px; box-shadow: 0 12px 40px #1434220d; line-height: 1.65; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); color: #113d29; margin-top: 0; }
+h2 { margin-top: 2.2em; padding-bottom: .3em; border-bottom: 1px solid #d7e8dc; }
+h3 { margin-top: 2em; color: #1d5338; }
+a { color: #176b49; }
+img { max-width: 100%; height: auto; border-radius: 10px; }
+img[src*='montre-'] { width: 230px; max-width: 100%; background: #000; }
+img[src*='pc-'] { width: 760px; border: 1px solid #d3e1d7; }
+pre { overflow: auto; padding: 16px; background: #13241b; color: #eef8f1; border-radius: 12px; }
+code { font-family: Consolas, monospace; overflow-wrap: anywhere; }
+pre code { overflow-wrap: normal; }
+blockquote { margin: 1.3em 0; padding: 4px 18px; border-left: 4px solid #86c5a2; background: #eff8f2; }
+table { display: block; overflow-x: auto; border-collapse: collapse; }
+th, td { border: 1px solid #d6e5da; padding: 8px 12px; text-align: left; vertical-align: top; }
+th { background: #f0f8f2; }
+@media (max-width: 600px) { body { padding: 0; } main { padding: 24px 18px; border: 0; border-radius: 0; } }
+</style></head><body><main>
+<h1 id="installer-codex-watch-sur-un-vps">Installer Codex Watch sur un VPS</h1>
+<p>Ce parcours relie la montre directement à ton serveur. Il n’utilise pas l’application relais Windows. Il te faut un VPS Linux avec systemd, un accès à sa console ou en SSH, un navigateur et une montre Wear OS avec Codex Watch installé. Une console SSH peut aussi être ouverte depuis un téléphone ; certains hébergeurs proposent une console dans leur espace client.</p>
+<p><img src="guide/vps-parcours.svg" alt="Du navigateur au serveur, puis du serveur à la montre" /></p>
+<p>Télécharge l’APK depuis la <a href="https://github.com/evrardt/codex-watch/releases">page des releases</a> et installe-le sur la montre en suivant <a href="../GUIDE-INSTALLATION.html#3-installer-lapk-sur-la-montre-depuis-le-t%C3%A9l%C3%A9phone">les étapes depuis un téléphone</a>. Récupère également les sources du même dépôt sur le VPS. Ne télécharge pas un fichier provenant d’une source que tu ne connais pas.</p>
+<h2 id="1-préparer-le-serveur">1. Préparer le serveur</h2>
+<ol>
+<li>
+<p>Connecte-toi à la console du VPS avec un <strong>utilisateur ordinaire</strong>, pas root. Il doit disposer de Node.js 22 ou plus récent, de npm et d’une session systemd utilisateur. Voir les <a href="https://nodejs.org/en/download">téléchargements Node.js</a> et la documentation de ton hébergeur.</p>
+</li>
+<li>
+<p>Récupère sur le serveur les sources du dépôt Codex Watch, puis ouvre leur dossier <code>bridge</code> dans la console :</p>
+<pre><code class="language-sh">git clone https://github.com/evrardt/codex-watch.git
+cd codex-watch/bridge
+node vps-setup.mjs install
+</code></pre>
+<p>L’installateur crée un relais dans <code>~/.local/share/codex-watch-vps</code>, installe ses dépendances et Codex, puis active son service utilisateur. Il refuse d’écraser une installation existante. Si l’installation est interrompue, vérifie les fichiers créés avant de recommencer : elle ne les supprime pas automatiquement.</p>
+</li>
+<li>
+<p>Pour garder le service utilisateur actif après déconnexion et redémarrage du VPS, un administrateur doit activer le <em>linger</em> pour cet utilisateur, par exemple <code>sudo loginctl enable-linger NOM_UTILISATEUR</code>. Sur un hébergement sans systemd utilisateur, ce parcours automatique ne fonctionne pas : une adaptation manuelle est nécessaire.</p>
+</li>
+</ol>
+<h2 id="2-donner-une-adresse-https-au-relais">2. Donner une adresse HTTPS au relais</h2>
+<ol>
+<li>
+<p>Installe <a href="https://tailscale.com/download/linux">Tailscale sur Linux</a> et connecte le VPS à ton réseau Tailscale. L’administrateur du réseau peut devoir autoriser HTTPS et Funnel.</p>
+</li>
+<li>
+<p>Dans la console du VPS, active l’accès HTTPS public vers le relais :</p>
+<pre><code class="language-sh">sudo tailscale funnel --bg --https=8443 http://127.0.0.1:18787
+</code></pre>
+<p>Utilise un autre port HTTPS pris en charge si <code>8443</code> est déjà utilisé. Tailscale affiche une adresse ressemblant à <code>https://nom-du-serveur.exemple.ts.net:8443</code> : conserve <strong>ton adresse réelle</strong>. Funnel rend le relais joignable sur Internet ; la montre reste protégée par son jeton et l’administration par un code distinct. Voir la <a href="https://tailscale.com/docs/features/tailscale-funnel">documentation Tailscale Funnel</a>.</p>
+</li>
+<li>
+<p>Enregistre cette adresse, sans chemin final, puis redémarre le relais :</p>
+<pre><code class="language-sh">node ~/.local/share/codex-watch-vps/bridge/vps-setup.mjs url https://TON-ADRESSE-TAILSCALE:8443
+systemctl --user restart codex-watch-vps.service
+</code></pre>
+</li>
+</ol>
+<h2 id="3-choisir-son-mot-de-passe-dans-le-navigateur">3. Choisir son mot de passe dans le navigateur</h2>
+<p>La commande <code>url</code> de l’étape précédente affiche un <strong>lien privé de première installation</strong>, valable 30 minutes. Après le redémarrage du relais, ouvre ce lien dans le navigateur et choisis ton mot de passe. Ne partage pas ce lien : il protège la première configuration contre une prise de contrôle par une autre personne. Il ne sert qu’une fois. S’il expire, relance la commande <code>url</code> de l’étape précédente pour obtenir un nouveau lien.</p>
+<p>Pour les connexions suivantes, ouvre ton adresse HTTPS en ajoutant <code>/admin</code> et saisis ton mot de passe. La page ne demande pas le jeton de la montre.</p>
+<p><img src="guide/vps-login.png" alt="Écran d’ouverture de l’administration du VPS sur téléphone" /></p>
+<h2 id="4-configurer-codex-le-chat-et-la-montre">4. Configurer Codex, le Chat et la montre</h2>
+<ol>
+<li>Dans l’interface, touche <strong>Connecter Codex</strong>. Ouvre le lien OpenAI proposé, saisis le code temporaire affiché et valide la connexion de ton compte. Si le relais ne prend pas immédiatement en compte la connexion, redémarre-le avec <code>systemctl --user restart codex-watch-vps.service</code>.</li>
+<li>Pour utiliser le bouton <strong>Chat</strong>, crée ou choisis une <a href="https://platform.openai.com/api-keys">clé API OpenAI</a>, puis saisis-la dans <strong>Configurer le Chat</strong>. La page indique si une clé est enregistrée et affiche ses quatre derniers caractères ; <strong>Afficher</strong> permet de la consulter temporairement. Elle reste sur le serveur et n’est pas envoyée à la montre. Les crédits et la facturation de l’organisation API de cette clé s’appliquent. Vérifie le solde et les limites sur OpenAI Platform : le budget audio ne limite pas ce Chat. Cette étape est facultative si tu veux uniquement Codex.</li>
+<li>Pour utiliser aussi le Live et la voix OpenAI sur le VPS, active <strong>Live et voix</strong>, choisis un budget mensuel en dollars puis enregistre. Cette option utilise la même clé API ; elle reste désactivée tant que tu ne la choisis pas. Le plafond audio ne couvre pas le Chat.</li>
+<li>Touche <strong>Générer le code</strong> dans la section d’association. Sur la montre, ouvre <strong>Codex Watch → Lier serveur</strong>, ou <strong>Paramètres → Connexions → Mon serveur</strong> si elle est déjà configurée. Saisis ton adresse HTTPS <strong>sans <code>/admin</code></strong>, puis le code à six chiffres. La page affiche <strong>Montre associée</strong> après confirmation. Le code expire au bout de deux minutes ; génère-en un autre si nécessaire.</li>
+<li>Ouvre <strong>Chat</strong> ou <strong>Codex</strong> sur la montre. Si seul le VPS est associé, il est sélectionné automatiquement. Si le PC et le VPS sont tous deux associés, le bouton en bas de l’accueil permet de basculer entre eux.</li>
+</ol>
+<p>Dans <strong>Chat</strong>, choisis le modèle API voulu. L’administration affiche une estimation locale des dépenses du mois pour les réponses dont elle connaît l’usage ; elle ne comprend pas nécessairement toutes les requêtes, les taxes ou les autres applications. Elle ne constitue pas un plafond de facturation. Consulte OpenAI Platform pour les montants et limites officiels. Le budget audio est séparé.</p>
+<p>Dans <strong>Montres autorisées</strong>, les nouvelles associations confirmées apparaissent individuellement et peuvent être retirées sans retirer les autres. Les associations anciennes utilisent un jeton partagé : même après une nouvelle association individuelle, cet ancien jeton reste valide jusqu’à sa rotation générale. Pour invalider les anciens accès, il faut remplacer le jeton partagé et réassocier les appareils qui l’utilisaient ; ne réalise cette opération que lorsque tu peux reconnecter ces appareils.</p>
+<p>Le dossier <code>~/.local/share/codex-watch-vps/projects</code> est le projet Codex initial du VPS. Le Chat utilise son propre historique sur le serveur et ne récupère pas les conversations, projets ou plugins du site ChatGPT. Le Live utilise la clé du serveur seulement si tu l’actives dans <strong>Live et voix</strong> ; son budget est distinct de celui du Chat.</p>
+<h3 id="ajouter-la-voix-phonon">Ajouter la voix Phonon</h3>
+<p>Dans l’interface web du VPS, ouvre <strong>Voix Phonon locale</strong>. Accepte d’abord les conditions du <a href="https://huggingface.co/gradium/phonon-40m-multilingual">modèle multilingue sur Hugging Face</a>, crée un jeton de lecture depuis ton compte, puis saisis-le et touche <strong>Installer</strong>. Le jeton sert au téléchargement et n’est pas conservé. Une fois l’installation terminée, choisis Phonon dans les réglages de voix sur la montre. Le modèle est sous licence <strong>CC BY-NC 4.0</strong>, réservée aux usages non commerciaux.</p>
+<p>L’installation initiale utilise le processeur : Linux x86-64-v3 ou ARM64 et glibc 2.35 minimum sont nécessaires. Pour un serveur Linux x86-64 équipé d’un GPU NVIDIA, installe d’abord le pilote, le <a href="https://developer.nvidia.com/cuda-downloads">toolkit CUDA</a> et <a href="https://www.rust-lang.org/tools/install">Rust avec Cargo</a>. Dans <strong>Voix Phonon locale</strong>, saisis à nouveau le jeton et clique sur <strong>Installer CUDA</strong>. La compilation et le téléchargement peuvent prendre plusieurs minutes et utiliser plusieurs Go. Sélectionne ensuite <strong>GPU NVIDIA · CUDA</strong> dans <strong>Calcul</strong> puis enregistre. En cas d’échec de CUDA, le relais utilise le CPU ; le statut indique le moteur de la dernière lecture. Le modèle est rechargé à chaque lecture. Les GPU AMD et Intel ne sont pas encore pris en charge par cette option. Le Live continue d’utiliser sa propre voix et son propre budget.</p>
+<p><img src="guide/vps-phonon-calcul.png" alt="Réglage CUDA du serveur avec des données fictives" /></p>
+<h2 id="dépannage">Dépannage</h2>
+<ul>
+<li><strong>La page ne s’ouvre pas :</strong> vérifie <code>systemctl --user status codex-watch-vps.service</code> et <code>tailscale funnel status</code>. L’adresse saisie dans la commande <code>url</code> doit correspondre exactement à celle utilisée par le navigateur, y compris le port.</li>
+<li><strong>Mot de passe perdu :</strong> depuis la console du serveur, lance <code>node ~/.local/share/codex-watch-vps/bridge/vps-setup.mjs reset-admin</code>. Ouvre le lien privé affiché et choisis un nouveau mot de passe ; il expire après 30 minutes et fonctionne une seule fois. L’ancien mot de passe reste valable jusqu’à la confirmation du nouveau. Ne partage pas le lien.</li>
+<li><strong>La montre ne s’associe pas :</strong> vérifie l’adresse HTTPS sans <code>/admin</code>, génère un nouveau code et assure-toi que la montre a une connexion Internet.</li>
+<li><strong>Le Chat ne répond pas :</strong> vérifie les crédits et l’accès au modèle dans le projet API de la clé. Les erreurs sont indiquées dans la conversation.</li>
+<li><strong>Codex ne peut pas travailler :</strong> vérifie que le compte est connecté et que le projet existe ; le serveur n’obtient pas automatiquement de droits administrateur.</li>
+</ul>
+
+</main></body></html>

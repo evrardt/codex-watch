@@ -1,0 +1,7 @@
+# Ouverture des nouveaux chats
+
+Quand Codex ou ChatGPT renvoie un identifiant provisoire, la montre affiche un écran de préparation et interroge le relais ; aucune nouvelle création ni nouvel envoi n’est déclenché. Le relais tente de retrouver le chat dans le bon projet en vérifiant le texte initial complet et l’heure de son premier tour. Si les éléments sont absents, contradictoires ou ambigus, il attend ou propose d’ouvrir manuellement la liste. Cette correspondance est une recherche prudente : le bureau ne fournit pas de résolution directe de l’identifiant provisoire.
+
+Un contrôle en lecture seule sur une création ChatGPT réelle a retrouvé le bon identifiant. Les tests couvrent les deux sources, les demandes identiques, les erreurs de lecture et l’absence de renvoi. La lecture automatique d’une réponse dictée reste disponible après identification tant que le chat est ouvert. Des essais réels supplémentaires de création Codex et ChatGPT sur la montre restent nécessaires.
+
+Le relais installé a été vérifié en lecture seule puis via son point de suivi sur la création ChatGPT de référence : l’identifiant retrouvé correspond au chat déjà identifié. Cette opération n’a pas créé de nouveau chat ni renvoyé de consigne. Les tests du relais passent ; les tests Android et le contrôle de code passent également. L’expérience complète avec une nouvelle création sur la montre reste à confirmer par l’utilisateur.
