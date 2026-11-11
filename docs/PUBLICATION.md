@@ -1,6 +1,6 @@
 # Préparer une release GitHub
 
-Le dépôt public est [evrardt/codex-watch](https://github.com/evrardt/codex-watch). Vérifier les liens et les fichiers de chaque release après sa mise en ligne.
+Le [dépôt public de Codex Watch](https://github.com/evrardt/codex-watch) contient les sources. Vérifier les liens et les fichiers de chaque release après sa mise en ligne.
 
 1. Vérifier les versions de l’application Android et de `desktop/package.json`, les parcours d’installation, les captures et le README. Régénérer le guide HTML et exécuter les contrôles du projet.
 2. Construire l’APK **release signé** avec la clé de signature durable du projet et l’installateur Windows correspondant. Conserver la clé et ses mots de passe hors du dépôt et de la release. Ne pas distribuer l’APK de débogage à la place.
