@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -128,15 +129,19 @@ val Ink = Color(0xFF07100D)
 }
 
 @Composable fun PageTitle(title: String, subtitle: String? = null, color: Color = Mint) {
+    // Long German, Spanish and Portuguese words otherwise break after a single
+    // trailing character on small round displays. Honour system font scaling.
+    val longestWord = title.split(Regex("\\s+")).maxOfOrNull { it.length } ?: 0
+    val titleSize = when { longestWord >= 16 -> 15.sp; longestWord >= 12 -> 18.sp; else -> 22.sp }
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)) {
         Eyebrow(subtitle ?: "Codex Watch", color)
-        Text(title, fontSize = 22.sp, lineHeight = 25.sp, fontWeight = FontWeight.SemiBold,
+        Text(title, fontSize = titleSize, lineHeight = (titleSize.value + 3).sp, fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center, modifier = Modifier.padding(top = 5.dp))
     }
 }
 
 @Composable fun WatchCard(title: String, subtitle: String? = null, icon: ImageVector = Icons.Rounded.ChevronRight,
-    color: Color = Mint, enabled: Boolean = true, working: Boolean = false, titleMaxLines: Int = 2, subtitleMaxLines: Int = 3, onClick: () -> Unit) {
+    color: Color = Mint, enabled: Boolean = true, working: Boolean = false, titleMaxLines: Int = 3, subtitleMaxLines: Int = 4, onClick: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp),
         modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)
             .background(Brush.linearGradient(listOf(Color(0xFF1C2923), Color(0xFF141C18))), RoundedCornerShape(28.dp))
@@ -163,11 +168,11 @@ val Ink = Color(0xFF07100D)
             }
             Box(Modifier.size(if (compact) 52.dp else 64.dp).background(Brush.linearGradient(listOf(Color(0xFFE0D5FF), Color(0xFFAD93E9))), CircleShape)
                 .clickable(onClick = onClick), contentAlignment = Alignment.Center) {
-                Icon(Icons.Rounded.Mic, "Parler à l’assistant", tint = Color(0xFF261A39), modifier = Modifier.size(30.dp))
+                Icon(Icons.Rounded.Mic, stringResource(R.string.ui_c83d08d1b17f), tint = Color(0xFF261A39), modifier = Modifier.size(30.dp))
             }
         }
-        Text("On en parle ?", fontSize = if (compact) 18.sp else 20.sp, lineHeight = if (compact) 22.sp else 24.sp, fontWeight = FontWeight.SemiBold)
-        if (!compact) Text("Ton assistant, au poignet", fontSize = 10.sp, lineHeight = 13.sp, color = Muted, modifier = Modifier.padding(top = 3.dp, bottom = 4.dp))
+        Text(stringResource(R.string.ui_5cfa792f139d), fontSize = 18.sp, lineHeight = 22.sp, fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 10.dp))
     }
 }
 
@@ -186,20 +191,49 @@ val Ink = Color(0xFF07100D)
 
 @Composable fun ActionButton(text: String, icon: ImageVector = Icons.Rounded.ArrowForward, color: Color = Mint,
     enabled: Boolean = true, working: Boolean = false, onClick: () -> Unit) {
+    // These labels are application-owned actions. Conversation and plugin content must never be translated here.
+    val labelId = when (text) {
+        "Recherche…" -> R.string.action_searching
+        "Chercher" -> R.string.action_search
+        "Reprendre" -> R.string.action_resume
+        "Démarrer" -> R.string.action_start
+        "Associer PC" -> R.string.action_pair_pc
+        "Lier serveur" -> R.string.action_link_server
+        "Quitter" -> R.string.action_quit
+        "Enregistrer" -> R.string.action_save
+        "Associer" -> R.string.action_pair
+        "Voir plus" -> R.string.action_more
+        "Précédents" -> R.string.action_previous
+        "Désactiver" -> R.string.action_disable
+        "Activer" -> R.string.action_enable
+        "Modèle" -> R.string.action_model
+        "Catalogue" -> R.string.action_catalog
+        "Suivants" -> R.string.action_next
+        "Retirer" -> R.string.action_remove
+        "Installer" -> R.string.action_install
+        "Confirmer" -> R.string.action_confirm
+        "Annuler" -> R.string.action_cancel
+        "Choisir" -> R.string.action_choose
+        "Envoi…" -> R.string.action_sending
+        "Envoyer" -> R.string.action_send
+        "Autoriser" -> R.string.action_allow
+        else -> null
+    }
+    val label = if (labelId == null) text else stringResource(labelId)
     Button(onClick = onClick, enabled = enabled, shape = RoundedCornerShape(28.dp),
         colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = Ink),
         modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
         if (working) CircularProgressIndicator(Modifier.size(17.dp), color = color, strokeWidth = 2.dp)
         else Icon(icon, null, Modifier.size(17.dp))
         Spacer(Modifier.width(7.dp))
-        Text(text, fontSize = 12.sp, lineHeight = 16.sp, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(label, fontSize = 12.sp, lineHeight = 16.sp, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
 
-fun statusLabel(status: String): String = when (status) {
-    "active", "inProgress" -> "En cours"
-    "idle", "completed" -> "Terminée"
-    "failed", "systemError" -> "À vérifier"
-    "interrupted" -> "Interrompue"
-    else -> "Enregistrée"
-}
+@Composable fun statusLabel(status: String): String = stringResource(when (status) {
+    "active", "inProgress" -> R.string.state_active
+    "idle", "completed" -> R.string.state_completed
+    "failed", "systemError" -> R.string.state_check
+    "interrupted" -> R.string.state_interrupted
+    else -> R.string.state_recorded
+})

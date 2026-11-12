@@ -9,6 +9,10 @@ class AudioSettingsTest {
         assertEquals(0, dollarCents("0")); assertEquals(10000, dollarCents("100.00"))
         for (bad in listOf("-1", "100.01", "1.001", "NaN", "", "1 000")) assertNull(dollarCents(bad))
     }
+    @Test fun moneyDisplayUsesTheSelectedLocale() {
+        assertEquals("1,25 $", dollars(1.25, java.util.Locale.FRANCE))
+        assertEquals("1.25 $", dollars(1.25, java.util.Locale.US))
+    }
     @Test fun chunkingLongFrenchTextKeepsEveryCharacterAndSurrogatePair() {
         val text = "Bonjour à tous 👋, voici une réponse longue. ".repeat(50)
         var position = 0; val parts = mutableListOf<String>()

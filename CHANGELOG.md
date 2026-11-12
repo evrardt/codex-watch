@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.56 — Interface multilingue
+
+- La montre et les interfaces des relais s’adaptent au français, à l’anglais, à l’allemand, à l’espagnol et au portugais. Les autres langues utilisent l’anglais ; les conversations et noms de projets ne sont pas traduits.
+- Le Live utilise la langue de la montre au démarrage et peut ensuite suivre celle de la conversation. Les textes d’installation et le guide pour les agents IA précisent les parcours indépendants PC et VPS.
+
 ## 0.12.55 — Notifications du serveur
 
 - L’administration du relais VPS permet d’importer les fichiers Firebase pour recevoir les notifications lorsque la montre est en veille ou utilise la 4G. Le guide explique la configuration et les conditions de conservation de la clé sur le serveur.

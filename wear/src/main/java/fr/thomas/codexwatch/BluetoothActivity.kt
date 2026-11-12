@@ -1,5 +1,6 @@
 package fr.thomas.codexwatch
 
+import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -72,25 +73,27 @@ class BluetoothActivity:ComponentActivity() {
             onDispose {runCatching{context.unregisterReceiver(receiver)};if(permitted())runCatching{adapter?.cancelDiscovery()}}
         }
         WatchList("bluetooth") {
-            item { PageTitle("Connexions", "Choix du réseau",Lilac) }
-            item { SmallNote("Internet · $internetState\nBluetooth · $linkState",Lilac) }
-            if(lastUsed.isNotBlank())item { SmallNote("Dernière liaison utilisée · ${if(lastUsed=="bluetooth")"Bluetooth" else "Internet"}",Mint) }
-            for((value,label,detail) in listOf(Triple("auto","Automatique","Bluetooth et Internet"),Triple("bluetooth","Bluetooth","À proximité du PC"),Triple("internet","Internet","Wi-Fi ou réseau mobile"))) item {
+            item { PageTitle(stringResource(R.string.ui_689351db7e17), stringResource(R.string.ui_ecf296e84993),Lilac) }
+            item { SmallNote("Internet · ${connectionLabel(internetState)}\nBluetooth · ${connectionLabel(linkState)}",Lilac) }
+            if(lastUsed.isNotBlank())item { SmallNote(stringResource(R.string.last_connection_used, if(lastUsed=="bluetooth")"Bluetooth" else "Internet"),Mint) }
+            for(value in listOf("auto","bluetooth","internet")) item {
                 val selected=mode==value
-                WatchCard(label,if(selected)"Sélectionné · $detail" else detail,if(selected)Icons.Rounded.CheckCircle else Icons.Rounded.RadioButtonUnchecked,if(selected)Mint else Lilac,enabled=!busy&&(value!="bluetooth"||current.isNotBlank())) {
+                val label=if(value=="auto") stringResource(R.string.mode_auto) else if(value=="bluetooth") "Bluetooth" else "Internet"
+                val detail=stringResource(when(value){"auto"->R.string.connection_both;"bluetooth"->R.string.connection_near_pc;else->R.string.connection_mobile})
+                WatchCard(label,if(selected)stringResource(R.string.connection_selected,detail) else detail,if(selected)Icons.Rounded.CheckCircle else Icons.Rounded.RadioButtonUnchecked,if(selected)Mint else Lilac,enabled=!busy&&(value!="bluetooth"||current.isNotBlank())) {
                     store.transport(slot,value);mode=value
                     if(value!="internet"&&current.isNotBlank()&&(DirectNotifications.enabled||CloudNotifications.enabled)&&DirectNotifications.allowed(context))runCatching{DirectNotifications.enable(context.applicationContext)}
                     else {CloudNotifications.restore(context.applicationContext);if(DirectNotifications.enabled)DirectNotifications.refresh(context.applicationContext)}
                     setResult(Activity.RESULT_OK);finish()
                 }
             }
-            item { SmallNote("Associe d’abord Codex Watch au relais. Sur le PC, active Bluetooth dans Codex Watch puis ouvre l’ajout d’un appareil Bluetooth.") }
-            if(error.isNotBlank())item { SmallNote(error) }
-            item { ActionButton(if(scanning) "Recherche…" else "Chercher",Icons.Rounded.BluetoothSearching,Lilac,enabled=!busy&&!scanning) {
+            item { SmallNote(stringResource(R.string.ui_7ca40a5e0983)) }
+            if(error.isNotBlank())item { SmallNote(statusText(error)) }
+            item { ActionButton(if(scanning) stringResource(R.string.ui_d074331c5d34) else stringResource(R.string.ui_d4f41e93b837),Icons.Rounded.BluetoothSearching,Lilac,enabled=!busy&&!scanning) {
                 if(permitted())scan() else permission.launch(if(Build.VERSION.SDK_INT>=31) arrayOf(Manifest.permission.BLUETOOTH_CONNECT,Manifest.permission.BLUETOOTH_SCAN) else arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION))
             } }
             items(devices.entries.sortedBy{it.value.lowercase()}) { entry ->
-                WatchCard(entry.value,if(entry.key==current)"Associé · $linkState" else "Connecter au relais",Icons.Rounded.Computer,Lilac,enabled=!busy) {
+                WatchCard(entry.value,if(entry.key==current)stringResource(R.string.connection_paired,connectionLabel(linkState)) else stringResource(R.string.connection_to_relay),Icons.Rounded.Computer,Lilac,enabled=!busy) {
                     busy=true;error="";val previous=current;val previousMode=mode;scope.launch {
                         try {
                             withContext(Dispatchers.IO){adapter?.cancelDiscovery();BluetoothTunnel.reset();BluetoothTunnel.probe(entry.key)}
@@ -103,8 +106,18 @@ class BluetoothActivity:ComponentActivity() {
                     }
                 }
             }
-            if(!scanning&&devices.isEmpty())item{SmallNote("Aucun appareil trouvé pour le moment.")}
-            item { androidx.compose.material3.TextButton(onClick={finish()}){Text("Retour")} }
+            if(!scanning&&devices.isEmpty())item{SmallNote(stringResource(R.string.ui_502f4628f6f5))}
+            item { androidx.compose.material3.TextButton(onClick={finish()}){Text(stringResource(R.string.ui_ef23a5940244))} }
         }
     }
+}
+
+@Composable private fun connectionLabel(value:String):String = when(value){
+    "Non associé" -> stringResource(R.string.connection_unpaired)
+    "Vérification…" -> stringResource(R.string.connection_checking)
+    "Non utilisé" -> stringResource(R.string.connection_unused)
+    "Indisponible" -> stringResource(R.string.connection_unavailable)
+    "Disponible" -> stringResource(R.string.ui_f4e4f699637b)
+    "Connecté" -> stringResource(R.string.state_connected)
+    else -> value
 }

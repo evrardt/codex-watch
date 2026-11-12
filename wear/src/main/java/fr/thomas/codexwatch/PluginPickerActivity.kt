@@ -1,5 +1,6 @@
 package fr.thomas.codexwatch
 
+import androidx.compose.ui.res.stringResource
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -26,15 +27,15 @@ class PluginPickerActivity:ComponentActivity(){
   var query by remember{mutableStateOf("")}
   var searching by remember{mutableStateOf(false)}
   LaunchedEffect(Unit){try{val data=BridgeApi(connection).request("/v1/plugins");rows=(data.optJSONArray("installed")?.objects().orEmpty()+data.optJSONArray("cached")?.objects().orEmpty()).distinctBy{it.optString("id")};error=data.optString("notice")}catch(e:Exception){error=e.message?:"Plugins indisponibles"}finally{loading=false}}
-  WatchList("plugin-picker",bottomAction=({ActionButton("Choisir",Icons.Rounded.Check,Lilac){setResult(Activity.RESULT_OK,Intent().putExtra("selection",JSONArray(selected.values.toList()).toString()));finish()}})){
-   item{Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Box(Modifier.weight(1f)){Eyebrow("Plugins",Lilac)};IconButton(onClick={searching=!searching},modifier=Modifier.size(48.dp)){Icon(Icons.Rounded.Search,"Rechercher",tint=Lilac)}}}
-   if(searching)item{OutlinedTextField(query,{query=it},singleLine=true,label={Text("Rechercher",fontSize=11.sp)},modifier=Modifier.fillMaxWidth())}
+  WatchList("plugin-picker",bottomAction=({ActionButton(stringResource(R.string.ui_3f2aaae20144),Icons.Rounded.Check,Lilac){setResult(Activity.RESULT_OK,Intent().putExtra("selection",JSONArray(selected.values.toList()).toString()));finish()}})){
+   item{Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Box(Modifier.weight(1f)){Eyebrow("Plugins",Lilac)};IconButton(onClick={searching=!searching},modifier=Modifier.size(48.dp)){Icon(Icons.Rounded.Search,stringResource(R.string.ui_733d1c742675),tint=Lilac)}}}
+   if(searching)item{OutlinedTextField(query,{query=it},singleLine=true,label={Text(stringResource(R.string.ui_733d1c742675),fontSize=11.sp)},modifier=Modifier.fillMaxWidth())}
    if(loading)item{CircularProgressIndicator(Modifier.size(22.dp),color=Lilac)}
-   if(error.isNotBlank()&&rows.isEmpty())item{SmallNote(error)}
+   if(error.isNotBlank()&&rows.isEmpty())item{SmallNote(statusText(error))}
    items(rows.filter{it.optString("name").contains(query,true)}){p->val id=p.getString("id");val type=when(p.optString("kind")){"workflow"->"Plugin · consignes";"app"->"Application";else->"Plugin"};WatchCard(p.optString("name"),if(selected.containsKey(id))"Sélectionné · $type" else if(p.optBoolean("cached"))"$type · à vérifier" else type,if(selected.containsKey(id))Icons.Rounded.CheckBox else Icons.Rounded.CheckBoxOutlineBlank,Lilac){if(selected.containsKey(id))selected.remove(id)else if(selected.size<5)selected[id]=JSONObject().put("id",id).put("name",p.optString("name"))else error="Cinq plugins maximum par message."}}
-   if(!loading&&rows.isEmpty())item{SmallNote("Aucun plugin disponible sur ce relais.")}
-   if(error.isNotBlank()&&rows.isNotEmpty())item{SmallNote(error)}
-   item{SmallNote("Codex vérifiera leur disponibilité. Aucune installation automatique.")}
+   if(!loading&&rows.isEmpty())item{SmallNote(stringResource(R.string.ui_10aa233f8fd0))}
+   if(error.isNotBlank()&&rows.isNotEmpty())item{SmallNote(statusText(error))}
+   item{SmallNote(stringResource(R.string.ui_6eccc4486336))}
   }
  }}}
 }

@@ -11,6 +11,8 @@ Retrouve Codex et Chat au poignet. Codex Watch relie ta montre Wear OS à un rel
 
 Projet indépendant, sans affiliation avec OpenAI. Licence MIT.
 
+L’interface suit la langue de l’appareil en français, anglais, allemand, espagnol et portugais ; les autres langues utilisent l’anglais. Les messages des conversations restent dans leur langue d’origine.
+
 Les possibilités et l’historique disponibles dépendent du relais choisi. Consulte le [guide des notifications](docs/NOTIFICATIONS.md) pour configurer Firebase.
 
 ![Écran Live de Codex Watch](docs/guide/montre-live.png)
@@ -30,12 +32,12 @@ L’application n’est pas disponible sur le Play Store : télécharge l’APK 
 
 ### 1. Télécharger les applications
 
-Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge l’APK 0.12.53 et, si tu utilises Windows, le relais 0.12.54 :
+Ouvre la [page des releases](https://github.com/evrardt/codex-watch/releases), puis télécharge l’APK 0.12.56 et, si tu utilises Windows, le relais 0.12.56 :
 
 | Sur quel appareil ? | Fichier | Utilité |
 | --- | --- | --- |
-| PC Windows | [Codex-Watch-Relay-0.12.54-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.55/Codex-Watch-Relay-0.12.54-Setup.exe) | Installer le relais qui relie la montre au PC. |
-| Téléphone Android | [Codex-Watch-0.12.53.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.55/Codex-Watch-0.12.53.apk) | Installer Codex Watch sur la montre. |
+| PC Windows | [Codex-Watch-Relay-0.12.56-Setup.exe](https://github.com/evrardt/codex-watch/releases/download/v0.12.56/Codex-Watch-Relay-0.12.56-Setup.exe) | Installer le relais qui relie la montre au PC. |
+| Téléphone Android | [Codex-Watch-0.12.56.apk](https://github.com/evrardt/codex-watch/releases/download/v0.12.56/Codex-Watch-0.12.56.apk) | Installer Codex Watch sur la montre. |
 
 Pour installer l’APK, utilise [Wear Installer 2 sur Google Play](https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2) sur le **téléphone Android**. Aucune installation de Wear Installer 2 n’est nécessaire sur la montre.
 
@@ -209,8 +211,9 @@ Codex Watch brings Codex conversations and tasks to Wear OS through a self-hoste
 
 - [Download the watch APK and Windows installer](https://github.com/evrardt/codex-watch/releases/latest). The watch app is installed from an Android phone using [Wear Installer 2](https://play.google.com/store/apps/details?id=org.freepoc.wearinstaller2).
 - Set up either the [Windows relay](#2-installer-et-configurer-le-relais-sur-le-pc) or the [Linux server relay](docs/INSTALLER-VPS.md). The server relay does not require the Windows app.
+- An AI agent can help with installation by following the [agent guide](AGENTS.md). Enter passwords, API keys and pairing codes directly in the relevant application; do not share them in chat.
 - [Share feedback, report a problem or suggest an idea](https://github.com/evrardt/codex-watch/issues/new/choose). Please keep API keys, pairing codes and private conversations out of public issues.
 - Ask questions and exchange ideas in [GitHub Discussions](https://github.com/evrardt/codex-watch/discussions).
 
-The app and detailed installation guides are currently in French. Live uses the OpenAI API and requires an API key and available API credits; features and conversation history differ between relay types. Codex Watch is an independent MIT-licensed project, not affiliated with OpenAI.
+The watch and relay interfaces follow the device language in French, English, German, Spanish and Portuguese, with English as the fallback. The detailed installation guides are currently in French. Live uses the OpenAI API and requires an API key and available API credits; features and conversation history differ between relay types. Codex Watch is an independent MIT-licensed project, not affiliated with OpenAI.
 

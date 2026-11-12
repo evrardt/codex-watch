@@ -1,5 +1,6 @@
 package fr.thomas.codexwatch
 
+import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -74,6 +75,7 @@ open class MainActivity : ComponentActivity() {
 
     @Composable private fun WatchApp(entry: Int, voiceEntry: Boolean, consumeVoice: () -> Unit) {
         val context = LocalContext.current
+        val displayLocale = LocalConfiguration.current.locales[0] ?: java.util.Locale.getDefault()
         val scope = rememberCoroutineScope()
         val store = remember { ConnectionStore(context) }
         val readState = remember { ReadStateStore(context) }
@@ -240,7 +242,7 @@ open class MainActivity : ComponentActivity() {
                     CloudNotifications.reconcile(context.applicationContext)
                     runCatching{DirectNotifications.refresh(context.applicationContext)}
                     connection=c;configToken="";health=result;projectId="";threadId="";preview=false;navigate("home")
-                    Toast.makeText(context,"Montre associée au relais",Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,context.getString(R.string.app_paired),Toast.LENGTH_LONG).show()
                 }catch(e:Exception){error=e.message?:"Association impossible"}finally{loading=false}
             }
         }
@@ -282,7 +284,7 @@ open class MainActivity : ComponentActivity() {
             try {
                 voice.launch(Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                     .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                    .putExtra(RecognizerIntent.EXTRA_PROMPT, if (kind == "chat") "Parle à ton assistant" else "Décris ta tâche Codex"))
+                    .putExtra(RecognizerIntent.EXTRA_PROMPT, context.getString(if (kind == "chat") R.string.app_prompt_assistant else R.string.app_prompt_codex)))
             } catch (_: ActivityNotFoundException) { error = "Dictée indisponible. Utiliser le clavier de la montre." }
         }
         fun activateNotifications() {
@@ -467,10 +469,10 @@ open class MainActivity : ComponentActivity() {
                     try {
                         if (preview) {
                             health = JSONObject().put("demo", true)
-                            projects = listOf(JSONObject().put("id", "example").put("name", "Mon projet"))
-                            threads = listOf(JSONObject().put("id", "example").put("title", "Améliorer l’écran d’accueil").put("status", "completed"))
-                            if (screen == "thread") detail = JSONObject().put("id", "example").put("title", "Exemple de conversation").put("status", "completed")
-                                .put("messages", JSONArray().put(JSONObject().put("role", "user").put("text", "Où en est ma tâche ?")).put(JSONObject().put("role", "assistant").put("text", "Voici un aperçu de la lecture sur ta montre. Les véritables réponses apparaîtront après l’association du relais.")))
+                            projects = listOf(JSONObject().put("id", "example").put("name", context.getString(R.string.demo_project)))
+                            threads = listOf(JSONObject().put("id", "example").put("title", context.getString(R.string.demo_thread)).put("status", "completed"))
+                            if (screen == "thread") detail = JSONObject().put("id", "example").put("title", context.getString(R.string.demo_title)).put("status", "completed")
+                                .put("messages", JSONArray().put(JSONObject().put("role", "user").put("text", context.getString(R.string.demo_question))).put(JSONObject().put("role", "assistant").put("text", context.getString(R.string.demo_answer))))
                         } else when (screen) {
                             "home" -> {
                                 health = api.health()
@@ -576,29 +578,29 @@ open class MainActivity : ComponentActivity() {
                     readState.mark(readingKey, lastAssistantMarker)
             }, bottomAction = if (screen in listOf("compose", "confirm")) ({
                 Column(horizontalAlignment=Alignment.CenterHorizontally) {
-                    if(error.isNotBlank()&&!loading) Text(error,color=Color(0xFFFFBA9D),fontSize=10.sp,lineHeight=12.sp,maxLines=3)
+                    if(error.isNotBlank()&&!loading) Text(statusText(error),color=Color(0xFFFFBA9D),fontSize=10.sp,lineHeight=12.sp,maxLines=3)
                     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly){
-                        Column(Modifier.clickable(enabled=!loading){editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},enabled=!loading,modifier=Modifier.size(48.dp).background(Lilac.copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Extension,"Ajouter des plugins",tint=Lilac)};Text("Plugins",fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
-                        Column(Modifier.clickable(enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo")){sendDraft()},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={sendDraft()},enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo"),modifier=Modifier.size(48.dp).background(Mint.copy(alpha=.2f),CircleShape)){if(loading)CircularProgressIndicator(Modifier.size(22.dp),color=Mint,strokeWidth=2.dp) else Icon(Icons.Rounded.Send,"Envoyer",tint=Mint)};Text(if(loading)"Envoi…" else "Envoyer",fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
+                        Column(Modifier.clickable(enabled=!loading){editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();pluginPicker.launch(Intent(context,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))},enabled=!loading,modifier=Modifier.size(48.dp).background(Lilac.copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Extension,stringResource(R.string.ui_25eeb246ac1c),tint=Lilac)};Text("Plugins",fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
+                        Column(Modifier.clickable(enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo")){sendDraft()},horizontalAlignment=Alignment.CenterHorizontally){IconButton(onClick={sendDraft()},enabled=draft.isNotBlank()&&!loading&&!health.optBoolean("demo"),modifier=Modifier.size(48.dp).background(Mint.copy(alpha=.2f),CircleShape)){if(loading)CircularProgressIndicator(Modifier.size(22.dp),color=Mint,strokeWidth=2.dp) else Icon(Icons.Rounded.Send,stringResource(R.string.ui_79075209f2bb),tint=Mint)};Text(if(loading)stringResource(R.string.ui_1ccef8a10ca7) else stringResource(R.string.ui_79075209f2bb),fontSize=12.sp,lineHeight=14.sp,maxLines=1)}
                     }
                 }
             }) else null) {
-            item { Eyebrow(if (preview) "$clock · APERÇU" else if (screen == "home") "$clock  ·  ${if (slot == "pc") "PC" else "SERVEUR"}" else clock, Muted) }
-            if (health.optBoolean("demo") && !preview) item { SmallNote("DÉMONSTRATION", Lilac) }
-            if (displayError.isNotBlank()) item { SmallNote(displayError, Color(0xFFFFBA9D)) }
+            item { Eyebrow(if (preview) "$clock · ${stringResource(R.string.app_preview)}" else if (screen == "home") "$clock  ·  ${if (slot == "pc") "PC" else stringResource(R.string.app_server)}" else clock, Muted) }
+            if (health.optBoolean("demo") && !preview) item { SmallNote(stringResource(R.string.ui_24a1ba87cec4), Lilac) }
+            if (displayError.isNotBlank()) item { SmallNote(statusText(displayError), Color(0xFFFFBA9D)) }
             if (loading) item { CircularProgressIndicator(Modifier.size(22.dp), color = Mint, strokeWidth = 2.dp) }
             when (screen) {
                 "welcome" -> {
                     item { VoiceOrb { settings() } }
-                    item { SmallNote("Codex et ton assistant, depuis ta montre Wear OS. Wi-Fi ou 4G.") }
-                    item { ActionButton("Associer PC", Icons.Rounded.Computer) { settings("pc") } }
-                    item { ActionButton("Lier serveur", Icons.Rounded.Cloud) { settings("server") } }
-                    item { TextButton(onClick = { preview = true; navigate("home") }, modifier = Modifier.heightIn(min = 48.dp)) { Text("Découvrir l’interface", fontSize = 12.sp, color = Lilac) } }
-                    item { SmallNote("Un relais sur ton PC ou ton serveur est nécessaire.") }
+                    item { SmallNote(stringResource(R.string.ui_e0458ad4193b)) }
+                    item { ActionButton(stringResource(R.string.ui_a12845022289), Icons.Rounded.Computer) { settings("pc") } }
+                    item { ActionButton(stringResource(R.string.ui_506b15ff5b20), Icons.Rounded.Cloud) { settings("server") } }
+                    item { TextButton(onClick = { preview = true; navigate("home") }, modifier = Modifier.heightIn(min = 48.dp)) { Text(stringResource(R.string.ui_91c1696532fb), fontSize = 12.sp, color = Lilac) } }
+                    item { SmallNote(stringResource(R.string.ui_c6ead326333e)) }
                 }
                 "home" -> {
-                    item { Eyebrow("Tes conversations", Lilac) }
-                    if(creatingId.isNotBlank()&&creatingSlot==slot)item{WatchCard("Conversation en préparation","Reprendre le suivi",Icons.Rounded.Pending,Lilac){navigate("creating")}}
+                    item { Eyebrow(stringResource(R.string.ui_6753ba13dc6b), Lilac) }
+                    if(creatingId.isNotBlank()&&creatingSlot==slot)item{WatchCard(stringResource(R.string.ui_137aa0409065),stringResource(R.string.ui_14c61cd87998),Icons.Rounded.Pending,Lilac){navigate("creating")}}
                     item { Row(Modifier.requiredWidth((LocalConfiguration.current.screenWidthDp-32).dp), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                         WatchQuickAction("Live", Icons.Rounded.Call, LiveRed, Modifier.weight(1f)) { startActivity(Intent(context,VoiceActivity::class.java)) }
                         WatchQuickAction("Chat", Icons.Rounded.Forum, Lilac, Modifier.weight(1f)) { openLibrary("chatgpt") }
@@ -606,63 +608,68 @@ open class MainActivity : ComponentActivity() {
                     } }
                     val resume = lastChat?.takeIf { it.optString("kind") in listOf("codex", "chatgpt") }
                     if (resume != null) {
-                        item { Eyebrow("Reprendre") }
+                        item { Eyebrow(stringResource(R.string.ui_ddd913203fe2)) }
                         item {
                             val current = recentThreads.find { it.optString("id") == resume.optString("id") && it.optString("kind") == resume.optString("kind") }
                             val state = current?.optString("status").orEmpty(); val pending = resume.optString("kind") == "codex" && resume.optString("id") in pendingThreadIds
-                            WatchCard(resume.optString("title").ifBlank { "Dernière conversation" }, listOf(sourceLabel(resume.optString("kind")), if (pending) "Demande en attente" else if (state.isNotBlank()) statusLabel(state) else "").filter { it.isNotBlank() }.joinToString(" · "), if (pending) Icons.Rounded.HelpOutline else if (state in listOf("idle", "completed")) Icons.Rounded.CheckCircle else Icons.Rounded.History, if (pending || resume.optString("kind") != "codex") Lilac else Mint, working = !pending && state in listOf("active", "inProgress")) { openRecent(resume) }
+                            val fallbackTitle = stringResource(R.string.state_last_chat)
+                            WatchCard(resume.optString("title").ifBlank { fallbackTitle }, listOf(sourceLabel(resume.optString("kind")), if (pending) stringResource(R.string.state_pending_request) else if (state.isNotBlank()) statusLabel(state) else "").filter { it.isNotBlank() }.joinToString(" · "), if (pending) Icons.Rounded.HelpOutline else if (state in listOf("idle", "completed")) Icons.Rounded.CheckCircle else Icons.Rounded.History, if (pending || resume.optString("kind") != "codex") Lilac else Mint, working = !pending && state in listOf("active", "inProgress")) { openRecent(resume) }
                         }
                     }
                     val homeRecents = recentThreads.filter { it.optString("kind") in listOf("codex", "chatgpt") && (it.optString("id") != resume?.optString("id") || it.optString("kind") != resume?.optString("kind")) }.take(4)
-                    if (homeRecents.isNotEmpty()) item { Eyebrow("Récemment actifs") }
+                    if (homeRecents.isNotEmpty()) item { Eyebrow(stringResource(R.string.ui_4d507c848429)) }
                     items(homeRecents, key = { "recent:${it.optString("kind")}:${it.optString("id")}" }) { chat ->
                         val pending = chat.optString("kind") == "codex" && chat.optString("id") in pendingThreadIds
                         val state = chat.optString("status")
-                        WatchCard(chat.optString("title"), listOf(sourceLabel(chat.optString("kind")), chat.optString("projectName"), if (pending) "Demande en attente" else statusLabel(state)).filter { it.isNotBlank() }.joinToString(" · "), if (pending) Icons.Rounded.HelpOutline else if (state in listOf("idle", "completed")) Icons.Rounded.CheckCircle else Icons.Rounded.ChatBubbleOutline, if (pending) Lilac else if (chat.optString("kind") == "codex") Mint else Lilac, working = !pending && state in listOf("active", "inProgress")) { openRecent(chat) }
+                        WatchCard(chat.optString("title"), listOf(sourceLabel(chat.optString("kind")), chat.optString("projectName"), if (pending) stringResource(R.string.state_pending_request) else statusLabel(state)).filter { it.isNotBlank() }.joinToString(" · "), if (pending) Icons.Rounded.HelpOutline else if (state in listOf("idle", "completed")) Icons.Rounded.CheckCircle else Icons.Rounded.ChatBubbleOutline, if (pending) Lilac else if (chat.optString("kind") == "codex") Mint else Lilac, working = !pending && state in listOf("active", "inProgress")) { openRecent(chat) }
                     }
                     val homeUnavailable = recentUnavailable.filter { it in listOf("codex", "chatgpt") }
-                    if (homeUnavailable.isNotEmpty()) item { SmallNote(homeUnavailable.joinToString(" · ") { sourceLabel(it) + " à reconnecter" }) }
-                    item { WatchCard("Paramètres", "Voix, activité et connexions", Icons.Rounded.Settings, Lilac) { navigate("preferences") } }
-                    if (!preview && store.isConfigured("pc") && store.isConfigured("server")) item { WatchCard(if (slot == "pc") "Mon PC" else "Mon serveur", if (slot == "pc") "Passer au serveur" else "Passer au PC", if (slot == "pc") Icons.Rounded.Computer else Icons.Rounded.Cloud, Mint) { selectConnection(if (slot == "pc") "server" else "pc") } }
-                    if (preview) item { ActionButton("Quitter", Icons.Rounded.Close) { preview = false; health = JSONObject(); navigate("welcome") } }
+                    if (homeUnavailable.isNotEmpty()) item {
+                        val reconnectLabel = stringResource(R.string.ui_de785acefc92)
+                        SmallNote(homeUnavailable.joinToString(" · ") { "${sourceLabel(it)} ${reconnectLabel.trimStart()}" })
+                    }
+                    item { WatchCard(stringResource(R.string.ui_01923df7a446), stringResource(R.string.ui_e66986d59f54), Icons.Rounded.Settings, Lilac) { navigate("preferences") } }
+                    if (!preview && store.isConfigured("pc") && store.isConfigured("server")) item { WatchCard(stringResource(if (slot == "pc") R.string.state_my_pc else R.string.state_my_server), stringResource(if (slot == "pc") R.string.state_to_server else R.string.state_to_pc), if (slot == "pc") Icons.Rounded.Computer else Icons.Rounded.Cloud, Mint) { selectConnection(if (slot == "pc") "server" else "pc") } }
+                    if (preview) item { ActionButton(stringResource(R.string.ui_4974161dd854), Icons.Rounded.Close) { preview = false; health = JSONObject(); navigate("welcome") } }
                 }
                 "preferences" -> {
-                    item { PageTitle("Paramètres", "À ta façon", Lilac) }
-                    item { WatchCard("Modèle", "Codex · réflexion", Icons.Rounded.Psychology,Lilac){startActivity(Intent(context,ManagementActivity::class.java).putExtra("section","models"))} }
-                    item { WatchCard("Plugins", "Activer et installer", Icons.Rounded.Extension,Lilac){startActivity(Intent(context,ManagementActivity::class.java).putExtra("section","plugins"))} }
-                    item { WatchCard("Voix et budget", when (effectiveAudioMode) { "openai" -> "OpenAI · crédits API"; "phonon" -> "Phonon · local"; else -> "Voix de la montre" }, Icons.Rounded.RecordVoiceOver, Lilac) { navigate("audio") } }
-                    item { WatchCard("Live", "Contextes et voix", Icons.Rounded.Call, LiveRed) { startActivity(Intent(context,VoiceActivity::class.java).putExtra("configure",true)) } }
-                    item { WatchCard("Notifications", "Alertes et réponses", Icons.Rounded.NotificationsActive) { navigate("notifications") } }
-                    item { WatchCard("Activité", "Fins de tâches et accords", Icons.Rounded.Notifications) { navigate("activity") } }
-                    item { WatchCard("Connexions", if (slot == "pc") "Mon PC" else "Mon serveur", Icons.Rounded.Sensors) { navigate("connections") } }
+                    item { PageTitle(stringResource(R.string.ui_01923df7a446), stringResource(R.string.ui_2141eb36e60f), Lilac) }
+                    item { WatchCard(stringResource(R.string.ui_e61bbb839ef8), stringResource(R.string.ui_3917c40cc207), Icons.Rounded.Psychology,Lilac){startActivity(Intent(context,ManagementActivity::class.java).putExtra("section","models"))} }
+                    item { WatchCard("Plugins", stringResource(R.string.ui_dd32c4d6bd50), Icons.Rounded.Extension,Lilac){startActivity(Intent(context,ManagementActivity::class.java).putExtra("section","plugins"))} }
+                    item { WatchCard(stringResource(R.string.ui_f2c157f7bcd5), when (effectiveAudioMode) { "openai" -> stringResource(R.string.state_api_credits); "phonon" -> "Phonon · local"; else -> stringResource(R.string.ui_1720e9334dbc) }, Icons.Rounded.RecordVoiceOver, Lilac) { navigate("audio") } }
+                    item { WatchCard("Live", stringResource(R.string.ui_71d1058956cc), Icons.Rounded.Call, LiveRed) { startActivity(Intent(context,VoiceActivity::class.java).putExtra("configure",true)) } }
+                    item { WatchCard(stringResource(R.string.ui_788011833a5a), stringResource(R.string.ui_e69f1975982c), Icons.Rounded.NotificationsActive) { navigate("notifications") } }
+                    item { WatchCard(stringResource(R.string.ui_6b2b8f1b80e0), stringResource(R.string.ui_fdfd3e6c1f16), Icons.Rounded.Notifications) { navigate("activity") } }
+                    item { WatchCard(stringResource(R.string.ui_689351db7e17), stringResource(if (slot == "pc") R.string.state_my_pc else R.string.state_my_server), Icons.Rounded.Sensors) { navigate("connections") } }
                 }
                 "audio" -> {
-                    item { PageTitle("Voix de lecture", "Choisir une sortie", Lilac) }
-                    if (!audioLoaded) item { SmallNote("Connexion au relais nécessaire pour enregistrer le choix.", Lilac) }
-                    item { WatchCard("Lecture automatique",if(autoReadDictation)"Demandes dictées · activée" else "Demandes dictées · désactivée",if(autoReadDictation)Icons.Rounded.VolumeUp else Icons.Rounded.VolumeOff,Lilac,enabled=audioLoaded&&!loading){
+                    item { PageTitle(stringResource(R.string.ui_0a00eb556d59), stringResource(R.string.ui_c9229a0e7e1d), Lilac) }
+                    if (!audioLoaded) item { SmallNote(stringResource(R.string.ui_d8f2fd233f69), Lilac) }
+                    item { WatchCard(stringResource(R.string.ui_3fd60bd8c0ab),stringResource(if(autoReadDictation) R.string.state_dictation_on else R.string.state_dictation_off),if(autoReadDictation)Icons.Rounded.VolumeUp else Icons.Rounded.VolumeOff,Lilac,enabled=audioLoaded&&!loading){
                         loading=true;scope.launch { try { audioBudget=api.request("/v1/audio/auto-read-dictation","PUT",JSONObject().put("enabled",!autoReadDictation));autoReadDictation=audioBudget.optBoolean("autoReadDictation",true) } catch(e:Exception){error=e.message?:"Réglage non enregistré"} finally{loading=false} }
                     } }
-                    val choices=listOf(Triple("watch","Montre","Voix système"),Triple("openai","OpenAI","Voix IA · API"),Triple("phonon","Phonon","Voix locale"))
-                    for ((mode,title,subtitle) in choices) item {
+                    for (mode in listOf("watch","openai","phonon")) item {
+                        val title=when(mode){"watch"->stringResource(R.string.state_watch);"openai"->"OpenAI";else->"Phonon"}
+                        val subtitle=when(mode){"watch"->stringResource(R.string.ui_9f11a4c68085);"openai"->stringResource(R.string.state_ai_voice);else->stringResource(R.string.ui_28f8369a4df3)}
                         val selected=audioMode==mode
-                        WatchCard(title, if(selected) "Sélectionnée · $subtitle" else subtitle, if(selected) Icons.Rounded.RadioButtonChecked else Icons.Rounded.RadioButtonUnchecked, if(selected) Mint else Muted, enabled=audioLoaded&&!loading) { selectAudioMode(mode) }
+                        WatchCard(title, if(selected) "${stringResource(R.string.state_selected)} · $subtitle" else subtitle, if(selected) Icons.Rounded.RadioButtonChecked else Icons.Rounded.RadioButtonUnchecked, if(selected) Mint else Muted, enabled=audioLoaded&&!loading) { selectAudioMode(mode) }
                     }
                     if (audioLoaded) item {
-                        val title=when(audioMode){"openai"->"Réglages OpenAI";"phonon"->"Réglages Phonon";else->"Réglages montre"}
-                        val detail=when(audioMode){"openai"->"Voix et clé API";"phonon"->"Langue et voix";else->"Voix système"}
+                        val title=stringResource(when(audioMode){"openai"->R.string.ui_346f31141b08;"phonon"->R.string.ui_fa6b36afff44;else->R.string.state_watch_settings})
+                        val detail=stringResource(when(audioMode){"openai"->R.string.state_voice_key;"phonon"->R.string.state_language_voice;else->R.string.ui_9f11a4c68085})
                         WatchCard(title,detail,Icons.Rounded.Settings,Lilac){navigate("audioProvider")}
                     }
-                    item { WatchCard("Budget Live", "Live et lecture OpenAI · USD", Icons.Rounded.PieChart,Lilac,enabled=audioLoaded){ audioLimit=String.format(java.util.Locale.US,"%.2f",audioBudget.optInt("monthlyLimitCents",500)/100.0); navigate("audioBudget") } }
+                    item { WatchCard(stringResource(R.string.ui_a7ca7706feae), stringResource(R.string.ui_cf0b88dfcabd), Icons.Rounded.PieChart,Lilac,enabled=audioLoaded){ audioLimit=String.format(java.util.Locale.US,"%.2f",audioBudget.optInt("monthlyLimitCents",500)/100.0); navigate("audioBudget") } }
                 }
                 "audioProvider" -> {
                     when(audioMode) {
-                        "watch" -> { item { PageTitle("Voix de la montre", "Voix système", Lilac) }; item { SmallNote("Choisis la voix dans les paramètres de la montre. Aucune clé API n’est nécessaire.") } }
+                        "watch" -> { item { PageTitle(stringResource(R.string.ui_1720e9334dbc), stringResource(R.string.ui_9f11a4c68085), Lilac) }; item { SmallNote(stringResource(R.string.ui_89bc8bff1984)) } }
                         "openai" -> {
-                            item { PageTitle("Réglages OpenAI", "Voix de lecture", Lilac) }
-                            item { SmallNote(if(audioBudget.optBoolean("ready")) "Audio OpenAI disponible sur le relais sélectionné." else "Vérifie la clé et l’activation audio sur le relais sélectionné.",Lilac) }
+                            item { PageTitle(stringResource(R.string.ui_346f31141b08), stringResource(R.string.ui_0a00eb556d59), Lilac) }
+                            item { SmallNote(if(audioBudget.optBoolean("ready")) stringResource(R.string.ui_c64176845d91) else stringResource(R.string.ui_b7c65abfa4c4),Lilac) }
                             for ((value,label) in listOf("marin" to "Marin","coral" to "Coral","cedar" to "Cedar")) item {
                                 val selected=audioBudget.optString("voice","marin")==value
-                                WatchCard(label,if(selected) "Sélectionnée" else null,if(selected) Icons.Rounded.CheckCircle else Icons.Rounded.VolumeUp,if(selected) Lilac else Muted,enabled=!loading){
+                                WatchCard(label,if(selected) stringResource(R.string.ui_0674422b0d91) else null,if(selected) Icons.Rounded.CheckCircle else Icons.Rounded.VolumeUp,if(selected) Lilac else Muted,enabled=!loading){
                                     loading=true; error=""
                                     scope.launch { try { audioBudget=api.request("/v1/audio/openai-voice","PUT",JSONObject().put("voice",value)) } catch(e: Exception){error=e.message?:"Voix non enregistrée"} finally{loading=false} }
                                 }
@@ -670,31 +677,31 @@ open class MainActivity : ComponentActivity() {
                         }
                         else -> {
                             val selected=audioBudget.optJSONArray("phononVoices")?.objects()?.firstOrNull { it.optString("id")==audioBudget.optString("phononVoice") }
-                            item { PageTitle("Réglages Phonon", "Voix locale", Lilac) }
-                            item { SmallNote(when {
-                                !audioLoaded -> "État de Phonon indisponible. Vérifie la connexion au relais."
-                                audioBudget.optBoolean("phononReady") -> "Modèle prêt sur le relais."
-                                else -> "Modèle ou voix indisponible sur le relais. Vérifie ses réglages."
-                            },Lilac) }
-                            item { WatchCard("Voix · ${selected?.optString("name") ?: "Noémie"}","Langue et voix",Icons.Rounded.RecordVoiceOver,Lilac,enabled=audioLoaded){navigate("phononLanguages")} }
+                            item { PageTitle(stringResource(R.string.ui_fa6b36afff44), stringResource(R.string.ui_28f8369a4df3), Lilac) }
+                            item { SmallNote(stringResource(when {
+                                !audioLoaded -> R.string.app_phonon_unknown
+                                audioBudget.optBoolean("phononReady") -> R.string.app_phonon_ready
+                                else -> R.string.app_phonon_missing
+                            }),Lilac) }
+                            item { WatchCard(stringResource(R.string.app_voice_named, selected?.optString("name") ?: "Noémie"),stringResource(R.string.app_language_and_voice),Icons.Rounded.RecordVoiceOver,Lilac,enabled=audioLoaded){navigate("phononLanguages")} }
                         }
                     }
                     val speed=audioBudget.optJSONObject("speechSpeeds")?.optDouble(audioMode,1.0) ?: 1.0
-                    item { WatchCard("Vitesse",String.format(java.util.Locale.FRANCE,"%.2f×",speed),Icons.Rounded.Speed,Lilac,enabled=audioLoaded&&!loading){navigate("audioSpeed")} }
+                    item { WatchCard(stringResource(R.string.ui_3d17399adcee),String.format(displayLocale,"%.2f×",speed),Icons.Rounded.Speed,Lilac,enabled=audioLoaded&&!loading){navigate("audioSpeed")} }
                 }
                 "audioSpeed" -> {
-                    item { PageTitle("Vitesse", "Lecture des réponses", Lilac) }
+                    item { PageTitle(stringResource(R.string.ui_3d17399adcee), stringResource(R.string.ui_7a199a981848), Lilac) }
                     item {
                         var speedDraft by remember(audioMode) { mutableFloatStateOf((audioBudget.optJSONObject("speechSpeeds")?.optDouble(audioMode,1.0) ?: 1.0).toFloat()) }
                         Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally) {
-                            Text(String.format(java.util.Locale.FRANCE,"%.2f×",speedDraft),style=MaterialTheme.typography.headlineSmall,color=Lilac)
+                            Text(String.format(displayLocale,"%.2f×",speedDraft),style=MaterialTheme.typography.headlineSmall,color=Lilac)
                             Slider(value=speedDraft,onValueChange={speedDraft=it},valueRange=.75f..1.5f,steps=14,enabled=!loading,modifier=Modifier.fillMaxWidth())
                             Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween) {
                                 Text("0,75×",style=MaterialTheme.typography.labelSmall,color=Muted)
                                 Text("1,50×",style=MaterialTheme.typography.labelSmall,color=Muted)
                             }
                             Spacer(Modifier.height(8.dp))
-                            ActionButton("Enregistrer",Icons.Rounded.Check,Lilac,enabled=!loading) {
+                            ActionButton(stringResource(R.string.ui_71dc74873e23),Icons.Rounded.Check,Lilac,enabled=!loading) {
                             loading=true; error=""
                                 val speed=kotlin.math.round(speedDraft * 20f).toInt() / 20.0
                                 scope.launch { try { audioBudget=api.request("/v1/audio/speed","PUT",JSONObject().put("mode",audioMode).put("speed",speed));audioPrefs.saveSpeeds(connection,audioBudget.optJSONObject("speechSpeeds"));navigate("audioProvider") } catch(e: Exception){error=e.message?:"Vitesse non enregistrée"} finally{loading=false} }
@@ -703,29 +710,34 @@ open class MainActivity : ComponentActivity() {
                     }
                 }
                 "audioBudget" -> {
-                    item { PageTitle("Budget Live", "Live et lecture OpenAI", Lilac) }
+                    item { PageTitle(stringResource(R.string.ui_a7ca7706feae), stringResource(R.string.ui_42a9ad18718f), Lilac) }
                     item { BudgetChart(audioBudget) }
-                    item { OutlinedTextField(audioLimit,{audioLimit=it},modifier=Modifier.fillMaxWidth(),label={Text("Plafond en dollars",fontSize=10.sp)},singleLine=true,keyboardOptions=KeyboardOptions(keyboardType=KeyboardType.Decimal)) }
+                    item { OutlinedTextField(audioLimit,{audioLimit=it},modifier=Modifier.fillMaxWidth(),label={Text(stringResource(R.string.ui_62db675acc9f),fontSize=10.sp)},singleLine=true,keyboardOptions=KeyboardOptions(keyboardType=KeyboardType.Decimal)) }
                     item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly){ for(amount in listOf(1,5,10)) TextButton(onClick={audioLimit="$amount.00"},modifier=Modifier.weight(1f).heightIn(min=48.dp),contentPadding=PaddingValues(0.dp)){Text("$amount $",fontSize=12.sp,maxLines=1,softWrap=false)} } }
-                    item { ActionButton("Enregistrer",Icons.Rounded.Check,Lilac,enabled=!loading&&audioLoaded){
+                    item { ActionButton(stringResource(R.string.ui_71dc74873e23),Icons.Rounded.Check,Lilac,enabled=!loading&&audioLoaded){
                         val cents=dollarCents(audioLimit)
                         if(cents==null) error="Choisir un montant de 0 à 100 $, avec deux décimales maximum."
                         else { loading=true; error=""; scope.launch { try { audioBudget=api.request("/v1/audio/budget","PUT",JSONObject().put("monthlyLimitCents",cents));audioReturnFromVoices=true;navigate("audio") } catch(e: Exception){error=e.message?:"Plafond non enregistré"} finally{loading=false} } }
                     } }
-                    item { SmallNote("Au plafond : lecture OpenAI coupée et Live bloqué. Phonon et la voix système restent disponibles.") }
+                    item { SmallNote(stringResource(R.string.ui_da88e0c9b350)) }
                 }
                 "phononLanguages" -> {
-                    item { PageTitle("Langue", "Voix Phonon", Lilac) }
-                    for ((code, label) in listOf("fr" to "Français", "en" to "Anglais", "de" to "Allemand", "es" to "Espagnol", "pt" to "Portugais")) item {
+                    item { PageTitle(stringResource(R.string.ui_5f6baab4dbe1), stringResource(R.string.ui_8ba7e602ff15), Lilac) }
+                    for (code in listOf("fr", "en", "de", "es", "pt")) item {
+                        val label=java.util.Locale.forLanguageTag(code).getDisplayLanguage(displayLocale).replaceFirstChar { it.titlecase(displayLocale) }
                         WatchCard(label, null, Icons.Rounded.Translate, Lilac) { phononLanguage=code; navigate("phononVoices") }
                     }
                 }
                 "phononVoices" -> {
-                    item { PageTitle("Choisir une voix", "Phonon", Lilac) }
+                    item { PageTitle(stringResource(R.string.ui_1e5e42e2e05d), "Phonon", Lilac) }
                     val voices=audioBudget.optJSONArray("phononVoices")?.objects()?.filter { it.optString("language") == phononLanguage }.orEmpty()
                     for (voice in voices) item {
                         val id=voice.optString("id"); val selected=id==audioBudget.optString("phononVoice")
-                        val locale=voice.optString("locale"); val hint=when { selected -> "Sélectionnée"; locale == "en-gb" -> "Anglais · Royaume-Uni"; locale == "en-us" -> "Anglais · États-Unis"; locale == "es-mx" -> "Espagnol · Mexique"; else -> null }
+                        val locale=voice.optString("locale"); val hint=when {
+                            selected -> stringResource(R.string.state_selected)
+                            locale in listOf("en-gb", "en-us", "es-mx") -> java.util.Locale.forLanguageTag(locale).getDisplayName(displayLocale).replaceFirstChar { it.titlecase(displayLocale) }
+                            else -> null
+                        }
                         WatchCard(voice.optString("name"), hint, if (selected) Icons.Rounded.CheckCircle else Icons.Rounded.VolumeUp, if (selected) Lilac else Muted, enabled=!loading) {
                             loading=true; error=""
                             scope.launch {
@@ -737,33 +749,35 @@ open class MainActivity : ComponentActivity() {
                     }
                 }
                 "connections" -> {
-                    item { PageTitle("Où travailler ?", "Connexions") }
-                    for ((value, label) in listOf("pc" to "Mon PC", "server" to "Mon serveur")) item {
-                        WatchCard(label, if (slot == value) "Connexion sélectionnée" else "Basculer ou configurer", if (value == "pc") Icons.Rounded.Computer else Icons.Rounded.Cloud,
+                    item { PageTitle(stringResource(R.string.ui_ded4c52f4a44), stringResource(R.string.ui_689351db7e17)) }
+                    for (value in listOf("pc", "server")) item {
+                        val label = stringResource(if (value == "pc") R.string.state_my_pc else R.string.state_my_server)
+                        WatchCard(label, if (slot == value) stringResource(R.string.ui_df58611fe284) else stringResource(R.string.ui_fc0597cc702a), if (value == "pc") Icons.Rounded.Computer else Icons.Rounded.Cloud,
                             if (value == slot) Mint else Lilac) {
                             selectConnection(value)
                         }
                     }
-                    item { WatchCard("Modifier", icon = Icons.Rounded.Settings) { settings() } }
+                    item { WatchCard(stringResource(R.string.ui_42e37604b638), icon = Icons.Rounded.Settings) { settings() } }
                     item {
-                        val mode=when(connection.transportMode){"auto"->"Automatique";"bluetooth"->"Bluetooth";else->"Internet"}
-                        val used=if(health.length()==0) "À vérifier" else when(ConnectionStatus.last(connection)){"bluetooth"->if(connection.transportMode=="bluetooth")"Connecté" else "Bluetooth";"internet"->if(connection.transportMode=="internet")"Connecté" else "Internet";else->"Relais connecté"}
-                        WatchCard("Réseau", "$mode · $used",Icons.Rounded.Settings,Lilac,enabled=connection.token.isNotBlank()) { bluetoothSettings.launch(Intent(context,BluetoothActivity::class.java)) }
+                        val mode=when(connection.transportMode){"auto"->stringResource(R.string.mode_auto);"bluetooth"->"Bluetooth";else->"Internet"}
+                        val connected=stringResource(R.string.state_connected)
+                        val used=if(health.length()==0) stringResource(R.string.state_check) else when(ConnectionStatus.last(connection)){"bluetooth"->if(connection.transportMode=="bluetooth")connected else "Bluetooth";"internet"->if(connection.transportMode=="internet")connected else "Internet";else->stringResource(R.string.app_relay_connected)}
+                        WatchCard(stringResource(R.string.ui_b5f96c04b748), "$mode · $used",Icons.Rounded.Settings,Lilac,enabled=connection.token.isNotBlank()) { bluetoothSettings.launch(Intent(context,BluetoothActivity::class.java)) }
                     }
-                    item { WatchCard("Voix et budget", "Montre, Phonon ou OpenAI", Icons.Rounded.RecordVoiceOver, Lilac) { navigate("audio") } }
-                    item { WatchCard("Notifications", pushStatus.ifBlank { if (CloudNotifications.enabled || health.optBoolean("push")) CloudNotifications.status else DirectNotifications.status }, Icons.Rounded.NotificationsActive) { navigate("notifications") } }
+                    item { WatchCard(stringResource(R.string.ui_f2c157f7bcd5), stringResource(R.string.ui_f68519e94475), Icons.Rounded.RecordVoiceOver, Lilac) { navigate("audio") } }
+                    item { WatchCard(stringResource(R.string.ui_788011833a5a), statusText(pushStatus.ifBlank { if (CloudNotifications.enabled || health.optBoolean("push")) CloudNotifications.status else DirectNotifications.status }), Icons.Rounded.NotificationsActive) { navigate("notifications") } }
                     if (health.optString("notice").isNotBlank()) item { SmallNote(health.optString("notice")) }
-                    item { SmallNote("PC : doit rester allumé. Serveur : doit exécuter le relais et Codex.") }
+                    item { SmallNote(stringResource(R.string.ui_a6903e0f4e4e)) }
                 }
                 "settings" -> {
-                    item { PageTitle(if (configSlot == "pc") "Mon PC" else "Mon serveur", "Association") }
+                    item { PageTitle(if (configSlot == "pc") stringResource(R.string.ui_72961a15832d) else stringResource(R.string.ui_cabe7c5ffd54), stringResource(R.string.ui_c1d4342085d2)) }
                     item { RelayDiscovery { configUrl=it } }
-                    item { SmallNote("Adresse HTTPS du relais") }
+                    item { SmallNote(stringResource(R.string.ui_6483cc1ed0ca)) }
                     item { OutlinedTextField(configUrl, { configUrl = it }, modifier = Modifier.fillMaxWidth(), label = { Text("https://…", fontSize = 11.sp) }, singleLine = true) }
-                    item { OutlinedTextField(configToken, { configToken = it }, modifier = Modifier.fillMaxWidth(), label = { Text("Code du PC ou jeton", fontSize = 10.sp) }, visualTransformation = PasswordVisualTransformation(), singleLine = true, keyboardOptions=KeyboardOptions(imeAction=ImeAction.Done), keyboardActions=KeyboardActions(onDone={keyboard?.hide();associate()})) }
-                    item { ActionButton("Associer", Icons.Rounded.Link, enabled = !loading) { associate() } }
-                    item { SmallNote("Le jeton reste chiffré sur la montre. La clé OpenAI reste sur le relais.") }
-                    item { WatchCard("Oublier ce relais", "Retirer les identifiants de la montre", Icons.Rounded.LinkOff, Lilac) {
+                    item { OutlinedTextField(configToken, { configToken = it }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.ui_e0dcbc6aba53), fontSize = 10.sp) }, visualTransformation = PasswordVisualTransformation(), singleLine = true, keyboardOptions=KeyboardOptions(imeAction=ImeAction.Done), keyboardActions=KeyboardActions(onDone={keyboard?.hide();associate()})) }
+                    item { ActionButton(stringResource(R.string.ui_8ddf67471547), Icons.Rounded.Link, enabled = !loading) { associate() } }
+                    item { SmallNote(stringResource(R.string.ui_b821a2859460)) }
+                    item { WatchCard(stringResource(R.string.ui_34f243dc6c15), stringResource(R.string.ui_59087c87e341), Icons.Rounded.LinkOff, Lilac) {
                         store.forget(configSlot); configToken = ""; configUrl = ""
                         CloudNotifications.reconcile(context.applicationContext)
                         runCatching { DirectNotifications.refresh(context.applicationContext) }
@@ -771,41 +785,41 @@ open class MainActivity : ComponentActivity() {
                     } }
                 }
                 "threads" -> {
-                    if (notice.isNotBlank()) item { SmallNote(notice, Mint) }
-                    item { PageTitle(projectName.ifBlank { "Discussions" }, if(kind=="chatgpt"&&health.optString("chatgptMode")=="api") "Chat" else sourceLabel(kind), if (kind != "codex") Lilac else Mint) }
-                    if(kind=="chatgpt"&&health.optString("chatgptMode")=="api") item { SmallNote("Chat du serveur · API OpenAI. Historique séparé du PC.",Lilac) }
-                    if(kind=="chatgpt"&&health.optString("chatgptMode")=="api"&&!health.optBoolean("chatgpt")) item { SmallNote("Configure la clé API sur ton serveur.",Lilac) }
+                    if (notice.isNotBlank()) item { SmallNote(statusText(notice), Mint) }
+                    item { PageTitle(projectName.ifBlank { stringResource(R.string.ui_60157cfcfe3f) }, if(kind=="chatgpt"&&health.optString("chatgptMode")=="api") "Chat" else sourceLabel(kind), if (kind != "codex") Lilac else Mint) }
+                    if(kind=="chatgpt"&&health.optString("chatgptMode")=="api") item { SmallNote(stringResource(R.string.ui_931705971a62),Lilac) }
+                    if(kind=="chatgpt"&&health.optString("chatgptMode")=="api"&&!health.optBoolean("chatgpt")) item { SmallNote(stringResource(R.string.ui_6c2eee15a661),Lilac) }
                     item { Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         if (kind != "chat" && !(kind=="chatgpt"&&health.optString("chatgptMode") in listOf("api","plan"))) TextButton(onClick = { choosingNewProject = false; showProjects = !showProjects; showSearch = false; threadSearch = "" }, modifier = Modifier.weight(1f).heightIn(min = 48.dp), contentPadding = PaddingValues(2.dp)) {
-                            Icon(Icons.Rounded.FolderOpen, null, Modifier.size(14.dp)); Spacer(Modifier.width(2.dp)); Text("Projet", fontSize = 10.sp, maxLines = 1, softWrap = false)
+                            Icon(Icons.Rounded.FolderOpen, null, Modifier.size(14.dp)); Spacer(Modifier.width(2.dp)); Text(stringResource(R.string.ui_9c466199f8ec), fontSize = 10.sp, maxLines = 1, softWrap = false)
                         } else Spacer(Modifier.weight(1f))
                         IconButton(onClick = {
                             if (kind == "codex" && projectId.isBlank()) { choosingNewProject = true; showProjects = true }
                             else compose(kind, origin = "threads")
-                        }, modifier = Modifier.size(48.dp)) { Icon(Icons.Rounded.Add, if (kind == "chatgpt") "Nouvelle tâche Work" else "Nouvelle discussion", tint = if (kind == "codex") Mint else Lilac) }
-                        IconButton(onClick = { if (showSearch) { threadSearch = ""; threadsLoaded = false }; showSearch = !showSearch; showProjects = false; choosingNewProject = false }, modifier = Modifier.size(48.dp)) { Icon(Icons.Rounded.Search, "Rechercher une discussion", tint = Lilac) }
+                        }, modifier = Modifier.size(48.dp)) { Icon(Icons.Rounded.Add, if (kind == "chatgpt") stringResource(R.string.ui_dc4c0241ea37) else stringResource(R.string.ui_e6a6a99bbc63), tint = if (kind == "codex") Mint else Lilac) }
+                        IconButton(onClick = { if (showSearch) { threadSearch = ""; threadsLoaded = false }; showSearch = !showSearch; showProjects = false; choosingNewProject = false }, modifier = Modifier.size(48.dp)) { Icon(Icons.Rounded.Search, stringResource(R.string.ui_8bb5a3c6d858), tint = Lilac) }
                     } }
                     if (showProjects) {
-                        item { Eyebrow(if (choosingNewProject) "Créer dans quel projet ?" else "Choisir un projet") }
-                        if (!choosingNewProject && (kind == "chatgpt" || health.optBoolean("codexAllProjects"))) item { WatchCard("Tous les projets", if (projectId.isEmpty()) "Sélectionné" else null, Icons.Rounded.Apps) {
+                        item { Eyebrow(if (choosingNewProject) stringResource(R.string.ui_aeff8f0c0409) else stringResource(R.string.ui_1fc798128adb)) }
+                        if (!choosingNewProject && (kind == "chatgpt" || health.optBoolean("codexAllProjects"))) item { WatchCard(stringResource(R.string.ui_0fd2961b7d10), if (projectId.isEmpty()) stringResource(R.string.ui_42345d238922) else null, Icons.Rounded.Apps) {
                             projectId = ""; projectName = ""; showProjects = false; threads = emptyList(); threadsLoaded = false
                             navigation.selectProject(connection, kind, "")
                         } }
-                        items(projects) { project -> WatchCard(project.optString("name"), if (project.optString("id") == projectId) "Sélectionné" else null, Icons.Rounded.FolderOpen) {
+                        items(projects) { project -> WatchCard(project.optString("name"), if (project.optString("id") == projectId) stringResource(R.string.ui_42345d238922) else null, Icons.Rounded.FolderOpen) {
                             projectId = project.getString("id"); projectName = project.getString("name"); showProjects = false; threads = emptyList(); threadsLoaded = false
                             navigation.selectProject(connection, kind, projectId)
                             if (choosingNewProject) { choosingNewProject = false; compose(kind, origin = "threads") }
                         } }
                     }
-                    if (showSearch) item { OutlinedTextField(threadSearch, { threadSearch = it; threadsLoaded = false }, singleLine = true, label = { Text("Rechercher un titre", fontSize = 11.sp) }, modifier = Modifier.fillMaxWidth()) }
+                    if (showSearch) item { OutlinedTextField(threadSearch, { threadSearch = it; threadsLoaded = false }, singleLine = true, label = { Text(stringResource(R.string.ui_e658be766720), fontSize = 11.sp) }, modifier = Modifier.fillMaxWidth()) }
                     items(threads, key = { "chat:${it.optString("id")}" }) { thread ->
                         val state = thread.optString("status"); val pending = kind == "codex" && thread.optString("id") in pendingThreadIds
-                        WatchCard(thread.optString("title"), if (pending) "Demande en attente" else statusLabel(state), if (pending) Icons.Rounded.HelpOutline else if (state in listOf("idle", "completed")) Icons.Rounded.CheckCircle else Icons.Rounded.ChatBubbleOutline,
+                        WatchCard(thread.optString("title"), if (pending) stringResource(R.string.state_pending_request) else statusLabel(state), if (pending) Icons.Rounded.HelpOutline else if (state in listOf("idle", "completed")) Icons.Rounded.CheckCircle else Icons.Rounded.ChatBubbleOutline,
                             if (pending || kind != "codex") Lilac else Mint, working = !pending && state in listOf("active", "inProgress")) { openThread(thread.getString("id"), kind) }
                     }
-                    if (!threadsLoaded && threads.isEmpty()) item { SmallNote("Chargement des échanges…") }
-                    else if (threads.isEmpty()) item { SmallNote(if (cursor.isNotBlank()) "Aucun titre sur cette page. Voir plus pour continuer." else if (threadSearch.isNotBlank()) "Aucun titre trouvé. Essaie un autre mot." else "Aucune discussion dans ce projet.") }
-                    if (cursor.isNotBlank()) item { ActionButton("Voir plus", Icons.Rounded.ExpandMore, enabled = !loading) {
+                    if (!threadsLoaded && threads.isEmpty()) item { SmallNote(stringResource(R.string.ui_f433895f5136)) }
+                    else if (threads.isEmpty()) item { SmallNote(if (cursor.isNotBlank()) stringResource(R.string.ui_a446c82ed2f5) else if (threadSearch.isNotBlank()) stringResource(R.string.ui_68c5f3e0a2f0) else stringResource(R.string.ui_97d3228ab93c)) }
+                    if (cursor.isNotBlank()) item { ActionButton(stringResource(R.string.ui_df1e57b28822), Icons.Rounded.ExpandMore, enabled = !loading) {
                         loading = true
                         scope.launch {
                             try {
@@ -817,16 +831,16 @@ open class MainActivity : ComponentActivity() {
                         }
                     } }
                     if (kind == "chat") {
-                        item { SmallNote(if (health.optBoolean("chat")) "Assistant API disponible" else "Clé API et modèle à configurer sur le relais", Lilac) }
+                        item { SmallNote(if (health.optBoolean("chat")) stringResource(R.string.ui_9e8bc386f644) else stringResource(R.string.ui_55a662c5d36b), Lilac) }
                     }
                 }
                 "thread" -> {
-                    item { Column { PageTitle(when (kind) { "chat" -> "Assistant API"; "chatgpt" -> if(health.optString("chatgptMode")=="api") "Chat" else "ChatGPT"; else -> "Codex" }, statusLabel(detail.optString("status")), if (kind != "codex") Lilac else Mint)
+                    item { Column { PageTitle(when (kind) { "chat" -> stringResource(R.string.ui_885fb5c92a82); "chatgpt" -> if(health.optString("chatgptMode")=="api") "Chat" else "ChatGPT"; else -> "Codex" }, statusLabel(detail.optString("status")), if (kind != "codex") Lilac else Mint)
                         if(kind in listOf("codex","chatgpt")) TextButton(onClick={startActivity(Intent(context,VoiceActivity::class.java).putExtra("kind",kind).putExtra("threadId",threadId).putExtra("title",detail.optString("title")))},modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Icon(Icons.Rounded.Call,null,Modifier.size(16.dp),tint=LiveRed);Spacer(Modifier.width(5.dp));Text("Live",fontSize=12.sp,maxLines=1,color=LiveRed)}
                     } }
-                    item { Column{SmallNote(detail.optString("title"));if(detail.optString("notice").isNotBlank())SmallNote(detail.optString("notice"),Lilac);if(kind in listOf("codex","chatgpt"))WatchCard("Échanges Live", "Historique vocal de ce chat",Icons.Rounded.GraphicEq,Lilac){startActivity(Intent(context,LiveHistoryActivity::class.java).putExtra("kind",kind).putExtra("threadId",threadId))}} }
-                    if (detail.optString("source") == "chatgpt-export") item { SmallNote("Import ChatGPT. Les nouvelles réponses restent dans cette application.", Lilac) }
-                    if (historyCursor.isNotBlank()) item { ActionButton("Précédents", Icons.Rounded.ExpandLess, enabled = !loading) {
+                    item { Column{SmallNote(detail.optString("title"));if(detail.optString("notice").isNotBlank())SmallNote(detail.optString("notice"),Lilac);if(kind in listOf("codex","chatgpt"))WatchCard(stringResource(R.string.ui_58569bcd7473), stringResource(R.string.ui_7963a6ff7831),Icons.Rounded.GraphicEq,Lilac){startActivity(Intent(context,LiveHistoryActivity::class.java).putExtra("kind",kind).putExtra("threadId",threadId))}} }
+                    if (detail.optString("source") == "chatgpt-export") item { SmallNote(stringResource(R.string.ui_894097d0046b), Lilac) }
+                    if (historyCursor.isNotBlank()) item { ActionButton(stringResource(R.string.ui_ab5a780da33f), Icons.Rounded.ExpandLess, enabled = !loading) {
                         loading = true
                         scope.launch {
                             try { detail = api.request("/v1/threads/${BridgeApi.encode(threadId)}?kind=$kind&cursor=${BridgeApi.encode(historyCursor)}") }
@@ -838,8 +852,8 @@ open class MainActivity : ComponentActivity() {
                         val fromUser = message.optString("role") == "user"
                         val formatted = remember(messageCache,message.optString("text"), fromUser) { messageCache.format(message.optString("text"), fromUser) }
                         Column(Modifier.fillMaxWidth().background(if (fromUser) Color(0xFF202D26) else Color(0xFF191A24), RoundedCornerShape(22.dp)).padding(15.dp)) {
-                            Text(if (fromUser) "TOI" else if (kind == "chatgpt") "CHATGPT" else if (kind == "chat") "ASSISTANT" else if (message.optString("phase") == "commentary") "AVANCEMENT" else "CODEX", color = if (fromUser) Mint else Lilac, fontSize = 9.sp, fontWeight = FontWeight.Bold)
-                            if (message.optString("source") == "watch") Text(if (message.optString("delivery") == "accepted") "Depuis la montre · transmise au PC" else "Depuis la montre · réception à vérifier", color = Muted, fontSize = 9.sp, modifier = Modifier.padding(top = 4.dp))
+                            Text(if (fromUser) stringResource(R.string.ui_4ab0a39eebe2) else if (kind == "chatgpt") "CHATGPT" else if (kind == "chat") "ASSISTANT" else if (message.optString("phase") == "commentary") stringResource(R.string.ui_b136480d0dc2) else "CODEX", color = if (fromUser) Mint else Lilac, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                            if (message.optString("source") == "watch") Text(if (message.optString("delivery") == "accepted") stringResource(R.string.ui_d4200b547fb3) else stringResource(R.string.ui_594e87e85de4), color = Muted, fontSize = 9.sp, modifier = Modifier.padding(top = 4.dp))
                             Text(formatted, fontSize = 13.sp, lineHeight = 18.sp, modifier = Modifier.padding(top = 7.dp))
                             if (!fromUser) {
                                 val selectedSpeech = speech.messageId == message.optString("id")
@@ -851,9 +865,9 @@ open class MainActivity : ComponentActivity() {
                                         else -> speak(message.optString("text"), message.optString("id")) }
                                 }, enabled = !preparing, contentPadding = PaddingValues(0.dp), modifier = Modifier.heightIn(min = 48.dp)) {
                                     Icon(if (playing) Icons.Rounded.Pause else if (paused) Icons.Rounded.PlayArrow else Icons.Rounded.VolumeUp, null, Modifier.size(16.dp))
-                                    Spacer(Modifier.width(5.dp)); Text(if (preparing) "Préparation…" else if (playing) "Pause" else if (paused) "Reprendre" else "Écouter", fontSize = 11.sp)
+                                    Spacer(Modifier.width(5.dp)); Text(if (preparing) stringResource(R.string.ui_d038e2acfee3) else if (playing) stringResource(R.string.ui_858e4ba7a29f) else if (paused) stringResource(R.string.ui_ddd913203fe2) else stringResource(R.string.ui_b3266f2ad37b), fontSize = 11.sp)
                                 }
-                                if (selectedSpeech && speech.notice.isNotBlank()) Text(speech.notice, color = Muted, fontSize = 10.sp)
+                                if (selectedSpeech && speech.notice.isNotBlank()) Text(statusText(speech.notice), color = Muted, fontSize = 10.sp)
                             }
                         }
                     }
@@ -861,7 +875,7 @@ open class MainActivity : ComponentActivity() {
                         Row(Modifier.fillMaxWidth().background(Mint.copy(alpha = .09f), RoundedCornerShape(22.dp)).padding(14.dp),
                             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             CircularProgressIndicator(Modifier.size(16.dp), color = Mint, strokeWidth = 2.dp)
-                            Text(if (kind == "codex" && slot == "pc") "En cours sur le PC" else "Réponse en cours", fontSize = 11.sp, color = Mint)
+                            Text(if (kind == "codex" && slot == "pc") stringResource(R.string.ui_76007a7c1429) else stringResource(R.string.ui_4a228d7218a4), fontSize = 11.sp, color = Mint)
                         }
                     }
                     items(threadRequests, key = { "request:${it.optString("key")}" }) { request ->
@@ -871,7 +885,7 @@ open class MainActivity : ComponentActivity() {
                             completedRequestKeys = completedRequestKeys + request.optString("key")
                             approvals = approvals.filter { it.optString("key") != request.optString("key") }
                             requestRefresh++
-                            Toast.makeText(context, "Réponse envoyée", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getString(R.string.msg_97e44cadc91d), Toast.LENGTH_SHORT).show()
                             scope.launch { delay(1200); settlingRequest = false }
                         }
                     }
@@ -880,41 +894,42 @@ open class MainActivity : ComponentActivity() {
                 Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally) {
                 Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
                     Column(Modifier.clickable(enabled=!loading&&(kind!="chat"||!taskActive)){compose(kind,threadId,"thread")},horizontalAlignment=Alignment.CenterHorizontally){
-                    IconButton(onClick={compose(kind,threadId,"thread")},enabled=!loading&&(kind!="chat"||!taskActive),modifier=Modifier.size(48.dp).background((if(kind=="codex")Mint else Lilac).copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Edit,"Répondre",tint=if(kind=="codex")Mint else Lilac)}
-                    Text("Répondre",fontSize=12.sp,lineHeight=14.sp,maxLines=1)
+                    IconButton(onClick={compose(kind,threadId,"thread")},enabled=!loading&&(kind!="chat"||!taskActive),modifier=Modifier.size(48.dp).background((if(kind=="codex")Mint else Lilac).copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Edit,stringResource(R.string.ui_05af80398c58),tint=if(kind=="codex")Mint else Lilac)}
+                    Text(stringResource(R.string.ui_05af80398c58),fontSize=12.sp,lineHeight=14.sp,maxLines=1)
                     }
                     Column(Modifier.clickable(enabled=!loading&&(kind!="chat"||!taskActive)){compose(kind,threadId,"thread",voiceFirst=true);dictate()},horizontalAlignment=Alignment.CenterHorizontally){
-                    IconButton(onClick={compose(kind,threadId,"thread",voiceFirst=true);dictate()},enabled=!loading&&(kind!="chat"||!taskActive),modifier=Modifier.size(48.dp).background(Mint.copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Mic,"Dicter",tint=Mint)}
-                    Text("Dicter",fontSize=12.sp,lineHeight=14.sp,maxLines=1)
+                    IconButton(onClick={compose(kind,threadId,"thread",voiceFirst=true);dictate()},enabled=!loading&&(kind!="chat"||!taskActive),modifier=Modifier.size(48.dp).background(Mint.copy(alpha=.2f),CircleShape)){Icon(Icons.Rounded.Mic,stringResource(R.string.ui_c1b029f0a721),tint=Mint)}
+                    Text(stringResource(R.string.ui_c1b029f0a721),fontSize=12.sp,lineHeight=14.sp,maxLines=1)
                     }
                 }
                 if(kind=="codex"&&threadId.isNotBlank()) {
                     Row(Modifier.fillMaxWidth().padding(top=10.dp),horizontalArrangement=Arrangement.SpaceEvenly){
-                        for((section,label,icon) in listOf(Triple("models","Modèle",Icons.Rounded.Psychology),Triple("effort","Réflexion",Icons.Rounded.Tune))){
+                        for((section,label,icon) in listOf(Triple("models",stringResource(R.string.ui_e61bbb839ef8),Icons.Rounded.Psychology),Triple("effort",stringResource(R.string.ui_fc8b3826cea8),Icons.Rounded.Tune))){
                             Column(Modifier.clickable{modelPicker.launch(Intent(context,ManagementActivity::class.java).putExtra("section",section).putExtra("threadId",threadId))},horizontalAlignment=Alignment.CenterHorizontally){
                                 IconButton(onClick={modelPicker.launch(Intent(context,ManagementActivity::class.java).putExtra("section",section).putExtra("threadId",threadId))},modifier=Modifier.size(48.dp).background(Mint.copy(alpha=.2f),CircleShape)){Icon(icon,label,tint=Mint)}
                                 Text(label,fontSize=12.sp,lineHeight=14.sp,maxLines=1)
                             }
                         }
                     }
-                    Text(listOf(threadInference.model.ifBlank{if(connection.slot=="server")"Du serveur" else "Du PC"},if(threadInference.model.isNotBlank())effortLabel(threadInference.thinking) else "").filter{it.isNotBlank()}.joinToString(" · "),fontSize=10.sp,color=Muted,maxLines=1)
+                    val defaultModel=stringResource(if(connection.slot=="server") R.string.ui_05c7f4639c83 else R.string.ui_09b6227b10b2)
+                    Text(listOf(threadInference.model.ifBlank{defaultModel},if(threadInference.model.isNotBlank())effortLabel(threadInference.thinking) else "").filter{it.isNotBlank()}.joinToString(" · "),fontSize=10.sp,color=Muted,maxLines=1)
                 }
-                if(kind=="chatgpt")Text(when(health.optString("chatgptMode")){"api"->"Modèle : serveur";"plan"->"Modèle : automatique";else->"Modèle : réglage sur le PC"},fontSize=10.sp,color=Muted,maxLines=1)
+                if(kind=="chatgpt")Text(when(health.optString("chatgptMode")){"api"->stringResource(R.string.ui_794caa53e7f2);"plan"->stringResource(R.string.ui_7bb57d8ff04d);else->stringResource(R.string.ui_f8cd14911fa2)},fontSize=10.sp,color=Muted,maxLines=1)
                 if(kind in listOf("codex","chatgpt")) TextButton(onClick={startActivity(Intent(context,VoiceActivity::class.java).putExtra("kind",kind).putExtra("threadId",threadId).putExtra("title",detail.optString("title")))},modifier=Modifier.heightIn(min=40.dp),contentPadding=PaddingValues(horizontal=8.dp,vertical=0.dp)){Icon(Icons.Rounded.Call,"",tint=LiveRed,modifier=Modifier.size(18.dp));Spacer(Modifier.width(5.dp));Text("Live",fontSize=12.sp,color=LiveRed)}
                 }
                     }
-                    if (detail.has("id") && messageItems.isEmpty()) item { SmallNote("Cette discussion est vide. Tu peux écrire son premier message.") }
+                    if (detail.has("id") && messageItems.isEmpty()) item { SmallNote(stringResource(R.string.ui_43ecbf57dbe0)) }
                     if (kind == "codex" && detail.optBoolean("canInterrupt") && !detail.isNull("activeTurnId") && detail.optString("activeTurnId").isNotEmpty()) item {
-                        WatchCard("Interrompre la tâche", "Tâche lancée depuis ce relais", Icons.Rounded.StopCircle, Lilac) {
+                        WatchCard(stringResource(R.string.ui_e8a25bc1db14), stringResource(R.string.ui_5881c168a9b6), Icons.Rounded.StopCircle, Lilac) {
                             scope.launch { try { api.request("/v1/threads/${BridgeApi.encode(threadId)}/interrupt", "POST", JSONObject().put("turnId", detail.getString("activeTurnId"))) }
                             catch (e: Exception) { error = e.message ?: "Interruption impossible" } }
                         }
                     }
                 }
                 "compose", "confirm" -> {
-                    item { PageTitle(if (kind == "chat") "À ton écoute" else if (threadId.isEmpty()) "Nouvelle demande" else "Répondre", when (kind) { "chat" -> "Assistant API"; "chatgpt" -> "${if(health.optString("chatgptMode")=="api") "Chat" else "ChatGPT"} · ${projectName.ifBlank { "Conversation" }}"; else -> "Codex · ${projectName.ifBlank { "Conversation" }}" }, if (kind != "codex") Lilac else Mint) }
+                    item { PageTitle(stringResource(if (kind == "chat") R.string.app_listening else if (threadId.isEmpty()) R.string.app_new_request else R.string.ui_05af80398c58), when (kind) { "chat" -> "Assistant API"; "chatgpt" -> "${if(health.optString("chatgptMode")=="api") "Chat" else "ChatGPT"} · ${projectName.ifBlank { "Conversation" }}"; else -> "Codex · ${projectName.ifBlank { "Conversation" }}" }, if (kind != "codex") Lilac else Mint) }
                     item(key = "draft-editor") {
-                        OutlinedTextField(draft, { draft = it; requestId = UUID.randomUUID().toString() }, modifier = Modifier.fillMaxWidth().focusRequester(editorFocus), enabled=!loading, label = { Text("Ta demande", fontSize = 11.sp) }, minLines = 3, maxLines = 4)
+                        OutlinedTextField(draft, { draft = it; requestId = UUID.randomUUID().toString() }, modifier = Modifier.fillMaxWidth().focusRequester(editorFocus), enabled=!loading, label = { Text(stringResource(R.string.ui_978b481a134e), fontSize = 11.sp) }, minLines = 3, maxLines = 4)
                         // A lazy item can request focus only once its field has been composed.
                         LaunchedEffect(editorRequest, editOnOpen) {
                             if (screen == "compose" && editOnOpen) {
@@ -925,58 +940,58 @@ open class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    item { WatchCard(if(draft.isBlank())"Dicter" else "Ajouter une dictée","Le texte reste modifiable",Icons.Rounded.Mic,Mint,enabled=!loading){editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();dictate()} }
-                    item { SmallNote((if (threadId.isEmpty()) "Une nouvelle conversation sera créée." else "La réponse ira dans cette conversation.")+JSONArray(pluginSelection).objects().joinToString(" · ",prefix=if(pluginSelection!="[]")"\nPlugins : "else ""){it.optString("name")}) }
+                    item { WatchCard(if(draft.isBlank())stringResource(R.string.ui_c1b029f0a721) else stringResource(R.string.ui_edaf484070be),stringResource(R.string.ui_73303ce22a10),Icons.Rounded.Mic,Mint,enabled=!loading){editOnOpen=false;keyboard?.hide();editorFocusManager.clearFocus();dictate()} }
+                    item { SmallNote(stringResource(if (threadId.isEmpty()) R.string.app_new_conversation else R.string.app_existing_conversation)+JSONArray(pluginSelection).objects().joinToString(" · ",prefix=if(pluginSelection!="[]")"\nPlugins : "else ""){it.optString("name")}) }
                 }
                 "creating" -> {
-                    item { PageTitle(if(creatingKind=="codex")"Codex" else if(health.optString("chatgptMode")=="api")"Chat" else "ChatGPT","Nouvelle conversation",Lilac) }
+                    item { PageTitle(if(creatingKind=="codex")"Codex" else if(health.optString("chatgptMode")=="api")"Chat" else "ChatGPT",stringResource(R.string.ui_9f22ff67b352),Lilac) }
                     if(creatingText.isNotBlank())item {
                         Column(Modifier.fillMaxWidth().background(Color(0xFF202D26),RoundedCornerShape(22.dp)).padding(15.dp)) {
-                            Text("TOI",color=Mint,fontSize=9.sp,fontWeight=FontWeight.Bold)
+                            Text(stringResource(R.string.ui_4ab0a39eebe2),color=Mint,fontSize=9.sp,fontWeight=FontWeight.Bold)
                             Text(creatingText,fontSize=13.sp,lineHeight=18.sp,modifier=Modifier.padding(top=7.dp))
                         }
                     }
                     item { Row(Modifier.fillMaxWidth().background(Lilac.copy(alpha=.09f),RoundedCornerShape(22.dp)).padding(14.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(10.dp)) {
                         CircularProgressIndicator(Modifier.size(16.dp),color=Lilac,strokeWidth=2.dp)
-                        Text("Création à confirmer",fontSize=11.sp,color=Lilac)
+                        Text(stringResource(R.string.ui_fc21326e1074),fontSize=11.sp,color=Lilac)
                     } }
-                    item { SmallNote(creatingStatus.ifBlank{"Création non confirmée. Vérifie avant de renvoyer."},Lilac) }
-                    item { WatchCard("Voir les conversations","Vérifier avant de renvoyer",Icons.Rounded.Forum,Lilac){kind=creatingKind;threadsLoaded=false;navigate("threads")} }
+                    item { SmallNote(statusText(creatingStatus.ifBlank{stringResource(R.string.ui_cfe6247094b8)}),Lilac) }
+                    item { WatchCard(stringResource(R.string.ui_9c80cf8611b5),stringResource(R.string.ui_5eb2bd145931),Icons.Rounded.Forum,Lilac){kind=creatingKind;threadsLoaded=false;navigate("threads")} }
                 }
                 "notifications" -> {
-                    item { PageTitle("Notifications", if (health.optBoolean("push") || CloudNotifications.enabled) "Réception économe" else "Liaison directe") }
-                    item { SmallNote(if (health.optBoolean("push") || CloudNotifications.enabled) CloudNotifications.status else DirectNotifications.status, Mint) }
-                    if (pushStatus.isNotBlank()) item { SmallNote(pushStatus, Lilac) }
-                    item { SmallNote("Fins de tâches, erreurs et interruptions, directement depuis ton PC ou ton serveur.") }
-                    item { ActionButton(if (DirectNotifications.enabled || CloudNotifications.enabled) "Désactiver" else "Activer", if (DirectNotifications.enabled || CloudNotifications.enabled) Icons.Rounded.NotificationsOff else Icons.Rounded.NotificationsActive) {
+                    item { PageTitle(stringResource(R.string.ui_788011833a5a), if (health.optBoolean("push") || CloudNotifications.enabled) stringResource(R.string.ui_bc54e3028a4f) else stringResource(R.string.ui_0ae0eb5922e2)) }
+                    item { SmallNote(statusText(if (health.optBoolean("push") || CloudNotifications.enabled) CloudNotifications.status else DirectNotifications.status), Mint) }
+                    if (pushStatus.isNotBlank()) item { SmallNote(statusText(pushStatus), Lilac) }
+                    item { SmallNote(stringResource(R.string.ui_721bddd6b13a)) }
+                    item { ActionButton(if (DirectNotifications.enabled || CloudNotifications.enabled) stringResource(R.string.ui_c07050ca8933) else stringResource(R.string.ui_77bf4e88dbc8), if (DirectNotifications.enabled || CloudNotifications.enabled) Icons.Rounded.NotificationsOff else Icons.Rounded.NotificationsActive) {
                         if (DirectNotifications.enabled || CloudNotifications.enabled) { CloudNotifications.disable(context.applicationContext); DirectNotifications.disable(context.applicationContext); pushStatus = "" } else allowNotifications()
                     } }
-                    if (DirectNotifications.enabled || CloudNotifications.enabled) item { WatchCard("Tester une alerte", "Sur ce relais", Icons.Rounded.Notifications,
+                    if (DirectNotifications.enabled || CloudNotifications.enabled) item { WatchCard(stringResource(R.string.ui_d5d9f6efa0d8), stringResource(R.string.ui_c63cd64dc1ea), Icons.Rounded.Notifications,
                         enabled = CloudNotifications.enabled && health.optBoolean("push") || slot in DirectNotifications.connectedSlots) {
                         scope.launch { try { api.request("/v1/notifications/test", "POST"); pushStatus = "Alerte de test envoyée" }
                         catch (e: Exception) { pushStatus = e.message ?: "Relais injoignable" } }
                     } }
-                    item { SmallNote(if (DirectNotifications.enabled) "Une notification permanente maintient l’écoute des relais. La veille profonde peut retarder une alerte ; la réception reprend au retour du réseau."
-                        else "Google reçoit les alertes en arrière-plan pour le relais confirmé.") }
+                    item { SmallNote(if (DirectNotifications.enabled) stringResource(R.string.ui_86decc699fc6)
+                        else stringResource(R.string.app_alert_google)) }
                 }
                 "activity" -> {
-                    item { PageTitle("Activité", "Garder le fil") }
-                    if (!DirectNotifications.enabled && !CloudNotifications.enabled) item { WatchCard("Activer les notifications", "Fins de tâches et réponses", Icons.Rounded.NotificationsActive) { navigate("notifications") } }
+                    item { PageTitle(stringResource(R.string.ui_6b2b8f1b80e0), stringResource(R.string.ui_b5e0c9316662)) }
+                    if (!DirectNotifications.enabled && !CloudNotifications.enabled) item { WatchCard(stringResource(R.string.ui_b00bb72da4e6), stringResource(R.string.ui_0d050db01628), Icons.Rounded.NotificationsActive) { navigate("notifications") } }
                     items(events.reversed().take(40)) { event ->
-                        val status = when (event.optString("type")) {
-                        "completed" -> "Tâche terminée"
-                        "approval" -> "Accord demandé"
-                        "interrupted" -> "Tâche interrompue"
-                        "test" -> "Notification de test"
-                        else -> "Tâche à vérifier"
-                        }
+                        val status = stringResource(when (event.optString("type")) {
+                        "completed" -> R.string.alert_completed
+                        "approval" -> R.string.app_approval
+                        "interrupted" -> R.string.alert_interrupted
+                        "test" -> R.string.alert_test
+                        else -> R.string.app_task_check
+                        })
                         WatchCard(event.optString("title").ifBlank { status }, listOf(status, event.optString("preview")).filter { it.isNotBlank() }.joinToString(" · "), Icons.Rounded.TaskAlt) {
                         if (event.optString("threadId").isNotBlank()) openThread(event.optString("threadId"), event.optString("kind", "codex"))
                     } }
-                    if (events.isEmpty()) item { SmallNote("Tout est calme. Les prochaines mises à jour apparaîtront ici.") }
+                    if (events.isEmpty()) item { SmallNote(stringResource(R.string.ui_3b48440a9086)) }
                 }
             }
-            if (screen !in listOf("home", "welcome")) item { TextButton(onClick = { if (!loading) back() }, modifier = Modifier.heightIn(min = 48.dp)) { Icon(Icons.Rounded.ArrowBack, null, Modifier.size(16.dp)); Spacer(Modifier.width(5.dp)); Text("Retour", fontSize = 12.sp) } }
+            if (screen !in listOf("home", "welcome")) item { TextButton(onClick = { if (!loading) back() }, modifier = Modifier.heightIn(min = 48.dp)) { Icon(Icons.Rounded.ArrowBack, null, Modifier.size(16.dp)); Spacer(Modifier.width(5.dp)); Text(stringResource(R.string.ui_ef23a5940244), fontSize = 12.sp) } }
         }
     }
 }

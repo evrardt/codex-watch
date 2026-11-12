@@ -1,6 +1,6 @@
 # Guidance for AI agents helping install Codex Watch
 
-Help the user choose and complete the appropriate installation path. Explain the steps in their language and adapt to their experience. The current application and detailed guides are in French. Use the current release and the guides in this repository; do not invent application screens or claim to have tested hardware you cannot access.
+Help the user choose and complete the appropriate installation path. Explain the steps in their language and adapt to their experience. The watch and relay interfaces follow the device language in French, English, German, Spanish and Portuguese, and fall back to English for other languages. The detailed installation guides remain in French; use the actual translated screen labels rather than translating private conversations. Use the current release and the guides in this repository; do not invent application screens or claim to have tested hardware you cannot access.
 
 ## Choose a relay
 

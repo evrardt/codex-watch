@@ -51,7 +51,7 @@ async function install(){
   const check=spawnSync('systemctl',['--user','show-environment'],{stdio:'ignore'});if(check.status!==0)throw Error('La session systemd utilisateur est indisponible. Connecte-toi en SSH avec une session utilisateur complète.');
   const source=path.dirname(fileURLToPath(import.meta.url));
   await mkdir(bridge,{recursive:true,mode:0o700});await mkdir(data,{recursive:true,mode:0o700});await mkdir(path.join(data,'codex-home'),{recursive:true,mode:0o700});await mkdir(path.join(base,'projects'),{recursive:true,mode:0o700});await mkdir(runtime,{recursive:true,mode:0o700});
-  for(const f of await readdir(source))if(f.endsWith('.mjs')||['vps-admin.html','vps-admin.js','package.json','package-lock.json','phonon-voices.json','config.example.json'].includes(f))await copyFile(path.join(source,f),path.join(bridge,f));
+  for(const f of await readdir(source))if(f.endsWith('.mjs')||['vps-admin.html','vps-admin.js','vps-i18n.js','package.json','package-lock.json','phonon-voices.json','config.example.json'].includes(f))await copyFile(path.join(source,f),path.join(bridge,f));
   console.log('Installation des dépendances du relais…');run('npm',['ci','--omit=dev'],{cwd:bridge});
   console.log('Installation de Codex…');run('npm',['install','--prefix',runtime,'--no-save','--no-package-lock','@openai/codex']);
   const executable=path.join(runtime,'node_modules','.bin','codex');await stat(executable);

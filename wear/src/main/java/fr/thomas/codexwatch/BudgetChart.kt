@@ -1,5 +1,6 @@
 package fr.thomas.codexwatch
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import org.json.JSONObject
 
 @Composable fun BudgetChart(budget:JSONObject) {
+    val locale = LocalConfiguration.current.locales[0] ?: java.util.Locale.getDefault()
     val limit=budget.optInt("monthlyLimitCents",500)/100.0
     val used=budget.optDouble("usedUsd").coerceAtLeast(0.0)
     val held=budget.optDouble("reservedUsd").coerceAtLeast(0.0)
@@ -32,15 +35,15 @@ import org.json.JSONObject
                 if(provision>0)drawArc(Lilac,135f+270*fraction,270*provision,false,Offset.Zero,arcSize,style=stroke)
             }
             Column(horizontalAlignment=Alignment.CenterHorizontally) {
-                Text(dollars((limit-used-held).coerceAtLeast(0.0)),fontSize=19.sp,lineHeight=23.sp,fontWeight=FontWeight.SemiBold)
-                Text("disponibles",fontSize=10.sp,lineHeight=14.sp,color=Muted)
-                Text("/ ${dollars(limit)}",fontSize=10.sp,lineHeight=14.sp,color=Muted)
+                Text(dollars((limit-used-held).coerceAtLeast(0.0),locale),fontSize=19.sp,lineHeight=23.sp,fontWeight=FontWeight.SemiBold)
+                Text(stringResource(R.string.ui_4a2d8a55f2a0),fontSize=10.sp,lineHeight=14.sp,color=Muted)
+                Text("/ ${dollars(limit,locale)}",fontSize=10.sp,lineHeight=14.sp,color=Muted)
             }
         }
         Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
-            Text("● ${dollars(used)}",color=Mint,fontSize=10.sp,lineHeight=14.sp)
-            if(held>0)Text("● ${dollars(held)}",color=Lilac,fontSize=10.sp,lineHeight=14.sp)
+            Text("● ${dollars(used,locale)}",color=Mint,fontSize=10.sp,lineHeight=14.sp)
+            if(held>0)Text("● ${dollars(held,locale)}",color=Lilac,fontSize=10.sp,lineHeight=14.sp)
         }
-        Text(if(held>0)"Utilisés · provisions" else "Utilisés ce mois",color=Muted,fontSize=9.sp,lineHeight=13.sp)
+        Text(if(held>0)stringResource(R.string.ui_29257dd9fd32) else stringResource(R.string.ui_3d0ade9cc0a4),color=Muted,fontSize=9.sp,lineHeight=13.sp)
     }
 }

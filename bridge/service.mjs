@@ -606,7 +606,7 @@ export class Service {
         headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: this.config.chatModel, store: false, max_output_tokens:2048,
           ...(this.config.chatReasoningEffort ? {reasoning:{effort:this.config.chatReasoningEffort}} : {}),
-          instructions: 'Réponds en français, de manière concise et utile. Les réponses sont lues sur une montre. Tu es un assistant personnel accessible via l’API OpenAI.',
+          instructions: 'Réponds dans la langue de la personne, de manière concise et utile. Les réponses sont lues sur une montre. Tu es un assistant personnel accessible via l’API OpenAI.',
           input: chat.messages.filter(m => ['user', 'assistant'].includes(m.role)).map(m => ({ role: m.role, content: m.text })) }), signal: AbortSignal.timeout(180000) });
       if (!response.ok) throw new Error('Réponse OpenAI indisponible (HTTP ' + response.status + ')');
       const result = await response.json();

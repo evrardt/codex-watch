@@ -33,6 +33,7 @@ class LiveConnection(private val context: Context) {
     var outputLevel by mutableFloatStateOf(0f); private set
     @Volatile private var playbackEnergy=0f
     var caption by mutableStateOf(""); private set
+    var captionIsStatus by mutableStateOf(true); private set
     var notice by mutableStateOf(""); private set
     var remaining by mutableIntStateOf(0); private set
     var elapsed by mutableIntStateOf(0); private set
@@ -73,12 +74,12 @@ class LiveConnection(private val context: Context) {
     private var botText=""
     private var focus: AudioFocusRequest? = null
     private val manager=context.getSystemService(AudioManager::class.java)
-    fun prepare(){if(state==LiveState.ENDED){state=LiveState.IDLE;notice="";caption="";backend="";boundContexts=emptyMap()}}
+    fun prepare(){if(state==LiveState.ENDED){state=LiveState.IDLE;notice="";caption="";captionIsStatus=true;backend="";boundContexts=emptyMap()}}
     private fun send(value: JSONObject) { if(!reconnecting || value.optString("type")=="close")socket?.send(value.toString()) }
     fun connect(connection: Connection, kind: String, bindings: Map<String,JSONObject>, voice: String, plugins:List<String> = emptyList()) {
         if(state in listOf(LiveState.CONNECTING,LiveState.CONNECTED,LiveState.ENDING))return
         check(ContextCompat.checkSelfPermission(context,Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED) { "Autoriser le microphone pour le Live" }
-        state=LiveState.CONNECTING;target=kind;notice="";caption="Connexion à l’agent Live…";backend="";muted=false;elapsed=0;remaining=0
+        state=LiveState.CONNECTING;target=kind;notice="";caption="Connexion à l’agent Live…";captionIsStatus=true;backend="";muted=false;elapsed=0;remaining=0
         serverAudioRevision=0;waitingForInterruption=false;userEnd=-1;botEnd=-1;userText="";botText="";queue=Channel(40);opusDisabled=false;boundContexts=emptyMap();resumeToken="";reconnecting=false;liveConnection=connection;selectedPlugins=plugins.toList()
         val sessionRevision=++revision
         val candidates=transportOrder(connection.transportMode,connection.bluetoothAddress.isNotBlank(),BluetoothTunnel.connected(connection))
@@ -111,13 +112,13 @@ class LiveConnection(private val context: Context) {
         socket=http.newWebSocket(request,object: WebSocketListener() {
             override fun onOpen(webSocket: WebSocket,response: Response) {
                 if(sessionRevision!=revision||attempt!=socketRevision||(!resume&&state!=LiveState.CONNECTING)){webSocket.close(1000,null);return}
-                if(!resume)webSocket.send(JSONObject().put("type","start").put("kind",kind).put("voice",voice).put("bindings",JSONObject(bindings)).put("plugins",JSONArray(selectedPlugins))
+                if(!resume)webSocket.send(JSONObject().put("type","start").put("kind",kind).put("voice",voice).put("language",context.resources.configuration.locales[0].language).put("bindings",JSONObject(bindings)).put("plugins",JSONArray(selectedPlugins))
                     .put("outputEncodings",JSONArray().put("deflate-pcm16").put("delta-deflate-pcm16").put("opus-24k")).put("outputEncoding",if(selected=="bluetooth")"deflate-pcm16" else "pcm16").toString())
             }
             override fun onMessage(webSocket: WebSocket,text: String) { scope.launch {
                 if(sessionRevision!=revision||attempt!=socketRevision)return@launch
                 if(resume&&reconnecting&&runCatching{JSONObject(text).optString("type")=="resumed"}.getOrDefault(false)) {
-                    reconnecting=false;reconnectTimer?.cancel();transport=selected;ConnectionStatus.success(connection,selected);notice="";caption="Je t’écoute"
+                    reconnecting=false;reconnectTimer?.cancel();transport=selected;ConnectionStatus.success(connection,selected);notice="";caption="Je t’écoute";captionIsStatus=true
                     chooseOutputEncoding()
                     if(!muted)runCatching{startCapture()}.onFailure{end("Microphone indisponible.")}
                 }
@@ -142,7 +143,7 @@ class LiveConnection(private val context: Context) {
     private fun beginReconnect(sessionRevision:Int) {
         if(reconnecting||state!=LiveState.CONNECTED)return
         reconnecting=true;reconnectStarted=SystemClock.elapsedRealtime();reconnectAttempt=0;stopCapture()
-        notice="Changement de connexion · micro en pause";caption="Reconnexion…";retryResume(sessionRevision)
+        notice="Changement de connexion · micro en pause";caption="Reconnexion…";captionIsStatus=true;retryResume(sessionRevision)
     }
     private fun retryResume(sessionRevision:Int) {
         if(!reconnecting||sessionRevision!=revision||state!=LiveState.CONNECTED)return
@@ -169,7 +170,7 @@ class LiveConnection(private val context: Context) {
                 target=event.optString("kind",target);remaining=event.optInt("maxSeconds");elapsed=0;delivery="Échange vocal";resumeToken=event.optString("resumeToken").takeIf{it.matches(Regex("[a-f0-9-]{36}"))}.orEmpty();liveConnection?.let{ConnectionStatus.success(it,transport)}
                 val contexts=event.optJSONObject("bindings")?:JSONObject()
                 boundContexts=contexts.keys().asSequence().associateWith{contexts.getJSONObject(it)}
-                openAudio();state=LiveState.CONNECTED;chooseOutputEncoding();caption="Je t’écoute";startCapture()
+                openAudio();state=LiveState.CONNECTED;chooseOutputEncoding();caption="Je t’écoute";captionIsStatus=true;startCapture()
             }
             "audio" -> if(state==LiveState.CONNECTED&&!waitingForInterruption) {
                 val packetRevision=event.optInt("audioRevision",serverAudioRevision)
@@ -183,11 +184,11 @@ class LiveConnection(private val context: Context) {
                 val start=event.optLong("startMs");val end=event.optLong("endMs");val delta=event.optString("text")
                 if(event.optString("role")=="user") {
                     if(start>userEnd+900)userText=""
-                    userText=(userText+delta).takeLast(1000);userEnd=end;caption=userText
+                    userText=(userText+delta).takeLast(1000);userEnd=end;caption=userText;captionIsStatus=false
 
                 } else {
                     if(start>botEnd+900)botText=""
-                    botText=(botText+delta).takeLast(1000);botEnd=end;caption=botText
+                    botText=(botText+delta).takeLast(1000);botEnd=end;caption=botText;captionIsStatus=false
                 }
             }
             "target" -> {target=event.optString("kind",target);backend=""}

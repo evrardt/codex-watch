@@ -31,20 +31,20 @@ object WatchAlerts {
         val ids = (0 until seen.length()).map { seen.getString(it) }
         if (seenKey in ids) return
         val status = when (event.optString("type")) {
-            "completed" -> "Tâche terminée"
-            "failed" -> "La tâche a rencontré une erreur"
-            "interrupted" -> "Tâche interrompue"
-            "approval", "attention" -> "Codex attend ton attention"
-            "test" -> "Notification de test"
-            else -> "Codex a été mis à jour"
+            "completed" -> context.getString(R.string.alert_completed)
+            "failed" -> context.getString(R.string.alert_failed)
+            "interrupted" -> context.getString(R.string.alert_interrupted)
+            "approval", "attention" -> context.getString(R.string.alert_attention)
+            "test" -> context.getString(R.string.alert_test)
+            else -> context.getString(R.string.alert_updated)
         }
         val title = event.optString("title").ifBlank { status }
         val preview = event.optString("preview").ifBlank {
             when (event.optString("type")) {
-                "completed" -> "Ouvre la conversation pour lire le résultat."
-                "failed" -> "Ouvre la conversation pour consulter l’erreur."
-                "test" -> "Toucher pour vérifier l’ouverture."
-                else -> "Ouvre la conversation pour retrouver les détails."
+                "completed" -> context.getString(R.string.alert_open_result)
+                "failed" -> context.getString(R.string.alert_open_error)
+                "test" -> context.getString(R.string.alert_open_test)
+                else -> context.getString(R.string.alert_open_details)
             }
         }
         val body = if (title == status) preview else "$status\n$preview"
@@ -58,7 +58,7 @@ object WatchAlerts {
         val notification = NotificationCompat.Builder(context, if(silent) "dictation_silent" else "tasks").setSmallIcon(R.drawable.ic_watch)
             .setContentTitle(title).setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-            .setSubText(if (profile == "pc") "Mon PC" else "Mon serveur")
+            .setSubText(context.getString(if (profile == "pc") R.string.state_my_pc else R.string.state_my_server))
             .setContentIntent(pending).setAutoCancel(true).setOnlyAlertOnce(true).setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setSilent(silent)
             .extend(NotificationCompat.WearableExtender().setHintContentIntentLaunchesActivity(true).setContentIntentAvailableOffline(true))

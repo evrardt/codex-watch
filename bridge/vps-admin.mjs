@@ -46,6 +46,7 @@ export class VpsAdmin {
   const url=new URL(req.url,'http://localhost');if(url.pathname!=='/admin'&&!url.pathname.startsWith('/admin/'))return false;
   const send=(status,data,type='application/json; charset=utf-8')=>{res.statusCode=status;res.setHeader('Content-Type',type);res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Frame-Options','DENY');res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'none'");res.end(type.startsWith('application/json')?JSON.stringify(data):data);};
   if(req.method==='GET'&&(url.pathname==='/admin'||url.pathname==='/admin/')){send(200,await readFile(path.join(here,'vps-admin.html'),'utf8'),'text/html; charset=utf-8');return true;}
+  if(req.method==='GET'&&url.pathname==='/admin/i18n.js'){send(200,await readFile(path.join(here,'vps-i18n.js'),'utf8'),'application/javascript; charset=utf-8');return true;}
   if(req.method==='GET'&&url.pathname==='/admin/app.js'){send(200,await readFile(path.join(here,'vps-admin.js'),'utf8'),'application/javascript; charset=utf-8');return true;}
   if(!url.pathname.startsWith('/admin/api/')){send(404,{error:'Page introuvable.'});return true;}
   if(req.method!=='GET'&&req.method!=='POST'){send(405,{error:'Méthode interdite.'});return true;}

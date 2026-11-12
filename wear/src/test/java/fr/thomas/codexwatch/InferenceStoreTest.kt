@@ -21,8 +21,8 @@ class InferenceStoreTest {
         assertNotEquals(inferenceThreadKey("profile-a","thread-1"),inferenceThreadKey("profile-b","thread-1"))
     }
     @Test fun everySupportedEffortHasAnExplicitLabel() {
-        assertEquals("Aucune",effortLabel("none"))
-        assertEquals("Minimale",effortLabel("minimal"))
-        assertEquals("Du PC",effortLabel(""))
+        assertEquals(R.string.effort_none,effortLabelResource("none"))
+        assertEquals(R.string.effort_minimal,effortLabelResource("minimal"))
+        assertEquals(R.string.ui_09b6227b10b2,effortLabelResource(""))
     }
 }

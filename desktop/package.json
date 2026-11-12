@@ -1,7 +1,7 @@
 {
   "name": "codex-watch-relay",
   "productName": "Codex Watch Relay",
-  "version": "0.12.54",
+  "version": "0.12.56",
   "description": "Relais de bureau pour Codex Watch sur Wear OS",
   "author": "Codex Watch contributors",
   "license": "MIT",
@@ -54,6 +54,7 @@
           "desktop-question.ps1",
           "vps-admin.html",
           "vps-admin.js",
+          "vps-i18n.js",
           "phonon-voices.json",
           "package.json",
           "package-lock.json",

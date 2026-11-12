@@ -1,5 +1,6 @@
 package fr.thomas.codexwatch
 
+import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -128,25 +129,28 @@ open class LiveActivity : ComponentActivity() {
                 val color=if(live.target=="codex")Mint else Lilac
                 Eyebrow(if(live.target=="codex")"Codex" else "ChatGPT",color)
                 Text(bindings[live.target]?.optString("title").orEmpty(),fontSize=10.sp,lineHeight=12.sp,color=Muted,maxLines=1,overflow=TextOverflow.Ellipsis)
-                Text(live.delivery,fontSize=10.sp,lineHeight=12.sp,color=color,maxLines=1)
+                Text(statusText(live.delivery),fontSize=10.sp,lineHeight=12.sp,color=color,maxLines=1)
                 Box(Modifier.weight(1f).fillMaxWidth(),contentAlignment=Alignment.Center){LiveOrb(live.target,if(live.speaking)live.outputLevel else live.level,live.speaking,live.muted,live.state){live.interrupt()}}
-                Text(when(live.state){LiveState.CONNECTING->"Connexion…";LiveState.ENDING->"Fin de l’appel…";else->if(live.reconnecting)"Reconnexion…" else if(live.muted)"Micro coupé" else if(live.speaking)"Je parle" else "Je t’écoute"},fontSize=12.sp,lineHeight=15.sp,color=color,maxLines=1)
-                Text(live.notice.ifBlank{live.caption},fontSize=12.sp,lineHeight=15.sp,maxLines=1,overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Center,modifier=Modifier.fillMaxWidth().padding(top=2.dp))
+                Text(when(live.state){LiveState.CONNECTING->stringResource(R.string.ui_280398acb030);LiveState.ENDING->stringResource(R.string.ui_68cbdeed1df6);else->if(live.reconnecting)stringResource(R.string.ui_6dd94fd1a64c) else if(live.muted)stringResource(R.string.ui_ea725cd912f8) else if(live.speaking)stringResource(R.string.ui_13f84f75174c) else stringResource(R.string.ui_c487bdcb6356)},fontSize=12.sp,lineHeight=15.sp,color=color,maxLines=1)
+                val caption = if (live.notice.isNotBlank()) statusText(live.notice) else if (live.captionIsStatus) statusText(live.caption) else live.caption
+                Text(caption,fontSize=12.sp,lineHeight=15.sp,maxLines=2,overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Center,modifier=Modifier.fillMaxWidth().padding(top=2.dp))
                 Row(Modifier.fillMaxWidth().height(48.dp),horizontalArrangement=Arrangement.SpaceEvenly) {
-                    IconButton(onClick={live.toggleMute()},enabled=live.state==LiveState.CONNECTED&&!live.reconnecting,modifier=Modifier.size(48.dp)){Icon(if(live.muted)Icons.Rounded.MicOff else Icons.Rounded.Mic,if(live.muted)"Rétablir le micro" else "Couper le micro",tint=Lilac)}
+                    IconButton(onClick={live.toggleMute()},enabled=live.state==LiveState.CONNECTED&&!live.reconnecting,modifier=Modifier.size(48.dp)){Icon(if(live.muted)Icons.Rounded.MicOff else Icons.Rounded.Mic,if(live.muted)stringResource(R.string.ui_84d45b2dd77f) else stringResource(R.string.ui_adf95471a387),tint=Lilac)}
                     val other=if(live.target=="codex")"chatgpt" else "codex"
-                    IconButton(onClick={live.select(other)},enabled=live.state==LiveState.CONNECTED&&!live.reconnecting&&bindings.containsKey(other),modifier=Modifier.size(48.dp)){Icon(Icons.Rounded.SwapHoriz,"Passer à ${if(other=="codex")"Codex" else "ChatGPT"}",tint=color)}
-                    IconButton(onClick={live.end()},modifier=Modifier.size(48.dp).background(Color(0xFF512D36),CircleShape)){Icon(Icons.Rounded.CallEnd,"Terminer le Live",tint=Color(0xFFFFC5CE))}
+                    IconButton(onClick={live.select(other)},enabled=live.state==LiveState.CONNECTED&&!live.reconnecting&&bindings.containsKey(other),modifier=Modifier.size(48.dp)){Icon(Icons.Rounded.SwapHoriz,stringResource(R.string.live_switch_to,if(other=="codex")"Codex" else "ChatGPT"),tint=color)}
+                    IconButton(onClick={live.end()},modifier=Modifier.size(48.dp).background(Color(0xFF512D36),CircleShape)){Icon(Icons.Rounded.CallEnd,stringResource(R.string.ui_23dd2706ff2e),tint=Color(0xFFFFC5CE))}
                 }
-                Text(if(live.remaining>0)"${live.elapsed/60}:${(live.elapsed%60).toString().padStart(2,'0')} · ${live.remaining/60}:${(live.remaining%60).toString().padStart(2,'0')} restantes" else "Quota audio partagé",fontSize=10.sp,lineHeight=12.sp,color=Muted,maxLines=1)
+                val elapsed="${live.elapsed/60}:${(live.elapsed%60).toString().padStart(2,'0')}"
+                val remaining="${live.remaining/60}:${(live.remaining%60).toString().padStart(2,'0')}"
+                Text(if(live.remaining>0) "$elapsed · ${stringResource(R.string.app_time_remaining,remaining)}" else stringResource(R.string.app_audio_quota),fontSize=10.sp,lineHeight=12.sp,color=Muted,maxLines=2,textAlign=TextAlign.Center)
             }
         } else WatchList("live:$picker:${connection.slot}",bottomAction=if(picker.isBlank())({
             val context=bindings[target]
             val selected=context!=null&&(context.optString("mode")=="existing"||target=="chatgpt"||context.optString("project").isNotBlank())
-            ActionButton(if(live.state==LiveState.ENDED)"Reprendre" else "Démarrer",Icons.Rounded.Mic,Lilac,enabled=!loading&&options.optBoolean("ready")&&selected){begin()}
+            ActionButton(if(live.state==LiveState.ENDED)stringResource(R.string.ui_ddd913203fe2) else stringResource(R.string.ui_0253f2a67040),Icons.Rounded.Mic,Lilac,enabled=!loading&&options.optBoolean("ready")&&selected){begin()}
         })else null) {
             item{
-                if(picker.isNotBlank())PageTitle("Choisir un projet",if(picker=="codex")"Codex" else "ChatGPT",Lilac)
+                if(picker.isNotBlank())PageTitle(stringResource(R.string.ui_1fc798128adb),if(picker=="codex")"Codex" else "ChatGPT",Lilac)
                 else Column {
                     Eyebrow("Live",Lilac);Spacer(Modifier.height(4.dp))
                     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp)){
@@ -162,50 +166,50 @@ open class LiveActivity : ComponentActivity() {
                 }
             }
             if(loading)item{CircularProgressIndicator(Modifier.size(24.dp),color=Lilac,strokeWidth=2.dp)}
-            if(error.isNotBlank())item{SmallNote(error,Color(0xFFFFBA9D))}
-            if(!loading&&picker.isBlank()&&bindings[target]==null)item{SmallNote("${if(target=="chatgpt")"ChatGPT" else "Codex"} indisponible sur ce relais. Choisis un autre contexte.")}
-            if(!loading&&picker.isBlank()&&!options.optBoolean("ready"))item{SmallNote(when(options.optString("reason")){
+            if(error.isNotBlank())item{SmallNote(statusText(error),Color(0xFFFFBA9D))}
+            if(!loading&&picker.isBlank()&&bindings[target]==null)item{SmallNote(stringResource(R.string.live_context_unavailable,if(target=="chatgpt")"ChatGPT" else "Codex"))}
+            if(!loading&&picker.isBlank()&&!options.optBoolean("ready"))item{SmallNote(statusText(when(options.optString("reason")){
                 "BUDGET_REACHED" -> "Budget Live insuffisant. Vérifie le plafond audio."
                 "DEMO" -> "Live désactivé dans l’aperçu."
                 "API_KEY_MISSING" -> "Connecte une clé API sur le relais pour le Live."
                 else -> if(options.optJSONObject("budget")?.optBoolean("ready")!=true)"Connecte une clé API sur le relais pour le Live." else "Reconnecte Codex sur le relais pour le Live."
-            })}
+            }))}
             if(picker.isNotBlank()) {
                 val candidates=projects.optJSONArray(picker)?.objects().orEmpty()
-                items(candidates){project->WatchCard(project.optString("name"),if(bindings[picker]?.optString("project")==project.optString("id"))"Sélectionné" else null,Icons.Rounded.FolderOpen,if(picker=="codex")Mint else Lilac){bindings[picker]=liveLaunchContext(picker,project.optString("id"),project.optString("name"),null,"","");picker=""}}
-                if(candidates.isEmpty())item{SmallNote("Aucun projet accessible pour ce contexte.")}
-                item{TextButton(onClick={picker=""}){Text("Retour",fontSize=12.sp)}}
+                items(candidates){project->WatchCard(project.optString("name"),if(bindings[picker]?.optString("project")==project.optString("id"))stringResource(R.string.ui_42345d238922) else null,Icons.Rounded.FolderOpen,if(picker=="codex")Mint else Lilac){bindings[picker]=liveLaunchContext(picker,project.optString("id"),project.optString("name"),null,"","");picker=""}}
+                if(candidates.isEmpty())item{SmallNote(stringResource(R.string.ui_01ee9d3187c2))}
+                item{TextButton(onClick={picker=""}){Text(stringResource(R.string.ui_ef23a5940244),fontSize=12.sp)}}
             } else {
                 val selected=bindings[target]
-                if(selected?.optString("mode")=="existing")item{SmallNote("Le Live utilise le chat ouvert : ${selected.optString("title")}",Lilac)}
-                if(live.state==LiveState.ENDED&&selected?.optString("id")?.isNotBlank()==true)item{WatchCard("Ouvrir le chat",selected.optString("title"),Icons.Rounded.ChatBubbleOutline,Lilac){startActivity(Intent(this@LiveActivity,MainActivity::class.java).putExtra("eventId","live").putExtra("kind",target).putExtra("threadId",selected.optString("id")))}}
+                if(selected?.optString("mode")=="existing")item{SmallNote(stringResource(R.string.live_current_chat,selected.optString("title")),Lilac)}
+                if(live.state==LiveState.ENDED&&selected?.optString("id")?.isNotBlank()==true)item{WatchCard(stringResource(R.string.ui_513b51523bce),selected.optString("title"),Icons.Rounded.ChatBubbleOutline,Lilac){startActivity(Intent(this@LiveActivity,MainActivity::class.java).putExtra("eventId","live").putExtra("kind",target).putExtra("threadId",selected.optString("id")))}}
                 item{
                     val existing=selected?.optString("mode")=="existing"
                     Row(Modifier.fillMaxWidth().heightIn(min=48.dp).background(Color(0xFF1C2923),RoundedCornerShape(22.dp)).clickable(enabled=!existing){picker=target}.padding(horizontal=12.dp,vertical=7.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
                         Icon(if(existing)Icons.Rounded.ChatBubbleOutline else Icons.Rounded.FolderOpen,null,Modifier.size(19.dp),tint=if(target=="codex")Mint else Lilac)
                         Column(Modifier.weight(1f)){
-                            Text(if(existing)"Conversation ouverte" else "Projet · nouveau chat",fontSize=10.sp,lineHeight=12.sp,color=Muted)
-                            Text(if(existing)selected?.optString("title").orEmpty() else selected?.optString("title")?.removePrefix("Nouveau chat · ")?:"Choisir un projet",fontSize=12.sp,lineHeight=14.sp,maxLines=1,overflow=TextOverflow.Ellipsis)
+                            Text(if(existing)stringResource(R.string.ui_e7a2d9d4939c) else stringResource(R.string.ui_2a6d0198e8dc),fontSize=10.sp,lineHeight=12.sp,color=Muted)
+                            Text(if(existing)selected?.optString("title").orEmpty() else selected?.optString("title")?.removePrefix("Nouveau chat · ")?:stringResource(R.string.ui_1fc798128adb),fontSize=12.sp,lineHeight=14.sp,maxLines=1,overflow=TextOverflow.Ellipsis)
                         }
                     }
                 }
-                if(live.state==LiveState.ENDED&&live.notice.isNotBlank())item{SmallNote(live.notice,Lilac)}
-                item{SmallNote(if(selected?.optString("mode")=="existing")"L’appel continue dans cette conversation." else "Un nouveau chat sera créé à ta première demande. Le micro reste fermé avant Démarrer.")}
+                if(live.state==LiveState.ENDED&&live.notice.isNotBlank())item{SmallNote(statusText(live.notice),Lilac)}
+                item{SmallNote(if(selected?.optString("mode")=="existing")stringResource(R.string.ui_c383bb2c749b) else stringResource(R.string.ui_fc858be0b309))}
                 item{
                     val names=JSONArray(pluginSelection).objects().map{it.optString("name")}.filter{it.isNotBlank()}
-                    WatchCard("Plugins Codex",if(names.isEmpty())"Facultatif" else names.joinToString(", "),Icons.Rounded.Extension,Mint,enabled=!loading&&bindings.containsKey("codex")){
+                    WatchCard(stringResource(R.string.ui_8bd51d06272e),if(names.isEmpty())stringResource(R.string.ui_447a13646629) else names.joinToString(", "),Icons.Rounded.Extension,Mint,enabled=!loading&&bindings.containsKey("codex")){
                         if(options.optBoolean("pluginSelection"))pluginPicker.launch(Intent(this@LiveActivity,PluginPickerActivity::class.java).putExtra("selection",pluginSelection))
                         else error="Mets à jour le relais pour choisir des plugins en Live."
                     }
                 }
-                if(JSONArray(pluginSelection).length()>0&&target!="codex")item{SmallNote("Plugins utilisés pour les demandes à Codex.",Mint)}
-                if(target=="chatgpt")item{SmallNote("Sélection des apps ChatGPT indisponible sur ce relais.",Lilac)}
-                item{WatchCard("Voix · ${voice.replaceFirstChar{it.uppercase()}}",if(voice=="brise"||voice=="sillage")"Voix française" else "Lecture en français",Icons.Rounded.RecordVoiceOver,Lilac){val voices=listOf("brise","sillage","marin","cedar","coral");voice=voices[(voices.indexOf(voice)+1)%voices.size]}}
+                if(JSONArray(pluginSelection).length()>0&&target!="codex")item{SmallNote(stringResource(R.string.ui_e1a7d15a23c6),Mint)}
+                if(target=="chatgpt")item{SmallNote(stringResource(R.string.ui_1497c7b53e51),Lilac)}
+                item{WatchCard(stringResource(R.string.app_voice_named,voice.replaceFirstChar{it.uppercase()}),stringResource(R.string.ui_3a72e4b43c68),Icons.Rounded.RecordVoiceOver,Lilac){val voices=listOf("brise","sillage","marin","cedar","coral");voice=voices[(voices.indexOf(voice)+1)%voices.size]}}
                 item{SmallNote("0,05 $ / min · 5 min maximum")}
                 val budget=options.optJSONObject("budget")
                 if(budget!=null)item{BudgetChart(budget)}
-                if(target=="codex")item{WatchCard("Modèle", "Réflexion",Icons.Rounded.Psychology,Mint){val current=bindings["codex"];startActivity(Intent(this@LiveActivity,ManagementActivity::class.java).putExtra("section","models").putExtra("threadId",if(current?.optString("mode")=="existing")current.optString("id") else ""))}}
-                item{TextButton(onClick={finish()}){Text("Fermer",fontSize=12.sp)}}
+                if(target=="codex")item{WatchCard(stringResource(R.string.ui_e61bbb839ef8), stringResource(R.string.ui_fc8b3826cea8),Icons.Rounded.Psychology,Mint){val current=bindings["codex"];startActivity(Intent(this@LiveActivity,ManagementActivity::class.java).putExtra("section","models").putExtra("threadId",if(current?.optString("mode")=="existing")current.optString("id") else ""))}}
+                item{TextButton(onClick={finish()}){Text(stringResource(R.string.ui_711e5f2e198d),fontSize=12.sp)}}
             }
         }
     }

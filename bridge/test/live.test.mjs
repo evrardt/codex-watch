@@ -45,6 +45,16 @@ async function fixture(t,start={kind:'codex',bindings:{codex:'c',chatgpt:'g'}}) 
   return{call,socket,service,writes,chats,settled,provider:call.api};
 }
 
+test('Live starts in the supported watch language and rejects unknown language values',async t=>{
+  const cases=[['fr','français','Je t’écoute'],['en','anglais','I’m listening'],['de','allemand','Ich höre zu'],['es','espagnol','Te escucho'],['pt','portugais','Estou a ouvir'],['__proto__','français','Je t’écoute']];
+  for(const [code,name,greeting] of cases){
+    const {provider}=await fixture(t,{kind:'codex',bindings:{codex:'c'},language:code});
+    const session=provider.sent.find(e=>e.type==='session.start').session;
+    assert.ok(session.instructions.includes(`La langue de la montre est ${name}`));
+    assert.ok(session.input.at(-1).content[0].text.includes(greeting));
+  }
+});
+
 test('voice routing changes only on explicit destinations and preserves the instruction',()=>{
   assert.deepEqual(voiceRoute('Passe à ChatGPT.','codex'),{kind:'chatgpt',switchOnly:true,text:'Passe à ChatGPT.'});
   assert.deepEqual(voiceRoute('Codex, corrige le bouton.','chatgpt'),{kind:'codex',switchOnly:false,text:'corrige le bouton.'});

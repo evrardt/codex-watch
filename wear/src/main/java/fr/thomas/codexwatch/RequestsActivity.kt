@@ -1,5 +1,6 @@
 package fr.thomas.codexwatch
 
+import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -66,7 +67,7 @@ class RequestsActivity : ComponentActivity() {
         }
     }
     Column(Modifier.fillMaxWidth()) {
-        Text(if (request.optString("type") == "questions") "QUESTION" else "ACCORD DEMANDÉ", color = Lilac, fontSize = 10.sp)
+        Text(if (request.optString("type") == "questions") stringResource(R.string.ui_1c5cb9921cbe) else stringResource(R.string.ui_03b196c82005), color = Lilac, fontSize = 10.sp)
         if (request.optString("type") == "questions") {
             val questions = request.optJSONArray("questions")?.objects().orEmpty()
             for (q in questions) {
@@ -82,21 +83,21 @@ class RequestsActivity : ComponentActivity() {
                 }
                 val chosen = answers[id].orEmpty()
                 val customAnswer = if (options.any { it.optString("label") == chosen }) "" else chosen
-                OutlinedTextField(customAnswer, { answers[id] = it }, label = { Text(if (options.isEmpty()) "Réponse" else "Autre réponse", fontSize = 11.sp) },
+                OutlinedTextField(customAnswer, { answers[id] = it }, label = { Text(if (options.isEmpty()) stringResource(R.string.ui_c42aba381489) else stringResource(R.string.ui_d55db9643385), fontSize = 11.sp) },
                     modifier = Modifier.fillMaxWidth(), enabled = !busy,
                     visualTransformation = if (q.optBoolean("isSecret")) PasswordVisualTransformation() else VisualTransformation.None)
             }
-            ActionButton(if (busy) "Envoi…" else "Envoyer", Icons.Rounded.Send, Lilac,
+            ActionButton(if (busy) stringResource(R.string.ui_1ccef8a10ca7) else stringResource(R.string.ui_79075209f2bb), Icons.Rounded.Send, Lilac,
                 enabled = !busy && questions.isNotEmpty() && questions.all { answers[it.optString("id")]?.isNotBlank() == true }, working = busy) {
                 val values = JSONObject(); questions.forEach { values.put(it.optString("id"), answers[it.optString("id")]) }
                 send(JSONObject().put("answers", values), true)
             }
-            if (request.optString("source") != "desktop-ui") TextButton(onClick = { send(JSONObject().put("cancel", true), true) }, enabled = !busy) { Text("Annuler", maxLines = 1) }
+            if (request.optString("source") != "desktop-ui") TextButton(onClick = { send(JSONObject().put("cancel", true), true) }, enabled = !busy) { Text(stringResource(R.string.ui_46ad3916f6a0), maxLines = 1) }
         } else {
             SmallNote(request.optString("title")); SmallNote(request.optString("cwd"))
-            ActionButton(if (busy) "Envoi…" else "Autoriser", Icons.Rounded.Check, Lilac, enabled = !busy, working = busy) { send(JSONObject().put("decision", "accept")) }
-            TextButton(onClick = { send(JSONObject().put("decision", "decline")) }, enabled = !busy) { Text("Refuser", maxLines = 1) }
+            ActionButton(if (busy) stringResource(R.string.ui_1ccef8a10ca7) else stringResource(R.string.ui_5fa07aecdbea), Icons.Rounded.Check, Lilac, enabled = !busy, working = busy) { send(JSONObject().put("decision", "accept")) }
+            TextButton(onClick = { send(JSONObject().put("decision", "decline")) }, enabled = !busy) { Text(stringResource(R.string.ui_283348d05e1c), maxLines = 1) }
         }
-        if (error.isNotBlank()) SmallNote(error, Color(0xFFFFBA9D))
+        if (error.isNotBlank()) SmallNote(statusText(error), Color(0xFFFFBA9D))
     }
 }

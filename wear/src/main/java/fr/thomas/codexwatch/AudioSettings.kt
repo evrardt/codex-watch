@@ -34,4 +34,4 @@ internal fun dollarCents(value: String): Int? = runCatching {
     decimal.setScale(2, RoundingMode.UNNECESSARY).movePointRight(2).intValueExact()
 }.getOrNull()
 
-internal fun dollars(value: Double) = String.format(java.util.Locale.US, if (value > 0 && value < .01) "%.4f $" else "%.2f $", value)
+internal fun dollars(value: Double, locale: java.util.Locale = java.util.Locale.US) = String.format(locale, if (value > 0 && value < .01) "%.4f $" else "%.2f $", value)

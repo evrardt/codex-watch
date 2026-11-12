@@ -41,6 +41,8 @@ test('VPS browser administration is isolated from the watch token and enforces o
  server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>new Promise(resolve=>server.close(resolve)));
  const url='http://127.0.0.1:'+server.address().port,auth={Authorization:'Bearer '+adminKey},json={'Content-Type':'application/json'};
  let r=await fetch(url+'/admin');assert.equal(r.status,200);assert.match(r.headers.get('content-security-policy'),/frame-ancestors 'none'/);
+ assert.match(await r.text(),/\/admin\/i18n\.js/);
+ r=await fetch(url+'/admin/i18n.js');assert.equal(r.status,200);assert.match(r.headers.get('content-type'),/javascript/);assert.match(await r.text(),/dictionaries/);
  r=await fetch(url+'/admin/api/status',{headers:{Authorization:'Bearer '+watchKey}});assert.equal(r.status,401);
  r=await fetch(url+'/admin/api/pair',{method:'POST',headers:{...auth,...json,Origin:'https://evil.example'},body:'{}'});assert.equal(r.status,403);
  r=await fetch(url+'/admin/api/status',{headers:auth});assert.equal(r.status,200);assert.deepEqual((await r.json()).projects,['Projet']);

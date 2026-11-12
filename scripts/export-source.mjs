@@ -11,6 +11,7 @@ const files=['README.md','GUIDE-INSTALLATION.html','AGENTS.md','LICENSE','SECURI
 files.push('docs/QA-0.12.24.md','docs/QA-0.12.25.md');
 files.push('docs/INSTALLER-VPS.md','docs/INSTALLER-VPS.html');
 files.push('scripts/guide-vps-screenshot.cjs');
+files.push('scripts/check-watch-locales.py');
 files.push('docs/ETUDE-ASSISTANCE-CONVERSATION.md');
 files.push('docs/RAPPORT-ETAT.md');
 files.push('docs/NOTIFICATIONS.md','docs/NOTIFICATIONS.html','docs/SIGNATURE-WINDOWS.md');
